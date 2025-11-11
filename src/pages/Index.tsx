@@ -105,12 +105,12 @@ const Index = () => {
               </div>
               <div className="flex items-center gap-8 pt-4">
                 <div>
-                  <div className="text-3xl font-bold text-foreground">500+</div>
+                  <div className="text-3xl font-bold text-foreground">9+</div>
                   <div className="text-sm text-muted-foreground">Churches</div>
                 </div>
                 <div className="h-12 w-px bg-border" />
                 <div>
-                  <div className="text-3xl font-bold text-foreground">50K+</div>
+                  <div className="text-3xl font-bold text-foreground">1000+</div>
                   <div className="text-sm text-muted-foreground">Members</div>
                 </div>
                 <div className="h-12 w-px bg-border" />
