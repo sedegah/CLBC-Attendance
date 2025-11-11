@@ -1,10 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Calendar, DollarSign, MessageSquare, UserCheck, BarChart3, Heart, Shield, ArrowRight, Play, CheckCircle } from "lucide-react";
+import { Users, Calendar, DollarSign, MessageSquare, UserCheck, BarChart3, Heart, Shield, ArrowRight, Play, CheckCircle, Menu, X, Phone } from "lucide-react";
+import { useState } from "react";
 import heroImage from "@/assets/hero-church.jpg";
 import clbcLogo from "@/assets/clbc-logo.png";
 
 const Index = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   const features = [
     {
       icon: Users,
@@ -64,26 +67,106 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Navigation */}
-      <nav className="border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
+      {/* Enhanced Navigation */}
+      <nav className="border-b border-border/60 bg-background/95 backdrop-blur-xl sticky top-0 z-50 transition-all duration-300">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
             <div className="flex items-center gap-3">
-              <img src={clbcLogo} alt="C.L.B.C Logo" className="h-10 w-auto" />
+              <div className="relative group">
+                <img src={clbcLogo} alt="C.L.B.C Logo" className="h-10 w-auto transition-transform group-hover:scale-105" />
+                <div className="absolute -inset-1 bg-primary/10 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
               <div className="flex flex-col">
-                <span className="text-lg font-bold text-foreground">C.L.B.C</span>
-                <span className="text-xs text-muted-foreground">Church Management</span>
+                <span className="text-lg font-bold text-foreground leading-tight">C.L.B.C</span>
+                <span className="text-xs text-muted-foreground leading-tight">Church Management</span>
               </div>
             </div>
-            <div className="flex gap-2">
-              <Button variant="ghost" className="hidden sm:flex">Features</Button>
-              <Button variant="ghost" className="hidden sm:flex">About</Button>
-              <Button variant="default" className="gap-2">
-                Get Started <ArrowRight className="h-4 w-4" />
+
+            {/* Desktop Navigation */}
+            <div className="hidden lg:flex items-center gap-1">
+              <Button
+                variant="ghost"
+                className="relative px-4 py-2 text-sm font-medium text-foreground/80 hover:text-foreground hover:bg-accent/50 rounded-lg transition-all duration-200 group"
+                onClick={() => document.querySelector('#features')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                Features
+                <span className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-primary transition-all duration-200 group-hover:w-4/5 group-hover:left-1/10" />
+              </Button>
+              <Button
+                variant="ghost"
+                className="relative px-4 py-2 text-sm font-medium text-foreground/80 hover:text-foreground hover:bg-accent/50 rounded-lg transition-all duration-200 group"
+                onClick={() => document.querySelector('#about')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                About
+                <span className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-primary transition-all duration-200 group-hover:w-4/5 group-hover:left-1/10" />
+              </Button>
+            </div>
+
+            {/* Desktop CTA Buttons */}
+            <div className="hidden lg:flex items-center gap-3">
+              <Button variant="ghost" className="gap-2 text-foreground/80 hover:text-foreground">
+                <Phone className="h-4 w-4" />
+                Contact
+              </Button>
+              <Button variant="default" className="gap-2 bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all">
+                Get Started
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </div>
+
+            {/* Mobile menu button */}
+            <div className="flex lg:hidden items-center gap-2">
+              <Button variant="ghost" size="sm">
+                <Phone className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              >
+                {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </Button>
             </div>
           </div>
+
+          {/* Mobile Navigation */}
+          {isMenuOpen && (
+            <div className="lg:hidden border-t border-border/60 bg-background/95 backdrop-blur-xl">
+              <div className="px-2 pt-2 pb-3 space-y-1">
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start px-4 py-3 text-base font-medium text-foreground hover:bg-accent/50 rounded-lg transition-colors"
+                  onClick={() => {
+                    document.querySelector('#features')?.scrollIntoView({ behavior: 'smooth' });
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  Features
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start px-4 py-3 text-base font-medium text-foreground hover:bg-accent/50 rounded-lg transition-colors"
+                  onClick={() => {
+                    document.querySelector('#about')?.scrollIntoView({ behavior: 'smooth' });
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  About
+                </Button>
+                <div className="pt-2 border-t border-border/60">
+                  <Button className="w-full justify-center gap-2 mt-2">
+                    Get Started
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
+
+        {/* Progress Bar */}
+        <div className="h-0.5 w-full bg-gradient-to-r from-primary/20 via-primary/40 to-primary/20" />
       </nav>
 
       {/* Hero Section */}
@@ -180,7 +263,7 @@ const Index = () => {
       </section>
 
       {/* Why It Matters Section */}
-      <section className="py-20 lg:py-28">
+      <section id="about" className="py-20 lg:py-28">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold mb-4">
