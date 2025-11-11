@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Calendar, DollarSign, MessageSquare, UserCheck, BarChart3, Church, Heart, Shield } from "lucide-react";
+import { Users, Calendar, DollarSign, MessageSquare, UserCheck, BarChart3, Heart, Shield } from "lucide-react";
 import heroImage from "@/assets/hero-church.jpg";
+import clbcLogo from "@/assets/clbc-logo.png";
 
 const Index = () => {
   const features = [
@@ -39,7 +40,7 @@ const Index = () => {
 
   const values = [
     {
-      icon: Church,
+      icon: Heart,
       title: "Ministry First",
       description: "Technology designed to enhance ministry, not replace human connection.",
     },
@@ -61,9 +62,12 @@ const Index = () => {
       <nav className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Church className="h-8 w-8 text-primary" />
-              <span className="text-2xl font-bold text-foreground">C.L.B.C <span className="text-primary">Manager</span></span>
+            <div className="flex items-center gap-3">
+              <img src={clbcLogo} alt="C.L.B.C Logo" className="h-12 w-auto" />
+              <div className="flex flex-col">
+                <span className="text-xl font-bold text-foreground">C.L.B.C</span>
+                <span className="text-xs text-muted-foreground">Church Management</span>
+              </div>
             </div>
             <div className="flex gap-3">
               <Button variant="ghost">Features</Button>
@@ -82,7 +86,7 @@ const Index = () => {
             <div className="space-y-8">
               <div className="inline-block">
                 <span className="bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-semibold">
-                  Empowering Ministry Through Technology
+                  A Changed Life For Christ - Since 1970
                 </span>
               </div>
               <h1 className="text-4xl lg:text-6xl font-bold leading-tight">
@@ -96,7 +100,7 @@ const Index = () => {
                 Strengthen connections and help our ministry grow. Focus more on people, less on paperwork.
               </p>
               <div className="flex gap-4">
-                <Button size="lg" variant="hero">
+                <Button size="lg" variant="hero" className="shadow-glow">
                   Start Free Trial
                 </Button>
                 <Button size="lg" variant="outline">
@@ -146,9 +150,9 @@ const Index = () => {
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <Card key={index} className="border-border hover:shadow-lg transition-smooth bg-card">
+              <Card key={index} className="border-border hover:shadow-lg hover:border-primary/30 transition-smooth bg-card group">
                 <CardHeader>
-                  <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                  <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-smooth">
                     <feature.icon className="h-6 w-6 text-primary" />
                   </div>
                   <CardTitle className="text-xl">{feature.title}</CardTitle>
@@ -180,8 +184,8 @@ const Index = () => {
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {values.map((value, index) => (
               <div key={index} className="text-center space-y-4">
-                <div className="h-16 w-16 rounded-full bg-accent/20 flex items-center justify-center mx-auto">
-                  <value.icon className="h-8 w-8 text-accent" />
+                <div className="h-16 w-16 rounded-full bg-secondary/20 flex items-center justify-center mx-auto">
+                  <value.icon className="h-8 w-8 text-secondary" />
                 </div>
                 <h3 className="text-xl font-bold">{value.title}</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -208,8 +212,8 @@ const Index = () => {
             <p className="text-lg opacity-90">
               Every member feels seen, supported, and spiritually connected.
             </p>
-            <div className="pt-8">
-              <Button size="lg" variant="accent">
+              <div className="pt-8">
+              <Button size="lg" variant="accent" className="shadow-xl">
                 Join Our Mission
               </Button>
             </div>
@@ -249,12 +253,15 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <Church className="h-6 w-6 text-primary" />
-                <span className="text-lg font-bold">C.L.B.C Manager</span>
+              <div className="flex items-center gap-3">
+                <img src={clbcLogo} alt="C.L.B.C Logo" className="h-10 w-auto" />
+                <div className="flex flex-col">
+                  <span className="text-base font-bold">C.L.B.C</span>
+                  <span className="text-xs text-muted-foreground">Church Management</span>
+                </div>
               </div>
               <p className="text-sm text-muted-foreground">
-                Changed Life Baptist Church - Empowering ministry through smart technology.
+                Changed Life Baptist Church - A Changed Life For Christ since 1970.
               </p>
             </div>
             <div>
