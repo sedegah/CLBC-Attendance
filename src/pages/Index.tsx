@@ -1,12 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Calendar, DollarSign, MessageSquare, UserCheck, BarChart3, Heart, Shield, ArrowRight, Play, CheckCircle, Menu, X, Phone } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Users, Calendar, DollarSign, MessageSquare, UserCheck, BarChart3, Heart, Shield, ArrowRight, Play, CheckCircle, Menu, X, Phone, LogIn, Eye, EyeOff, Church } from "lucide-react";
 import { useState } from "react";
 import heroImage from "@/assets/hero-church.jpg";
 import clbcLogo from "@/assets/clbc-logo.png";
 
 const Index = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState("home"); // "home" or "login"
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
   const features = [
     {
@@ -65,6 +71,192 @@ const Index = () => {
     { number: "99.9%", label: "Uptime" },
   ];
 
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle login logic here
+    console.log("Login attempted");
+  };
+
+  // Login Page Component
+  if (currentPage === "login") {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-blue-50/20 to-purple-50/10">
+        {/* Navigation */}
+        <nav className="border-b border-border/60 bg-background/95 backdrop-blur-xl sticky top-0 z-50">
+          <div className="container mx-auto px-4">
+            <div className="flex items-center justify-between h-16">
+              {/* Logo */}
+              <div className="flex items-center gap-3">
+                <img src={clbcLogo} alt="C.L.B.C Logo" className="h-10 w-auto" />
+                <div className="flex flex-col">
+                  <span className="text-lg font-bold text-foreground leading-tight">C.L.B.C</span>
+                  <span className="text-xs text-muted-foreground leading-tight">Church Management</span>
+                </div>
+              </div>
+
+              <Button 
+                variant="ghost" 
+                className="gap-2"
+                onClick={() => setCurrentPage("home")}
+              >
+                <ArrowRight className="h-4 w-4 rotate-180" />
+                Back to Home
+              </Button>
+            </div>
+          </div>
+        </nav>
+
+        {/* Login Section */}
+        <section className="min-h-[calc(100vh-4rem)] flex items-center justify-center py-12">
+          <div className="container mx-auto px-4">
+            <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+              {/* Login Form */}
+              <div className="flex justify-center">
+                <Card className="w-full max-w-md border-border/50 shadow-2xl">
+                  <CardHeader className="text-center space-y-2">
+                    <div className="mx-auto h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Church className="h-6 w-6 text-primary" />
+                    </div>
+                    <CardTitle className="text-2xl">Welcome Back</CardTitle>
+                    <CardDescription>
+                      Sign in to your C.L.B.C Management System account
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <form onSubmit={handleLogin} className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="email">Email Address</Label>
+                        <Input
+                          id="email"
+                          type="email"
+                          placeholder="Enter your church email"
+                          className="w-full"
+                          required
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="password">Password</Label>
+                        <div className="relative">
+                          <Input
+                            id="password"
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Enter your password"
+                            className="w-full pr-10"
+                            required
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                            onClick={() => setShowPassword(!showPassword)}
+                          >
+                            {showPassword ? (
+                              <EyeOff className="h-4 w-4 text-muted-foreground" />
+                            ) : (
+                              <Eye className="h-4 w-4 text-muted-foreground" />
+                            )}
+                          </Button>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="remember"
+                            checked={rememberMe}
+                            onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                          />
+                          <Label htmlFor="remember" className="text-sm font-normal">
+                            Remember me
+                          </Label>
+                        </div>
+                        <Button variant="link" className="px-0 text-sm">
+                          Forgot password?
+                        </Button>
+                      </div>
+
+                      <Button type="submit" className="w-full gap-2" size="lg">
+                        <LogIn className="h-4 w-4" />
+                        Sign In
+                      </Button>
+                    </form>
+
+                    <div className="relative">
+                      <div className="absolute inset-0 flex items-center">
+                        <span className="w-full border-t border-border" />
+                      </div>
+                      <div className="relative flex justify-center text-xs uppercase">
+                        <span className="bg-card px-2 text-muted-foreground">
+                          New to C.L.B.C?
+                        </span>
+                      </div>
+                    </div>
+
+                    <Button variant="outline" className="w-full" size="lg">
+                      Contact Admin for Access
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Login Side Content */}
+              <div className="space-y-8">
+                <div className="space-y-4">
+                  <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-semibold border border-primary/20">
+                    <CheckCircle className="h-4 w-4" />
+                    Secure Church Portal
+                  </div>
+                  
+                  <h2 className="text-3xl lg:text-4xl font-bold leading-tight">
+                    C.L.B.C Member{" "}
+                    <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                      Portal
+                    </span>
+                  </h2>
+                  
+                  <p className="text-lg text-muted-foreground leading-relaxed">
+                    Access your church management dashboard, connect with ministry teams, 
+                    and stay updated with church activities all in one secure platform.
+                  </p>
+                </div>
+
+                <div className="grid gap-4">
+                  {[
+                    { icon: ShieldCheck, text: "End-to-end encryption" },
+                    { icon: Users, text: "Role-based access control" },
+                    { icon: Calendar, text: "Real-time updates" },
+                    { icon: MessageSquare, text: "Secure messaging" }
+                  ].map((item, index) => (
+                    <div key={index} className="flex items-center gap-3">
+                      <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <item.icon className="h-4 w-4 text-primary" />
+                      </div>
+                      <span className="text-sm text-muted-foreground">{item.text}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="p-6 bg-muted/30 rounded-lg border border-border">
+                  <h3 className="font-semibold mb-2">Need Help?</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Contact the church administration team for account assistance or to request access.
+                  </p>
+                  <Button variant="outline" className="w-full gap-2">
+                    <Phone className="h-4 w-4" />
+                    Contact Support
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    );
+  }
+
+  // Home Page
   return (
     <div className="min-h-screen bg-background">
       {/* Enhanced Navigation */}
@@ -109,9 +301,13 @@ const Index = () => {
                 <Phone className="h-4 w-4" />
                 Contact
               </Button>
-              <Button variant="default" className="gap-2 bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all">
-                Get Started
-                <ArrowRight className="h-4 w-4" />
+              <Button 
+                variant="default" 
+                className="gap-2 bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all"
+                onClick={() => setCurrentPage("login")}
+              >
+                <LogIn className="h-4 w-4" />
+                Login
               </Button>
             </div>
 
@@ -155,9 +351,12 @@ const Index = () => {
                   About
                 </Button>
                 <div className="pt-2 border-t border-border/60">
-                  <Button className="w-full justify-center gap-2 mt-2">
-                    Get Started
-                    <ArrowRight className="h-4 w-4" />
+                  <Button 
+                    className="w-full justify-center gap-2 mt-2"
+                    onClick={() => setCurrentPage("login")}
+                  >
+                    <LogIn className="h-4 w-4" />
+                    Login
                   </Button>
                 </div>
               </div>
@@ -194,8 +393,14 @@ const Index = () => {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button size="lg" variant="hero" className="gap-2 shadow-lg hover:shadow-xl transition-shadow">
-                  Start Free Trial <ArrowRight className="h-4 w-4" />
+                <Button 
+                  size="lg" 
+                  variant="hero" 
+                  className="gap-2 shadow-lg hover:shadow-xl transition-shadow"
+                  onClick={() => setCurrentPage("login")}
+                >
+                  <LogIn className="h-4 w-4" />
+                  Member Login
                 </Button>
                 <Button size="lg" variant="outline" className="gap-2">
                   <Play className="h-4 w-4" />
@@ -307,8 +512,14 @@ const Index = () => {
               Every member feels seen, supported, and spiritually connected through our dedicated platform.
             </p>
             <div className="pt-8">
-              <Button size="lg" variant="secondary" className="shadow-xl gap-2">
-                Join Our Mission <ArrowRight className="h-4 w-4" />
+              <Button 
+                size="lg" 
+                variant="secondary" 
+                className="shadow-xl gap-2"
+                onClick={() => setCurrentPage("login")}
+              >
+                <LogIn className="h-4 w-4" />
+                Access Member Portal
               </Button>
             </div>
           </div>
@@ -322,21 +533,27 @@ const Index = () => {
             <CardContent className="p-12 text-center space-y-6 relative">
               <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-primary rounded-full" />
               <h2 className="text-3xl lg:text-4xl font-bold pt-4">
-                Ready to Transform Your Church Management?
+                Ready to Access Your Account?
               </h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Join hundreds of churches using smart technology to focus on what matters most — people and ministry.
+                Join our church community in managing ministries, events, and connections through our secure portal.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-                <Button size="lg" variant="hero" className="gap-2">
-                  Get Started Free <ArrowRight className="h-4 w-4" />
+                <Button 
+                  size="lg" 
+                  variant="hero" 
+                  className="gap-2"
+                  onClick={() => setCurrentPage("login")}
+                >
+                  <LogIn className="h-4 w-4" />
+                  Member Login
                 </Button>
                 <Button size="lg" variant="outline">
-                  Schedule a Demo
+                  Request Access
                 </Button>
               </div>
               <p className="text-sm text-muted-foreground pt-4">
-                No credit card required • Free 30-day trial • Cancel anytime
+                Secure • Private • Church Members Only
               </p>
             </CardContent>
           </Card>
@@ -363,14 +580,14 @@ const Index = () => {
             {[
               {
                 title: "Product",
-                links: ["Features", "Pricing", "Security", "Testimonials"]
+                links: ["Features", "Security", "Testimonials"]
               },
               {
                 title: "Resources",
-                links: ["Documentation", "Support", "Blog", "Guides"]
+                links: ["Documentation", "Support", "Guides"]
               },
               {
-                title: "Company",
+                title: "Church",
                 links: ["About Us", "Contact", "Privacy", "Terms"]
               }
             ].map((column, index) => (
