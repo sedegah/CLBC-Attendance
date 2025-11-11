@@ -63,7 +63,7 @@ const Index = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Church className="h-8 w-8 text-primary" />
-              <span className="text-2xl font-bold text-foreground">Church<span className="text-primary">Manager</span></span>
+              <span className="text-2xl font-bold text-foreground">C.L.B.C <span className="text-primary">Manager</span></span>
             </div>
             <div className="flex gap-3">
               <Button variant="ghost">Features</Button>
@@ -86,14 +86,14 @@ const Index = () => {
                 </span>
               </div>
               <h1 className="text-4xl lg:text-6xl font-bold leading-tight">
-                Church Management{" "}
+                Changed Life Baptist Church{" "}
                 <span className="bg-gradient-primary bg-clip-text text-transparent">
-                  Made Simple
+                  Management System
                 </span>
               </h1>
               <p className="text-xl text-muted-foreground leading-relaxed">
-                An all-in-one digital platform designed to simplify church operations, strengthen connections, 
-                and help your ministry grow. Focus more on people, less on paperwork.
+                An all-in-one digital platform designed to simplify operations at Changed Life Baptist Church (C.L.B.C). 
+                Strengthen connections and help our ministry grow. Focus more on people, less on paperwork.
               </p>
               <div className="flex gap-4">
                 <Button size="lg" variant="hero">
@@ -251,10 +251,10 @@ const Index = () => {
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <Church className="h-6 w-6 text-primary" />
-                <span className="text-lg font-bold">ChurchManager</span>
+                <span className="text-lg font-bold">C.L.B.C Manager</span>
               </div>
               <p className="text-sm text-muted-foreground">
-                Empowering ministry through smart technology.
+                Changed Life Baptist Church - Empowering ministry through smart technology.
               </p>
             </div>
             <div>
@@ -283,7 +283,7 @@ const Index = () => {
             </div>
           </div>
           <div className="border-t border-border pt-8 text-center text-sm text-muted-foreground">
-            <p>&copy; 2025 ChurchManager. All rights reserved. Built with ❤️ for ministry.</p>
+            <p>&copy; 2025 Changed Life Baptist Church. All rights reserved. Built with ❤️ for ministry.</p>
           </div>
         </div>
       </footer>
