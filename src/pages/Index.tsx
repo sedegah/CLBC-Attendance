@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Users, Calendar, DollarSign, MessageSquare, UserCheck, BarChart3, Heart, Shield, ArrowRight, Play, CheckCircle, Menu, X, Phone, LogIn, Eye, EyeOff, Church } from "lucide-react";
+import { Users, Calendar, DollarSign, MessageSquare, UserCheck, BarChart3, Heart, Shield, ShieldCheck, ArrowRight, Play, CheckCircle, Menu, X, Phone, LogIn, Eye, EyeOff, Church } from "lucide-react";
 import { useState } from "react";
 import heroImage from "@/assets/hero-church.jpg";
 import clbcLogo from "@/assets/clbc-logo.png";
