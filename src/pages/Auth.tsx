@@ -28,7 +28,7 @@ const Auth = () => {
   // Redirect if already logged in
   useEffect(() => {
     if (user) {
-      navigate("/");
+      navigate("/dashboard");
     }
   }, [user, navigate]);
 
@@ -65,7 +65,7 @@ const Auth = () => {
             title: "Welcome!",
             description: "Your account has been created successfully.",
           });
-          navigate("/");
+          navigate("/dashboard");
         }
       } else {
         const { error } = await signIn(email, password);
@@ -81,7 +81,7 @@ const Auth = () => {
             title: "Welcome back!",
             description: "You have successfully signed in.",
           });
-          navigate("/");
+          navigate("/dashboard");
         }
       }
     } catch (error) {

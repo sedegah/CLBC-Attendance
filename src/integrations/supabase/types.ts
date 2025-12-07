@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      attendance_records: {
+        Row: {
+          absent_count: number | null
+          attendance_date: string
+          created_at: string
+          file_name: string
+          file_path: string
+          id: string
+          notes: string | null
+          present_count: number | null
+          total_members: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          absent_count?: number | null
+          attendance_date: string
+          created_at?: string
+          file_name: string
+          file_path: string
+          id?: string
+          notes?: string | null
+          present_count?: number | null
+          total_members?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          absent_count?: number | null
+          attendance_date?: string
+          created_at?: string
+          file_name?: string
+          file_path?: string
+          id?: string
+          notes?: string | null
+          present_count?: number | null
+          total_members?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
