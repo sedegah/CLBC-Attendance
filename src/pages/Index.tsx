@@ -108,14 +108,22 @@ const Index = () => {
               
               {!loading && (
                 user ? (
-                  <Button 
-                    variant="outline" 
-                    className="gap-2"
-                    onClick={handleSignOut}
-                  >
-                    <LogOut className="h-4 w-4" />
-                    Sign Out
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    <Button 
+                      variant="default" 
+                      onClick={() => navigate("/dashboard")}
+                    >
+                      Dashboard
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="gap-2"
+                      onClick={handleSignOut}
+                    >
+                      <LogOut className="h-4 w-4" />
+                      Sign Out
+                    </Button>
+                  </div>
                 ) : (
                   <Button 
                     variant="default" 
@@ -164,14 +172,23 @@ const Index = () => {
               
               {!loading && (
                 user ? (
-                  <Button 
-                    variant="outline" 
-                    className="w-full gap-2"
-                    onClick={handleSignOut}
-                  >
-                    <LogOut className="h-4 w-4" />
-                    Sign Out
-                  </Button>
+                  <div className="space-y-2">
+                    <Button 
+                      variant="default" 
+                      className="w-full"
+                      onClick={() => navigate("/dashboard")}
+                    >
+                      Dashboard
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="w-full gap-2"
+                      onClick={handleSignOut}
+                    >
+                      <LogOut className="h-4 w-4" />
+                      Sign Out
+                    </Button>
+                  </div>
                 ) : (
                   <Button 
                     variant="default" 
