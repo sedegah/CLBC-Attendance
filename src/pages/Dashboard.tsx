@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Table,
   TableBody,
@@ -29,6 +30,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import clbcLogo from "@/assets/clbc-logo.png";
+import MembersManager from "@/components/MembersManager";
 import * as XLSX from "xlsx";
 import { format } from "date-fns";
 
@@ -321,190 +323,210 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {memberStats.map((stat, index) => (
-            <Card key={index} className="group border-border/40 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 overflow-hidden">
-              <CardContent className="p-5 relative">
-                <div className={`absolute top-0 right-0 w-24 h-24 ${stat.bgColor} rounded-full -translate-y-1/2 translate-x-1/2 opacity-50 group-hover:opacity-70 transition-opacity`} />
-                <div className="relative z-10 space-y-3">
-                  <div className={`h-10 w-10 rounded-xl ${stat.bgColor} flex items-center justify-center`}>
-                    <stat.icon className={`h-5 w-5 ${stat.color}`} />
-                  </div>
-                  <div>
-                    <p className="text-2xl md:text-3xl font-bold text-foreground">{stat.value}</p>
-                    <p className="text-sm text-muted-foreground">{stat.title}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        {/* Tabs for different sections */}
+        <Tabs defaultValue="attendance" className="space-y-6">
+          <TabsList className="bg-muted/30 border border-border/40">
+            <TabsTrigger value="attendance" className="gap-2 data-[state=active]:bg-background">
+              <Calendar className="h-4 w-4" />
+              <span className="hidden sm:inline">Attendance</span>
+            </TabsTrigger>
+            <TabsTrigger value="members" className="gap-2 data-[state=active]:bg-background">
+              <Users className="h-4 w-4" />
+              <span className="hidden sm:inline">Members</span>
+            </TabsTrigger>
+          </TabsList>
 
-        {/* Main Content Grid */}
-        <div className="grid lg:grid-cols-3 gap-6">
-          {/* Upload Section */}
-          <Card className="lg:col-span-1 border-border/40 border-dashed border-2 hover:border-primary/40 transition-colors">
-            <CardHeader className="pb-4">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <Upload className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <CardTitle className="text-lg">Upload Attendance</CardTitle>
-                  <CardDescription className="text-xs">Excel or CSV files</CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="attendanceDate" className="text-xs font-medium text-muted-foreground">Select Date</Label>
-                <Input
-                  id="attendanceDate"
-                  type="date"
-                  value={attendanceDate}
-                  onChange={(e) => setAttendanceDate(e.target.value)}
-                  className="bg-muted/30 border-border/40"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="file" className="text-xs font-medium text-muted-foreground">Attendance File</Label>
-                <div className="relative">
-                  <Input
-                    ref={fileInputRef}
-                    id="file"
-                    type="file"
-                    accept=".xlsx,.xls,.csv"
-                    onChange={handleFileUpload}
-                    disabled={isUploading}
-                    className="cursor-pointer bg-muted/30 border-border/40 file:bg-primary file:text-primary-foreground file:border-0 file:rounded-md file:px-3 file:py-1 file:mr-3 file:cursor-pointer"
-                  />
-                </div>
-              </div>
-              {isUploading && (
-                <div className="flex items-center gap-2 p-3 rounded-lg bg-primary/5 text-primary text-sm">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span>Processing file...</span>
-                </div>
-              )}
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Include a "Status" or "Present" column with values like "Present/Absent" or "P/A".
-              </p>
-            </CardContent>
-          </Card>
+          <TabsContent value="attendance" className="space-y-6 mt-0">
+            {/* Stats Grid */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              {memberStats.map((stat, index) => (
+                <Card key={index} className="group border-border/40 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 overflow-hidden">
+                  <CardContent className="p-5 relative">
+                    <div className={`absolute top-0 right-0 w-24 h-24 ${stat.bgColor} rounded-full -translate-y-1/2 translate-x-1/2 opacity-50 group-hover:opacity-70 transition-opacity`} />
+                    <div className="relative z-10 space-y-3">
+                      <div className={`h-10 w-10 rounded-xl ${stat.bgColor} flex items-center justify-center`}>
+                        <stat.icon className={`h-5 w-5 ${stat.color}`} />
+                      </div>
+                      <div>
+                        <p className="text-2xl md:text-3xl font-bold text-foreground">{stat.value}</p>
+                        <p className="text-sm text-muted-foreground">{stat.title}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
 
-          {/* Attendance Records Table */}
-          <Card className="lg:col-span-2 border-border/40">
-            <CardHeader className="pb-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-xl bg-secondary/10 flex items-center justify-center">
-                    <Calendar className="h-5 w-5 text-secondary" />
+            {/* Main Content Grid */}
+            <div className="grid lg:grid-cols-3 gap-6">
+              {/* Upload Section */}
+              <Card className="lg:col-span-1 border-border/40 border-dashed border-2 hover:border-primary/40 transition-colors">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                      <Upload className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg">Upload Attendance</CardTitle>
+                      <CardDescription className="text-xs">Excel or CSV files</CardDescription>
+                    </div>
                   </div>
-                  <div>
-                    <CardTitle className="text-lg">Attendance History</CardTitle>
-                    <CardDescription className="text-xs">{attendanceRecords.length} records total</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="attendanceDate" className="text-xs font-medium text-muted-foreground">Select Date</Label>
+                    <Input
+                      id="attendanceDate"
+                      type="date"
+                      value={attendanceDate}
+                      onChange={(e) => setAttendanceDate(e.target.value)}
+                      className="bg-muted/30 border-border/40"
+                    />
                   </div>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              {isLoading ? (
-                <div className="flex items-center justify-center py-12">
-                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                </div>
-              ) : attendanceRecords.length === 0 ? (
-                <div className="text-center py-12 px-4">
-                  <div className="h-16 w-16 rounded-2xl bg-muted/50 flex items-center justify-center mx-auto mb-4">
-                    <FileText className="h-8 w-8 text-muted-foreground/50" />
+                  <div className="space-y-2">
+                    <Label htmlFor="file" className="text-xs font-medium text-muted-foreground">Attendance File</Label>
+                    <div className="relative">
+                      <Input
+                        ref={fileInputRef}
+                        id="file"
+                        type="file"
+                        accept=".xlsx,.xls,.csv"
+                        onChange={handleFileUpload}
+                        disabled={isUploading}
+                        className="cursor-pointer bg-muted/30 border-border/40 file:bg-primary file:text-primary-foreground file:border-0 file:rounded-md file:px-3 file:py-1 file:mr-3 file:cursor-pointer"
+                      />
+                    </div>
                   </div>
-                  <h3 className="font-semibold text-foreground mb-1">No records yet</h3>
-                  <p className="text-sm text-muted-foreground">Upload your first attendance file to get started.</p>
-                </div>
-              ) : (
-                <div className="overflow-x-auto -mx-6 px-6">
-                  <Table>
-                    <TableHeader>
-                      <TableRow className="border-border/40 hover:bg-transparent">
-                        <TableHead className="text-xs font-semibold">Date</TableHead>
-                        <TableHead className="text-xs font-semibold hidden md:table-cell">File</TableHead>
-                        <TableHead className="text-xs font-semibold text-center">Present</TableHead>
-                        <TableHead className="text-xs font-semibold text-center">Absent</TableHead>
-                        <TableHead className="text-xs font-semibold text-center">Rate</TableHead>
-                        <TableHead className="text-xs font-semibold text-right">Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {attendanceRecords.slice(0, 8).map((record) => (
-                        <TableRow key={record.id} className="border-border/40 hover:bg-muted/30">
-                          <TableCell className="py-3">
-                            <div className="font-medium text-sm">
-                              {format(new Date(record.attendance_date), "MMM dd")}
-                            </div>
-                            <div className="text-xs text-muted-foreground">
-                              {format(new Date(record.attendance_date), "yyyy")}
-                            </div>
-                          </TableCell>
-                          <TableCell className="hidden md:table-cell">
-                            <span className="text-sm text-muted-foreground truncate max-w-[120px] block">
-                              {record.file_name}
-                            </span>
-                          </TableCell>
-                          <TableCell className="text-center">
-                            <span className="inline-flex items-center justify-center h-7 min-w-[2rem] px-2 rounded-md bg-success/10 text-success text-sm font-medium">
-                              {record.present_count}
-                            </span>
-                          </TableCell>
-                          <TableCell className="text-center">
-                            <span className="inline-flex items-center justify-center h-7 min-w-[2rem] px-2 rounded-md bg-destructive/10 text-destructive text-sm font-medium">
-                              {record.absent_count}
-                            </span>
-                          </TableCell>
-                          <TableCell className="text-center">
-                            <span className="text-sm font-semibold text-foreground">
-                              {record.total_members > 0 
-                                ? Math.round((record.present_count / record.total_members) * 100) 
-                                : 0}%
-                            </span>
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <div className="flex items-center justify-end gap-1">
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-8 w-8 hover:bg-secondary/10 hover:text-secondary"
-                                onClick={() => handleDownload(record)}
-                                title="Download file"
-                              >
-                                <Download className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-8 w-8 hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
-                                onClick={() => handleDelete(record)}
-                                title="Delete record"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                  {attendanceRecords.length > 8 && (
-                    <div className="text-center py-3 border-t border-border/40">
-                      <span className="text-sm text-muted-foreground">
-                        Showing 8 of {attendanceRecords.length} records
-                      </span>
+                  {isUploading && (
+                    <div className="flex items-center gap-2 p-3 rounded-lg bg-primary/5 text-primary text-sm">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <span>Processing file...</span>
                     </div>
                   )}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    Include a "Status" or "Present" column with values like "Present/Absent" or "P/A".
+                  </p>
+                </CardContent>
+              </Card>
+
+              {/* Attendance Records Table */}
+              <Card className="lg:col-span-2 border-border/40">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-xl bg-secondary/10 flex items-center justify-center">
+                        <Calendar className="h-5 w-5 text-secondary" />
+                      </div>
+                      <div>
+                        <CardTitle className="text-lg">Attendance History</CardTitle>
+                        <CardDescription className="text-xs">{attendanceRecords.length} records total</CardDescription>
+                      </div>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  {isLoading ? (
+                    <div className="flex items-center justify-center py-12">
+                      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                    </div>
+                  ) : attendanceRecords.length === 0 ? (
+                    <div className="text-center py-12 px-4">
+                      <div className="h-16 w-16 rounded-2xl bg-muted/50 flex items-center justify-center mx-auto mb-4">
+                        <FileText className="h-8 w-8 text-muted-foreground/50" />
+                      </div>
+                      <h3 className="font-semibold text-foreground mb-1">No records yet</h3>
+                      <p className="text-sm text-muted-foreground">Upload your first attendance file to get started.</p>
+                    </div>
+                  ) : (
+                    <div className="overflow-x-auto -mx-6 px-6">
+                      <Table>
+                        <TableHeader>
+                          <TableRow className="border-border/40 hover:bg-transparent">
+                            <TableHead className="text-xs font-semibold">Date</TableHead>
+                            <TableHead className="text-xs font-semibold hidden md:table-cell">File</TableHead>
+                            <TableHead className="text-xs font-semibold text-center">Present</TableHead>
+                            <TableHead className="text-xs font-semibold text-center">Absent</TableHead>
+                            <TableHead className="text-xs font-semibold text-center">Rate</TableHead>
+                            <TableHead className="text-xs font-semibold text-right">Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {attendanceRecords.slice(0, 8).map((record) => (
+                            <TableRow key={record.id} className="border-border/40 hover:bg-muted/30">
+                              <TableCell className="py-3">
+                                <div className="font-medium text-sm">
+                                  {format(new Date(record.attendance_date), "MMM dd")}
+                                </div>
+                                <div className="text-xs text-muted-foreground">
+                                  {format(new Date(record.attendance_date), "yyyy")}
+                                </div>
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                <span className="text-sm text-muted-foreground truncate max-w-[120px] block">
+                                  {record.file_name}
+                                </span>
+                              </TableCell>
+                              <TableCell className="text-center">
+                                <span className="inline-flex items-center justify-center h-7 min-w-[2rem] px-2 rounded-md bg-success/10 text-success text-sm font-medium">
+                                  {record.present_count}
+                                </span>
+                              </TableCell>
+                              <TableCell className="text-center">
+                                <span className="inline-flex items-center justify-center h-7 min-w-[2rem] px-2 rounded-md bg-destructive/10 text-destructive text-sm font-medium">
+                                  {record.absent_count}
+                                </span>
+                              </TableCell>
+                              <TableCell className="text-center">
+                                <span className="text-sm font-semibold text-foreground">
+                                  {record.total_members > 0 
+                                    ? Math.round((record.present_count / record.total_members) * 100) 
+                                    : 0}%
+                                </span>
+                              </TableCell>
+                              <TableCell className="text-right">
+                                <div className="flex items-center justify-end gap-1">
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-8 w-8 hover:bg-secondary/10 hover:text-secondary"
+                                    onClick={() => handleDownload(record)}
+                                    title="Download file"
+                                  >
+                                    <Download className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-8 w-8 hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
+                                    onClick={() => handleDelete(record)}
+                                    title="Delete record"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                      {attendanceRecords.length > 8 && (
+                        <div className="text-center py-3 border-t border-border/40">
+                          <span className="text-sm text-muted-foreground">
+                            Showing 8 of {attendanceRecords.length} records
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="members" className="mt-0">
+            <MembersManager />
+          </TabsContent>
+        </Tabs>
       </main>
     </div>
   );
