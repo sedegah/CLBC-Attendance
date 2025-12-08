@@ -96,15 +96,6 @@ const Index = () => {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-6">
-              <a href="#features" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
-                Features
-              </a>
-              <a href="#testimonials" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
-                Testimonials
-              </a>
-              <a href="#pricing" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
-                Pricing
-              </a>
               
               {!loading && (
                 user ? (
@@ -148,27 +139,6 @@ const Index = () => {
           {/* Mobile Navigation */}
           {isMenuOpen && (
             <div className="md:hidden py-4 space-y-3 border-t border-border/60">
-              <a
-                href="#features"
-                className="block text-sm font-medium text-foreground/80 hover:text-primary transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Features
-              </a>
-              <a
-                href="#testimonials"
-                className="block text-sm font-medium text-foreground/80 hover:text-primary transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Testimonials
-              </a>
-              <a
-                href="#pricing"
-                className="block text-sm font-medium text-foreground/80 hover:text-primary transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Pricing
-              </a>
               
               {!loading && (
                 user ? (

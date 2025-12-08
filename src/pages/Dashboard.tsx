@@ -274,62 +274,66 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-secondary/5">
       {/* Header */}
-      <header className="border-b border-border/60 bg-background/95 backdrop-blur-xl sticky top-0 z-50">
-        <div className="container mx-auto px-4">
+      <header className="border-b border-border/40 bg-background/80 backdrop-blur-xl sticky top-0 z-50">
+        <div className="container mx-auto px-4 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
               <img src={clbcLogo} alt="C.L.B.C Logo" className="h-10 w-auto" />
-              <div className="flex flex-col">
+              <div className="hidden sm:flex flex-col">
                 <span className="text-lg font-bold text-foreground leading-tight">C.L.B.C</span>
-                <span className="text-xs text-muted-foreground leading-tight">Dashboard</span>
+                <span className="text-xs text-muted-foreground leading-tight">Church Management</span>
               </div>
             </div>
 
-            <div className="flex items-center gap-4">
-              <div className="hidden md:flex items-center gap-2 text-sm text-muted-foreground">
-                <span>Welcome,</span>
-                <span className="font-medium text-foreground">
+            <div className="flex items-center gap-3">
+              <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/50">
+                <div className="h-2 w-2 rounded-full bg-success animate-pulse" />
+                <span className="text-sm text-muted-foreground">
                   {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Member'}
                 </span>
               </div>
-              <Button variant="outline" size="sm" onClick={() => navigate("/")}>
+              <Button variant="ghost" size="sm" onClick={() => navigate("/")}>
                 Home
               </Button>
-              <Button variant="ghost" size="sm" onClick={handleSignOut} className="gap-2">
+              <Button variant="outline" size="sm" onClick={handleSignOut} className="gap-2 border-primary/20 hover:bg-primary/5">
                 <LogOut className="h-4 w-4" />
-                <span className="hidden md:inline">Sign Out</span>
+                <span className="hidden sm:inline">Sign Out</span>
               </Button>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8 space-y-8">
-        {/* Page Title */}
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-            <LayoutDashboard className="h-5 w-5 text-primary" />
-          </div>
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground">Dashboard</h1>
-            <p className="text-muted-foreground text-sm">Track and manage attendance records</p>
+      <main className="container mx-auto px-4 lg:px-8 py-8 space-y-8">
+        {/* Welcome Banner */}
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary via-primary-dark to-secondary p-8 text-primary-foreground">
+          <div className="absolute inset-0 bg-gradient-to-br from-foreground/5 to-transparent opacity-50" />
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-2">
+              <LayoutDashboard className="h-8 w-8" />
+              <h1 className="text-2xl md:text-3xl font-bold">Welcome back!</h1>
+            </div>
+            <p className="text-primary-foreground/80 max-w-xl">
+              Track attendance, manage records, and keep your church community organized all in one place.
+            </p>
           </div>
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {memberStats.map((stat, index) => (
-            <Card key={index} className="border-border/60 hover:shadow-lg transition-all">
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-2">
-                    <p className="text-sm text-muted-foreground">{stat.title}</p>
-                    <p className="text-2xl md:text-3xl font-bold text-foreground">{stat.value}</p>
+            <Card key={index} className="group border-border/40 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 overflow-hidden">
+              <CardContent className="p-5 relative">
+                <div className={`absolute top-0 right-0 w-24 h-24 ${stat.bgColor} rounded-full -translate-y-1/2 translate-x-1/2 opacity-50 group-hover:opacity-70 transition-opacity`} />
+                <div className="relative z-10 space-y-3">
+                  <div className={`h-10 w-10 rounded-xl ${stat.bgColor} flex items-center justify-center`}>
+                    <stat.icon className={`h-5 w-5 ${stat.color}`} />
                   </div>
-                  <div className={`h-12 w-12 rounded-lg ${stat.bgColor} flex items-center justify-center`}>
-                    <stat.icon className={`h-6 w-6 ${stat.color}`} />
+                  <div>
+                    <p className="text-2xl md:text-3xl font-bold text-foreground">{stat.value}</p>
+                    <p className="text-sm text-muted-foreground">{stat.title}</p>
                   </div>
                 </div>
               </CardContent>
@@ -337,33 +341,35 @@ const Dashboard = () => {
           ))}
         </div>
 
-        {/* Upload Section */}
-        <Card className="border-border/60">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Upload className="h-5 w-5 text-primary" />
-              Upload Attendance
-            </CardTitle>
-            <CardDescription>
-              Upload an Excel file (.xlsx, .xls) or CSV with attendance data. 
-              Include a "Status" or "Present" column with values like "Present/Absent" or "P/A".
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="flex-1 space-y-2">
-                <Label htmlFor="attendanceDate">Attendance Date</Label>
+        {/* Main Content Grid */}
+        <div className="grid lg:grid-cols-3 gap-6">
+          {/* Upload Section */}
+          <Card className="lg:col-span-1 border-border/40 border-dashed border-2 hover:border-primary/40 transition-colors">
+            <CardHeader className="pb-4">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <Upload className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <CardTitle className="text-lg">Upload Attendance</CardTitle>
+                  <CardDescription className="text-xs">Excel or CSV files</CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="attendanceDate" className="text-xs font-medium text-muted-foreground">Select Date</Label>
                 <Input
                   id="attendanceDate"
                   type="date"
                   value={attendanceDate}
                   onChange={(e) => setAttendanceDate(e.target.value)}
-                  className="max-w-xs"
+                  className="bg-muted/30 border-border/40"
                 />
               </div>
-              <div className="flex-1 space-y-2">
-                <Label htmlFor="file">Excel/CSV File</Label>
-                <div className="flex gap-2">
+              <div className="space-y-2">
+                <Label htmlFor="file" className="text-xs font-medium text-muted-foreground">Attendance File</Label>
+                <div className="relative">
                   <Input
                     ref={fileInputRef}
                     id="file"
@@ -371,104 +377,134 @@ const Dashboard = () => {
                     accept=".xlsx,.xls,.csv"
                     onChange={handleFileUpload}
                     disabled={isUploading}
-                    className="cursor-pointer"
+                    className="cursor-pointer bg-muted/30 border-border/40 file:bg-primary file:text-primary-foreground file:border-0 file:rounded-md file:px-3 file:py-1 file:mr-3 file:cursor-pointer"
                   />
                 </div>
               </div>
-            </div>
-            {isUploading && (
-              <div className="flex items-center gap-2 mt-4 text-muted-foreground">
-                <Loader2 className="h-4 w-4 animate-spin" />
-                <span>Processing file...</span>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+              {isUploading && (
+                <div className="flex items-center gap-2 p-3 rounded-lg bg-primary/5 text-primary text-sm">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>Processing file...</span>
+                </div>
+              )}
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Include a "Status" or "Present" column with values like "Present/Absent" or "P/A".
+              </p>
+            </CardContent>
+          </Card>
 
-        {/* Attendance Records Table */}
-        <Card className="border-border/60">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Calendar className="h-5 w-5 text-primary" />
-              Attendance History
-            </CardTitle>
-            <CardDescription>View and manage uploaded attendance records</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {isLoading ? (
-              <div className="flex items-center justify-center py-8">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          {/* Attendance Records Table */}
+          <Card className="lg:col-span-2 border-border/40">
+            <CardHeader className="pb-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-xl bg-secondary/10 flex items-center justify-center">
+                    <Calendar className="h-5 w-5 text-secondary" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-lg">Attendance History</CardTitle>
+                    <CardDescription className="text-xs">{attendanceRecords.length} records total</CardDescription>
+                  </div>
+                </div>
               </div>
-            ) : attendanceRecords.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>No attendance records yet.</p>
-                <p className="text-sm">Upload your first Excel file to get started.</p>
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Date</TableHead>
-                      <TableHead>File Name</TableHead>
-                      <TableHead className="text-center">Total</TableHead>
-                      <TableHead className="text-center">Present</TableHead>
-                      <TableHead className="text-center">Absent</TableHead>
-                      <TableHead className="text-center">Rate</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {attendanceRecords.map((record) => (
-                      <TableRow key={record.id}>
-                        <TableCell className="font-medium">
-                          {format(new Date(record.attendance_date), "MMM dd, yyyy")}
-                        </TableCell>
-                        <TableCell className="max-w-[200px] truncate">
-                          {record.file_name}
-                        </TableCell>
-                        <TableCell className="text-center">{record.total_members}</TableCell>
-                        <TableCell className="text-center text-success font-medium">
-                          {record.present_count}
-                        </TableCell>
-                        <TableCell className="text-center text-destructive font-medium">
-                          {record.absent_count}
-                        </TableCell>
-                        <TableCell className="text-center">
-                          {record.total_members > 0 
-                            ? Math.round((record.present_count / record.total_members) * 100) 
-                            : 0}%
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex items-center justify-end gap-2">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleDownload(record)}
-                              title="Download file"
-                            >
-                              <Download className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleDelete(record)}
-                              className="text-destructive hover:text-destructive"
-                              title="Delete record"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
+            </CardHeader>
+            <CardContent>
+              {isLoading ? (
+                <div className="flex items-center justify-center py-12">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+              ) : attendanceRecords.length === 0 ? (
+                <div className="text-center py-12 px-4">
+                  <div className="h-16 w-16 rounded-2xl bg-muted/50 flex items-center justify-center mx-auto mb-4">
+                    <FileText className="h-8 w-8 text-muted-foreground/50" />
+                  </div>
+                  <h3 className="font-semibold text-foreground mb-1">No records yet</h3>
+                  <p className="text-sm text-muted-foreground">Upload your first attendance file to get started.</p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto -mx-6 px-6">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="border-border/40 hover:bg-transparent">
+                        <TableHead className="text-xs font-semibold">Date</TableHead>
+                        <TableHead className="text-xs font-semibold hidden md:table-cell">File</TableHead>
+                        <TableHead className="text-xs font-semibold text-center">Present</TableHead>
+                        <TableHead className="text-xs font-semibold text-center">Absent</TableHead>
+                        <TableHead className="text-xs font-semibold text-center">Rate</TableHead>
+                        <TableHead className="text-xs font-semibold text-right">Actions</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                    </TableHeader>
+                    <TableBody>
+                      {attendanceRecords.slice(0, 8).map((record) => (
+                        <TableRow key={record.id} className="border-border/40 hover:bg-muted/30">
+                          <TableCell className="py-3">
+                            <div className="font-medium text-sm">
+                              {format(new Date(record.attendance_date), "MMM dd")}
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              {format(new Date(record.attendance_date), "yyyy")}
+                            </div>
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell">
+                            <span className="text-sm text-muted-foreground truncate max-w-[120px] block">
+                              {record.file_name}
+                            </span>
+                          </TableCell>
+                          <TableCell className="text-center">
+                            <span className="inline-flex items-center justify-center h-7 min-w-[2rem] px-2 rounded-md bg-success/10 text-success text-sm font-medium">
+                              {record.present_count}
+                            </span>
+                          </TableCell>
+                          <TableCell className="text-center">
+                            <span className="inline-flex items-center justify-center h-7 min-w-[2rem] px-2 rounded-md bg-destructive/10 text-destructive text-sm font-medium">
+                              {record.absent_count}
+                            </span>
+                          </TableCell>
+                          <TableCell className="text-center">
+                            <span className="text-sm font-semibold text-foreground">
+                              {record.total_members > 0 
+                                ? Math.round((record.present_count / record.total_members) * 100) 
+                                : 0}%
+                            </span>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex items-center justify-end gap-1">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 hover:bg-secondary/10 hover:text-secondary"
+                                onClick={() => handleDownload(record)}
+                                title="Download file"
+                              >
+                                <Download className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
+                                onClick={() => handleDelete(record)}
+                                title="Delete record"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                  {attendanceRecords.length > 8 && (
+                    <div className="text-center py-3 border-t border-border/40">
+                      <span className="text-sm text-muted-foreground">
+                        Showing 8 of {attendanceRecords.length} records
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </main>
     </div>
   );
