@@ -31,27 +31,9 @@ const Index = () => {
       colorClass: "text-secondary",
       bgClass: "bg-secondary/10",
     },
-    {
-      icon: DollarSign,
-      title: "Donation Management",
-      description: "Record tithes, offerings, and pledges with auto-generated receipts and financial summaries.",
-      colorClass: "text-green-500",
-      bgClass: "bg-green-500/10",
-    },
-    {
-      icon: MessageSquare,
-      title: "Communication Hub",
-      description: "Send announcements and reminders via SMS, email, or in-app notifications.",
-      colorClass: "text-blue-500",
-      bgClass: "bg-blue-500/10",
-    },
-    {
-      icon: UserCheck,
-      title: "Volunteer Coordination",
-      description: "Assign and manage ministry roles and service teams with ease and accountability.",
-      colorClass: "text-purple-500",
-      bgClass: "bg-purple-500/10",
-    },
+    // REMOVED: Donation Management
+    // REMOVED: Communication Hub
+    // REMOVED: Volunteer Coordination
     {
       icon: BarChart3,
       title: "Reports & Analytics",
@@ -108,7 +90,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background"> 
-      {/* Navigation - REDESIGN */}
+      {/* Navigation */}
       <nav className="border-b border-border/40 bg-background/90 backdrop-blur-md sticky top-0 z-50 shadow-lg shadow-background/5">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex items-center justify-between h-20">
@@ -174,7 +156,7 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Mobile Navigation - REDESIGN */}
+          {/* Mobile Navigation */}
           {isMenuOpen && (
             <div className="md:hidden py-4 space-y-3 border-t border-border/60">
               <NavLink to="#features">Features</NavLink>
@@ -216,7 +198,7 @@ const Index = () => {
       </nav>
 
       <main>
-        {/* Hero Section - REDESIGN (Asterisks Corrected) */}
+        {/* Hero Section - UPDATED THEME EMPHASIS */}
         <section className="relative overflow-hidden pt-24 pb-32 md:pt-32 md:pb-48 bg-gradient-to-br from-background via-muted/50 to-secondary/10">
           <div className="absolute inset-0 z-0 opacity-15">
             <img
@@ -235,15 +217,15 @@ const Index = () => {
                 <span className="font-extrabold">Simplify</span> Church Admin. <span className="font-extrabold">Magnify</span> Your Ministry.
               </div>
               
-              {/* Headline */}
+              {/* Headline - Theme Emphasized */}
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-foreground leading-tight tracking-tight drop-shadow-lg">
-                The Complete Management Platform for
-                <span className="block text-primary mt-3">Changed Life Baptist Church</span>
+                The Platform for Every Ministry Focused on
+                <span className="block text-primary mt-3">A Changed Life for Christ</span>
               </h1>
               
-              {/* Body Copy - Bolding via span classes */}
+              {/* Body Copy - Theme Emphasized */}
               <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                Streamline operations, boost member engagement, and <span className="font-bold text-foreground">reclaim time</span> to focus on <span className="font-bold text-foreground">spiritual growth</span> and community connection.
+                Reclaim time by streamlining operations, so your leaders can focus entirely on <span className="font-bold text-foreground">discipleship</span> and seeing <span className="font-bold text-foreground">changed lives</span> for the glory of Christ.
               </p>
               
               {/* CTA Buttons - Clear Primary and Secondary */}
@@ -284,14 +266,15 @@ const Index = () => {
           <div className="container mx-auto px-4 lg:px-8">
             <div className="text-center max-w-4xl mx-auto mb-16 space-y-4">
               <h2 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight">
-                A Complete Church Management Toolkit
+                Core Tools for Focused Ministry
               </h2>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                Streamline operations, strengthen community, and focus on what matters most—ministry.
+                Your simplified toolkit for managing records, events, and ministry growth.
               </p>
             </div>
             
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Grid updated to dynamically handle 3 or 4 columns based on the number of features */}
+            <div className="grid md:grid-cols-3 gap-8">
               {features.map((feature, index) => (
                 <Card 
                   key={index} 
@@ -344,7 +327,7 @@ const Index = () => {
             <Card className="max-w-5xl mx-auto border-border/40 shadow-2xl shadow-primary/5">
               <CardContent className="p-12 md:p-16 text-center space-y-8">
                 <h2 className="text-4xl md:text-5xl font-extrabold text-foreground tracking-tight">
-                  Ready to Transform Your Church Management?
+                  Ready to Focus on A Changed Life for Christ?
                 </h2>
                 <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
                   Join churches across the nation using C.L.B.C Manager to serve their communities better.
