@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import heroImage from "@/assets/hero-church.jpg";
 import clbcLogo from "@/assets/clbc-logo.png";
 
@@ -80,7 +81,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-blue-50/20 to-purple-50/10">
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-secondary/5">
       {/* Navigation */}
       <nav className="border-b border-border/60 bg-background/95 backdrop-blur-xl sticky top-0 z-50">
         <div className="container mx-auto px-4">
@@ -95,8 +96,8 @@ const Index = () => {
             </div>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-6">
-              
+            <div className="hidden md:flex items-center gap-4">
+              <ThemeToggle />
               {!loading && (
                 user ? (
                   <div className="flex items-center gap-2">
@@ -139,7 +140,9 @@ const Index = () => {
           {/* Mobile Navigation */}
           {isMenuOpen && (
             <div className="md:hidden py-4 space-y-3 border-t border-border/60">
-              
+              <div className="flex justify-end pb-2">
+                <ThemeToggle />
+              </div>
               {!loading && (
                 user ? (
                   <div className="space-y-2">
@@ -177,7 +180,7 @@ const Index = () => {
       {/* Hero Section */}
       <section className="relative overflow-hidden py-20 md:py-32">
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-blue-500/5 to-purple-500/5" />
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5" />
           <img
             src={heroImage}
             alt="Church community"
@@ -245,8 +248,8 @@ const Index = () => {
             {features.map((feature, index) => (
               <Card key={index} className="border-border/60 hover:border-primary/50 transition-all hover:shadow-lg hover:shadow-primary/5">
                 <CardHeader>
-                  <div className="h-12 w-12 rounded-lg bg-blue-500/10 flex items-center justify-center mb-4">
-                    <feature.icon className="h-6 w-6 text-blue-500" />
+                  <div className="h-12 w-12 rounded-lg bg-secondary/10 flex items-center justify-center mb-4">
+                    <feature.icon className="h-6 w-6 text-secondary" />
                   </div>
                   <CardTitle className="text-xl">{feature.title}</CardTitle>
                   <CardDescription className="text-base">{feature.description}</CardDescription>
@@ -284,7 +287,7 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-primary/10 via-blue-500/10 to-purple-500/10">
+      <section className="py-20 bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10">
         <div className="container mx-auto px-4">
           <Card className="max-w-4xl mx-auto border-border/60">
             <CardContent className="p-12 text-center space-y-6">

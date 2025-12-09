@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { ArrowRight, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import clbcLogo from "@/assets/clbc-logo.png";
 import { z } from "zod";
 
@@ -98,7 +99,12 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-blue-50/20 to-purple-50/10 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-secondary/5 flex items-center justify-center p-4">
+      {/* Theme Toggle */}
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
+
       {/* Back to Home Link */}
       <Button
         variant="ghost"

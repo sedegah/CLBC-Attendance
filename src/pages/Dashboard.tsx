@@ -23,14 +23,17 @@ import {
   Download,
   LayoutDashboard,
   LogOut,
-  Loader2
+  Loader2,
+  ClipboardCheck
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import clbcLogo from "@/assets/clbc-logo.png";
 import MembersManager from "@/components/MembersManager";
+import ManualAttendance from "@/components/ManualAttendance";
 import * as XLSX from "xlsx";
 import { format } from "date-fns";
 
@@ -296,6 +299,7 @@ const Dashboard = () => {
                   {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Member'}
                 </span>
               </div>
+              <ThemeToggle />
               <Button variant="ghost" size="sm" onClick={() => navigate("/")}>
                 Home
               </Button>
@@ -328,7 +332,11 @@ const Dashboard = () => {
           <TabsList className="bg-muted/30 border border-border/40">
             <TabsTrigger value="attendance" className="gap-2 data-[state=active]:bg-background">
               <Calendar className="h-4 w-4" />
-              <span className="hidden sm:inline">Attendance</span>
+              <span className="hidden sm:inline">Upload</span>
+            </TabsTrigger>
+            <TabsTrigger value="manual" className="gap-2 data-[state=active]:bg-background">
+              <ClipboardCheck className="h-4 w-4" />
+              <span className="hidden sm:inline">Manual</span>
             </TabsTrigger>
             <TabsTrigger value="members" className="gap-2 data-[state=active]:bg-background">
               <Users className="h-4 w-4" />
@@ -521,6 +529,10 @@ const Dashboard = () => {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          <TabsContent value="manual" className="mt-0">
+            <ManualAttendance />
           </TabsContent>
 
           <TabsContent value="members" className="mt-0">
