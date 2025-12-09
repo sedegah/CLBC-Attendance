@@ -1,19 +1,19 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { format } from "date-fns";
-import { ClipboardCheck, Loader2, Save, Users } from "lucide-react";
+import { ClipboardCheck, Loader2, Save, Users, Search, Check, X } from "lucide-react";
 
 interface Member {
   id: string;
   full_name: string;
+  phone: string | null;
 }
 
 interface AttendanceEntry {
@@ -27,6 +27,7 @@ export default function ManualAttendance() {
   const [members, setMembers] = useState<Member[]>([]);
   const [attendance, setAttendance] = useState<AttendanceEntry[]>([]);
   const [attendanceDate, setAttendanceDate] = useState(format(new Date(), "yyyy-MM-dd"));
+  const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -38,7 +39,7 @@ export default function ManualAttendance() {
     try {
       const { data, error } = await supabase
         .from("members")
-        .select("id, full_name")
+        .select("id, full_name, phone")
         .order("full_name", { ascending: true });
 
       if (error) throw error;
@@ -57,6 +58,12 @@ export default function ManualAttendance() {
     }
   };
 
+  const filteredMembers = useMemo(() => {
+    if (!searchQuery.trim()) return members;
+    const query = searchQuery.toLowerCase();
+    return members.filter(m => m.full_name.toLowerCase().includes(query));
+  }, [members, searchQuery]);
+
   const toggleAttendance = (memberId: string) => {
     setAttendance(prev => 
       prev.map(a => 
@@ -65,12 +72,21 @@ export default function ManualAttendance() {
     );
   };
 
-  const markAllPresent = () => {
-    setAttendance(prev => prev.map(a => ({ ...a, present: true })));
+  const markPresent = (memberId: string) => {
+    setAttendance(prev => 
+      prev.map(a => 
+        a.memberId === memberId ? { ...a, present: true } : a
+      )
+    );
+    setSearchQuery("");
   };
 
-  const markAllAbsent = () => {
-    setAttendance(prev => prev.map(a => ({ ...a, present: false })));
+  const markAbsent = (memberId: string) => {
+    setAttendance(prev => 
+      prev.map(a => 
+        a.memberId === memberId ? { ...a, present: false } : a
+      )
+    );
   };
 
   const handleSaveAttendance = async () => {
@@ -83,7 +99,8 @@ export default function ManualAttendance() {
       const absentCount = attendance.filter(a => !a.present).length;
       const totalMembers = attendance.length;
 
-      const { error } = await supabase
+      // Create attendance record
+      const { data: record, error: recordError } = await supabase
         .from("attendance_records")
         .insert({
           user_id: user.id,
@@ -93,10 +110,25 @@ export default function ManualAttendance() {
           total_members: totalMembers,
           present_count: presentCount,
           absent_count: absentCount,
-          notes: `Manual attendance entry for ${presentCount} present, ${absentCount} absent`,
-        });
+          notes: `Manual attendance: ${presentCount} present, ${absentCount} absent`,
+        })
+        .select()
+        .single();
 
-      if (error) throw error;
+      if (recordError) throw recordError;
+
+      // Insert individual member attendance
+      const memberAttendanceRecords = attendance.map(a => ({
+        attendance_record_id: record.id,
+        member_id: a.memberId,
+        is_present: a.present,
+      }));
+
+      const { error: attendanceError } = await supabase
+        .from("member_attendance")
+        .insert(memberAttendanceRecords);
+
+      if (attendanceError) throw attendanceError;
 
       toast({
         title: "Attendance Saved",
@@ -106,6 +138,7 @@ export default function ManualAttendance() {
       // Reset attendance
       setAttendance(members.map(m => ({ memberId: m.id, present: false })));
       setAttendanceDate(format(new Date(), "yyyy-MM-dd"));
+      setSearchQuery("");
     } catch (error: any) {
       console.error("Error saving attendance:", error);
       toast({
@@ -120,6 +153,7 @@ export default function ManualAttendance() {
 
   const presentCount = attendance.filter(a => a.present).length;
   const absentCount = attendance.filter(a => !a.present).length;
+  const presentMembers = members.filter(m => attendance.find(a => a.memberId === m.id)?.present);
 
   if (isLoading) {
     return (
@@ -154,7 +188,7 @@ export default function ManualAttendance() {
           </div>
           <div>
             <CardTitle className="text-lg">Manual Attendance</CardTitle>
-            <CardDescription className="text-xs">Mark attendance for each member</CardDescription>
+            <CardDescription className="text-xs">Search and mark members as present</CardDescription>
           </div>
         </div>
       </CardHeader>
@@ -170,16 +204,54 @@ export default function ManualAttendance() {
               className="bg-muted/30 border-border/40"
             />
           </div>
-          <div className="flex gap-2 items-end">
-            <Button variant="outline" size="sm" onClick={markAllPresent} className="text-xs">
-              All Present
-            </Button>
-            <Button variant="outline" size="sm" onClick={markAllAbsent} className="text-xs">
-              All Absent
-            </Button>
-          </div>
         </div>
 
+        {/* Search to mark present */}
+        <div className="space-y-2">
+          <Label className="text-xs font-medium text-muted-foreground">Search Member to Mark Present</Label>
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Type member name..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 bg-muted/30 border-border/40"
+            />
+          </div>
+          
+          {/* Search results dropdown */}
+          {searchQuery.trim() && (
+            <div className="border border-border/40 rounded-lg bg-card max-h-[200px] overflow-y-auto">
+              {filteredMembers.length === 0 ? (
+                <div className="p-3 text-sm text-muted-foreground text-center">No members found</div>
+              ) : (
+                filteredMembers.map((member) => {
+                  const isPresent = attendance.find(a => a.memberId === member.id)?.present;
+                  return (
+                    <div
+                      key={member.id}
+                      className={`flex items-center justify-between p-3 hover:bg-muted/50 cursor-pointer border-b border-border/20 last:border-b-0 ${
+                        isPresent ? "bg-success/10" : ""
+                      }`}
+                      onClick={() => markPresent(member.id)}
+                    >
+                      <span className="text-sm font-medium">{member.full_name}</span>
+                      {isPresent ? (
+                        <span className="text-xs text-success flex items-center gap-1">
+                          <Check className="h-3 w-3" /> Present
+                        </span>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">Click to mark present</span>
+                      )}
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Attendance summary */}
         <div className="flex items-center gap-4 text-sm">
           <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-success/10 text-success font-medium">
             Present: {presentCount}
@@ -189,33 +261,45 @@ export default function ManualAttendance() {
           </span>
         </div>
 
-        <ScrollArea className="h-[300px] rounded-md border border-border/40 p-4">
-          <div className="space-y-2">
-            {members.map((member) => {
-              const entry = attendance.find(a => a.memberId === member.id);
-              return (
-                <div
-                  key={member.id}
-                  className={`flex items-center gap-3 p-3 rounded-lg transition-colors cursor-pointer ${
-                    entry?.present 
-                      ? "bg-success/10 border border-success/20" 
-                      : "bg-muted/30 border border-border/40 hover:bg-muted/50"
-                  }`}
-                  onClick={() => toggleAttendance(member.id)}
-                >
-                  <Checkbox
-                    checked={entry?.present || false}
-                    onCheckedChange={() => toggleAttendance(member.id)}
-                    className="data-[state=checked]:bg-success data-[state=checked]:border-success"
-                  />
-                  <span className={`text-sm font-medium ${entry?.present ? "text-success" : "text-foreground"}`}>
-                    {member.full_name}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </ScrollArea>
+        {/* Present members list */}
+        <div className="space-y-2">
+          <Label className="text-xs font-medium text-muted-foreground">
+            Members Marked Present ({presentCount})
+          </Label>
+          <ScrollArea className="h-[200px] rounded-md border border-border/40 p-3">
+            {presentMembers.length === 0 ? (
+              <div className="text-center py-6 text-sm text-muted-foreground">
+                No members marked present yet. Search above to add.
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {presentMembers.map((member) => (
+                  <div
+                    key={member.id}
+                    className="flex items-center justify-between p-2 rounded-lg bg-success/10 border border-success/20"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Check className="h-4 w-4 text-success" />
+                      <span className="text-sm font-medium text-foreground">{member.full_name}</span>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 w-7 p-0 hover:bg-destructive/10 hover:text-destructive"
+                      onClick={() => markAbsent(member.id)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </ScrollArea>
+        </div>
+
+        <p className="text-xs text-muted-foreground">
+          All members not marked present will be recorded as absent when you save.
+        </p>
 
         <Button 
           className="w-full gap-2" 
@@ -230,7 +314,7 @@ export default function ManualAttendance() {
           ) : (
             <>
               <Save className="h-4 w-4" />
-              Save Attendance
+              Save Attendance ({presentCount} present, {absentCount} absent)
             </>
           )}
         </Button>

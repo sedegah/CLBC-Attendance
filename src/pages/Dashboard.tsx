@@ -24,7 +24,8 @@ import {
   LayoutDashboard,
   LogOut,
   Loader2,
-  ClipboardCheck
+  ClipboardCheck,
+  AlertTriangle
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -34,6 +35,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import clbcLogo from "@/assets/clbc-logo.png";
 import MembersManager from "@/components/MembersManager";
 import ManualAttendance from "@/components/ManualAttendance";
+import AbsenteeReport from "@/components/AbsenteeReport";
 import * as XLSX from "xlsx";
 import { format } from "date-fns";
 
@@ -338,6 +340,10 @@ const Dashboard = () => {
               <ClipboardCheck className="h-4 w-4" />
               <span className="hidden sm:inline">Manual</span>
             </TabsTrigger>
+            <TabsTrigger value="followup" className="gap-2 data-[state=active]:bg-background">
+              <AlertTriangle className="h-4 w-4" />
+              <span className="hidden sm:inline">Follow-Up</span>
+            </TabsTrigger>
             <TabsTrigger value="members" className="gap-2 data-[state=active]:bg-background">
               <Users className="h-4 w-4" />
               <span className="hidden sm:inline">Members</span>
@@ -533,6 +539,10 @@ const Dashboard = () => {
 
           <TabsContent value="manual" className="mt-0">
             <ManualAttendance />
+          </TabsContent>
+
+          <TabsContent value="followup" className="mt-0">
+            <AbsenteeReport />
           </TabsContent>
 
           <TabsContent value="members" className="mt-0">
