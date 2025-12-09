@@ -31,9 +31,6 @@ const Index = () => {
       colorClass: "text-secondary",
       bgClass: "bg-secondary/10",
     },
-    // REMOVED: Donation Management
-    // REMOVED: Communication Hub
-    // REMOVED: Volunteer Coordination
     {
       icon: BarChart3,
       title: "Reports & Analytics",
@@ -94,11 +91,11 @@ const Index = () => {
       <nav className="border-b border-border/40 bg-background/90 backdrop-blur-md sticky top-0 z-50 shadow-lg shadow-background/5">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex items-center justify-between h-20">
-            {/* Logo Group */}
+            {/* Logo Group - UPDATED */}
             <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
               <img src={clbcLogo} alt="C.L.B.C Logo" className="h-10 w-auto" />
               <div className="flex flex-col">
-                <span className="text-xl font-extrabold text-foreground leading-tight tracking-tight">CLBC Manager</span> 
+                <span className="text-xl font-extrabold text-foreground leading-tight tracking-tight">CLBC Deliverance Centre</span> {/* CHANGED TEXT */}
                 <span className="text-xs text-primary-dark/70 dark:text-muted-foreground leading-tight">Church Management</span>
               </div>
             </div>
@@ -198,7 +195,7 @@ const Index = () => {
       </nav>
 
       <main>
-        {/* Hero Section - UPDATED THEME EMPHASIS */}
+        {/* Hero Section - UPDATED THEME EMPHASIS AND TEXT FIXES */}
         <section className="relative overflow-hidden pt-24 pb-32 md:pt-32 md:pb-48 bg-gradient-to-br from-background via-muted/50 to-secondary/10">
           <div className="absolute inset-0 z-0 opacity-15">
             <img
@@ -273,7 +270,7 @@ const Index = () => {
               </p>
             </div>
             
-            {/* Grid updated to dynamically handle 3 or 4 columns based on the number of features */}
+            {/* Grid updated to handle 3 columns */}
             <div className="grid md:grid-cols-3 gap-8">
               {features.map((feature, index) => (
                 <Card 
@@ -330,7 +327,7 @@ const Index = () => {
                   Ready to Focus on A Changed Life for Christ?
                 </h2>
                 <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                  Join churches across the nation using C.L.B.C Manager to serve their communities better.
+                  Join churches across the nation using CLBC Deliverance Centre to serve their communities better.
                 </p>
                 <Button 
                   size="lg" 
@@ -349,11 +346,11 @@ const Index = () => {
       <footer className="border-t border-border/40 bg-background/50 backdrop-blur-sm py-12">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-start gap-8">
-            {/* Logo Group */}
+            {/* Logo Group - UPDATED */}
             <div className="flex items-center gap-3">
               <img src={clbcLogo} alt="C.L.B.C Logo" className="h-12 w-auto" />
               <div className="flex flex-col">
-                <span className="text-xl font-extrabold text-foreground leading-tight tracking-tight">C.L.B.C</span>
+                <span className="text-xl font-extrabold text-foreground leading-tight tracking-tight">CLBC Deliverance Centre</span>
                 <span className="text-sm text-muted-foreground leading-tight">Church Management System</span>
               </div>
             </div>
