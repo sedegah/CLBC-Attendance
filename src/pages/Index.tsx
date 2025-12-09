@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Calendar, DollarSign, MessageSquare, UserCheck, BarChart3, Heart, Shield, ArrowRight, Play, CheckCircle, Menu, X, LogOut, Code, Globe } from "lucide-react";
+import { Users, Calendar, DollarSign, MessageSquare, UserCheck, BarChart3, Heart, Shield, ArrowRight, Play, CheckCircle, Menu, X, LogOut, Code, Globe, Zap, Compass } from "lucide-react"; // Added new icons
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -15,6 +15,7 @@ const Index = () => {
   const { user, signOut, loading } = useAuth();
   const { toast } = useToast();
 
+  // --- Data Definitions (Kept the same for consistency) ---
   const features = [
     {
       icon: Users,
@@ -83,6 +84,7 @@ const Index = () => {
     { number: "1000+", label: "Members" },
     { number: "99.9%", label: "Uptime" },
   ];
+  // -----------------------------------------------------------
 
   const handleSignOut = async () => {
     await signOut();
@@ -92,22 +94,42 @@ const Index = () => {
     });
   };
 
+  const NavLink = ({ to, children }) => (
+    <a
+      href={to}
+      className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors hover:font-semibold"
+      onClick={() => {
+        // Optional: close menu on link click
+        setIsMenuOpen(false);
+      }}
+    >
+      {children}
+    </a>
+  );
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-secondary/5">
-      {/* Navigation */}
-      <nav className="border-b border-border/40 bg-background/90 backdrop-blur-xl sticky top-0 z-50 shadow-md">
+    <div className="min-h-screen bg-background"> {/* Simplified background for cleaner look */}
+      {/* Navigation - REDESIGN */}
+      <nav className="border-b border-border/40 bg-background/90 backdrop-blur-md sticky top-0 z-50 shadow-lg shadow-background/5">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="flex items-center justify-between h-20"> {/* Increased height for visual weight */}
-            {/* Logo */}
-            <div className="flex items-center gap-3">
-              <img src={clbcLogo} alt="C.L.B.C Logo" className="h-12 w-auto" /> {/* Slightly larger logo */}
+          <div className="flex items-center justify-between h-20">
+            {/* Logo Group */}
+            <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
+              <img src={clbcLogo} alt="C.L.B.C Logo" className="h-10 w-auto" /> {/* Slightly smaller, more refined logo area */}
               <div className="flex flex-col">
-                <span className="text-xl font-extrabold text-foreground leading-tight tracking-tight">C.L.B.C</span>
+                <span className="text-xl font-extrabold text-foreground leading-tight tracking-tight">CLBC Manager</span> {/* Unified name for a product feel */}
                 <span className="text-xs text-primary-dark/70 dark:text-muted-foreground leading-tight">Church Management</span>
               </div>
             </div>
 
-            {/* Desktop Navigation */}
+            {/* Desktop Navigation Links */}
+            <div className="hidden md:flex items-center gap-6">
+              <NavLink to="#features">Features</NavLink>
+              <NavLink to="#values">Our Values</NavLink>
+              <NavLink to="#contact">Contact</NavLink> {/* Added a Contact link */}
+            </div>
+
+            {/* Desktop Actions */}
             <div className="hidden md:flex items-center gap-4">
               <ThemeToggle />
               {!loading && (
@@ -115,27 +137,27 @@ const Index = () => {
                   <div className="flex items-center gap-3">
                     <Button 
                       variant="outline" 
-                      className="border-border/60 hover:bg-muted/50 text-foreground font-medium"
+                      className="text-foreground font-medium hover:bg-primary/10 transition-colors"
                       onClick={() => navigate("/dashboard")}
                     >
-                      Go to Dashboard
+                      Dashboard
                     </Button>
                     <Button 
-                      variant="destructive" 
-                      className="gap-2 shadow-md"
+                      variant="ghost" 
+                      className="gap-2 text-red-500 hover:bg-red-500/10"
                       onClick={handleSignOut}
                     >
                       <LogOut className="h-4 w-4" />
-                      Sign Out
                     </Button>
                   </div>
                 ) : (
                   <Button 
                     variant="default" 
-                    className="gap-2 px-6 py-2.5 shadow-md hover:shadow-lg transition-shadow"
+                    className="gap-2 px-6 py-2.5 font-semibold transition-transform duration-200 hover:scale-[1.02] shadow-primary/30 shadow-lg"
                     onClick={() => navigate("/auth")}
                   >
-                    Get Started / Sign In
+                    Get Started Free
+                    <ArrowRight className="h-4 w-4" />
                   </Button>
                 )
               )}
@@ -153,22 +175,26 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Mobile Navigation */}
+          {/* Mobile Navigation - REDESIGN */}
           {isMenuOpen && (
             <div className="md:hidden py-4 space-y-3 border-t border-border/60">
+              <NavLink to="#features">Features</NavLink>
+              <NavLink to="#values">Our Values</NavLink>
+              <NavLink to="#contact">Contact</NavLink>
+              <div className="h-px bg-border/60 my-2" />
               {!loading && (
                 user ? (
                   <div className="space-y-3">
                     <Button 
-                      variant="outline" 
+                      variant="default" 
                       className="w-full text-base font-medium"
                       onClick={() => { navigate("/dashboard"); setIsMenuOpen(false); }}
                     >
-                      Dashboard
+                      Go to Dashboard
                     </Button>
                     <Button 
-                      variant="destructive" 
-                      className="w-full gap-2 text-base font-medium"
+                      variant="ghost" 
+                      className="w-full gap-2 text-base font-medium text-red-500 hover:bg-red-500/10"
                       onClick={() => { handleSignOut(); setIsMenuOpen(false); }}
                     >
                       <LogOut className="h-4 w-4" />
@@ -190,147 +216,158 @@ const Index = () => {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden pt-24 pb-32 md:pt-32 md:pb-48">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 opacity-80" />
-          <img
-            src={heroImage}
-            alt="Church community"
-            className="w-full h-full object-cover object-top opacity-10" // Adjusted object-fit for better visibility
-          />
-        </div>
-        
-        <div className="container mx-auto px-4 lg:px-8 relative z-10">
-          <div className="max-w-5xl mx-auto text-center space-y-8">
-            <div className="inline-flex items-center gap-2 px-5 py-2 bg-primary/10 rounded-full text-sm font-semibold text-primary border border-primary/20 shadow-md">
-              <CheckCircle className="h-4 w-4 fill-primary/20" />
-              Trusted by **{stats[1].number}** members across **{stats[0].number}** churches
-            </div>
-            
-            <h1 className="text-5xl sm:text-6xl lg:text-8xl font-extrabold text-foreground leading-snug tracking-tighter">
-              A Changed Life Baptist Church
-              <span className="block text-primary mt-3 drop-shadow-md">Management System</span>
-            </h1>
-            
-            <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              **A Changed Life For Christ - Since 1970**. Streamline administration, boost engagement, and focus on ministry.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-6">
-              <Button 
-                size="lg" 
-                className="text-lg px-10 py-7 gap-2 shadow-xl shadow-primary/30 hover:shadow-primary/40 transition-all font-semibold"
-                onClick={() => navigate("/auth")}
-              >
-                Get Started Free
-                <ArrowRight className="h-6 w-6" />
-              </Button>
-              <Button size="lg" variant="outline" className="text-lg px-10 py-7 gap-2 border-2 border-border/60 hover:bg-muted/50 font-semibold">
-                <Play className="h-6 w-6 fill-current" />
-                Watch Demo
-              </Button>
-            </div>
-            
-            {/* Stats - moved to be distinct */}
-            <div className="grid grid-cols-3 gap-10 pt-20 max-w-4xl mx-auto border-t border-border/40">
-              {stats.map((stat, index) => (
-                <Card key={index} className="bg-background/70 backdrop-blur-sm border-border/40 shadow-xl shadow-background/5">
-                  <CardContent className="p-6 space-y-1">
+      <main>
+        {/* Hero Section - REDESIGN */}
+        <section className="relative overflow-hidden pt-24 pb-32 md:pt-32 md:pb-48 bg-gradient-to-br from-background via-muted/50 to-secondary/10">
+          <div className="absolute inset-0 z-0 opacity-15">
+            <img
+              src={heroImage}
+              alt="Church community"
+              className="w-full h-full object-cover object-top"
+            />
+            <div className="absolute inset-0 bg-background/50 dark:bg-background/80" /> {/* Darker overlay for text contrast */}
+          </div>
+          
+          <div className="container mx-auto px-4 lg:px-8 relative z-10">
+            <div className="max-w-5xl mx-auto text-center space-y-8">
+              {/* Tagline - More prominent */}
+              <div className="inline-flex items-center gap-2 px-5 py-2 bg-primary/10 rounded-full text-sm font-semibold text-primary border border-primary/20 shadow-md transform hover:scale-[1.03] transition-transform duration-300">
+                <Zap className="h-4 w-4 fill-primary/20 text-primary" />
+                **Simplify** Church Admin. **Magnify** Your Ministry.
+              </div>
+              
+              {/* Headline - More focused and powerful */}
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-foreground leading-tight tracking-tight drop-shadow-lg">
+                The Complete Management Platform for
+                <span className="block text-primary mt-3">Changed Life Baptist Church</span>
+              </h1>
+              
+              <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+                Streamline operations, boost member engagement, and **reclaim time** to focus on **spiritual growth** and community connection.
+              </p>
+              
+              {/* CTA Buttons - Clear Primary and Secondary */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-6">
+                <Button 
+                  size="lg" 
+                  className="text-lg px-10 py-7 gap-2 shadow-2xl shadow-primary/30 hover:shadow-primary/40 transition-all font-bold group"
+                  onClick={() => navigate("/auth")}
+                >
+                  Start Your Free Trial
+                  <ArrowRight className="h-6 w-6 transition-transform group-hover:translate-x-1" />
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="secondary" 
+                  className="text-lg px-10 py-7 gap-2 border-2 border-primary/50 text-primary hover:bg-primary/10 font-semibold shadow-md"
+                >
+                  <Compass className="h-6 w-6 fill-current text-primary" /> {/* Changed icon to Compass/Explore */}
+                  Explore Features
+                </Button>
+              </div>
+              
+              {/* Stats - Integrated more smoothly */}
+              <div className="grid grid-cols-3 gap-6 pt-16 max-w-4xl mx-auto">
+                {stats.map((stat, index) => (
+                  <div key={index} className="p-4 rounded-lg bg-background/50 backdrop-blur-sm border border-border/60 shadow-lg">
                     <div className="text-4xl md:text-5xl font-extrabold text-primary tracking-tight">{stat.number}</div>
                     <div className="text-sm text-muted-foreground font-medium">{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Features Section - Kept largely the same, added ID for Navbar link */}
+        <section id="features" className="py-24 bg-background/70 backdrop-blur-md">
+          {/* ... Features content ... (same as original) */}
+          <div className="container mx-auto px-4 lg:px-8">
+            <div className="text-center max-w-4xl mx-auto mb-16 space-y-4">
+              <h2 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight">
+                A Complete Church Management Toolkit
+              </h2>
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                Streamline operations, strengthen community, and focus on what matters most—ministry.
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {features.map((feature, index) => (
+                <Card 
+                  key={index} 
+                  className="border-border/40 hover:border-primary/50 transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 overflow-hidden group"
+                >
+                  <CardHeader className="pb-4">
+                    <div className={`h-14 w-14 rounded-xl ${feature.bgClass} flex items-center justify-center mb-4 transition-transform group-hover:scale-105`}>
+                      <feature.icon className={`h-7 w-7 ${feature.colorClass}`} />
+                    </div>
+                    <CardTitle className="text-xl font-semibold text-foreground">{feature.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription className="text-base text-muted-foreground">{feature.description}</CardDescription>
                   </CardContent>
                 </Card>
               ))}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Features Section */}
-      <section id="features" className="py-24 bg-background/70 backdrop-blur-md">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="text-center max-w-4xl mx-auto mb-16 space-y-4">
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight">
-              A Complete Church Management Toolkit
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Streamline operations, strengthen community, and focus on what matters most—ministry.
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
-              <Card 
-                key={index} 
-                className="border-border/40 hover:border-primary/50 transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 overflow-hidden group"
-              >
-                <CardHeader className="pb-4">
-                  <div className={`h-14 w-14 rounded-xl ${feature.bgClass} flex items-center justify-center mb-4 transition-transform group-hover:scale-105`}>
-                    <feature.icon className={`h-7 w-7 ${feature.colorClass}`} />
-                  </div>
-                  <CardTitle className="text-xl font-semibold text-foreground">{feature.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-base text-muted-foreground">{feature.description}</CardDescription>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Values Section */}
-      <section className="py-24">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="text-center max-w-4xl mx-auto mb-16 space-y-4">
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight">
-              Our Foundational Values
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Built on principles that empower your mission and protect your community.
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-12 max-w-6xl mx-auto">
-            {values.map((value, index) => (
-              <div key={index} className="text-center space-y-4 p-4">
-                <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto border-2 border-primary/30 shadow-lg shadow-primary/10">
-                  <value.icon className="h-8 w-8 text-primary" />
-                </div>
-                <h3 className="text-2xl font-bold text-foreground">{value.title}</h3>
-                <p className="text-muted-foreground max-w-sm mx-auto">{value.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-24 bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10">
-        <div className="container mx-auto px-4 lg:px-8">
-          <Card className="max-w-5xl mx-auto border-border/40 shadow-2xl shadow-primary/5">
-            <CardContent className="p-12 md:p-16 text-center space-y-8">
-              <h2 className="text-4xl md:text-5xl font-extrabold text-foreground tracking-tight">
-                Ready to Transform Your Church Management?
+        {/* Values Section - Added ID for Navbar link */}
+        <section id="values" className="py-24">
+          {/* ... Values content ... (same as original) */}
+          <div className="container mx-auto px-4 lg:px-8">
+            <div className="text-center max-w-4xl mx-auto mb-16 space-y-4">
+              <h2 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight">
+                Our Foundational Values
               </h2>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                Join churches across the nation using C.L.B.C Manager to serve their communities better.
+                Built on principles that empower your mission and protect your community.
               </p>
-              <Button 
-                size="lg" 
-                className="text-lg px-10 py-7 font-semibold shadow-lg shadow-primary/30 hover:shadow-primary/40 transition-shadow"
-                onClick={() => navigate("/auth")}
-              >
-                Start Your Free Trial Today
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
+            </div>
+            
+            <div className="grid md:grid-cols-3 gap-12 max-w-6xl mx-auto">
+              {values.map((value, index) => (
+                <div key={index} className="text-center space-y-4 p-4">
+                  <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto border-2 border-primary/30 shadow-lg shadow-primary/10">
+                    <value.icon className="h-8 w-8 text-primary" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-foreground">{value.title}</h3>
+                  <p className="text-muted-foreground max-w-sm mx-auto">{value.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
 
-      {/* Footer */}
+        {/* CTA Section - Added ID (for potential future contact link) */}
+        <section id="contact" className="py-24 bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10">
+          {/* ... CTA content ... (same as original) */}
+          <div className="container mx-auto px-4 lg:px-8">
+            <Card className="max-w-5xl mx-auto border-border/40 shadow-2xl shadow-primary/5">
+              <CardContent className="p-12 md:p-16 text-center space-y-8">
+                <h2 className="text-4xl md:text-5xl font-extrabold text-foreground tracking-tight">
+                  Ready to Transform Your Church Management?
+                </h2>
+                <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                  Join churches across the nation using C.L.B.C Manager to serve their communities better.
+                </p>
+                <Button 
+                  size="lg" 
+                  className="text-lg px-10 py-7 font-semibold shadow-lg shadow-primary/30 hover:shadow-primary/40 transition-shadow"
+                  onClick={() => navigate("/auth")}
+                >
+                  Start Your Free Trial Today
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+      </main>
+
+      {/* Footer - No significant changes needed */}
       <footer className="border-t border-border/40 bg-background/50 backdrop-blur-sm py-12">
+        {/* ... Footer content ... (same as original) */}
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-start gap-8">
             {/* Logo Group */}
