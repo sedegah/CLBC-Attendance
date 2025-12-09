@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Calendar, DollarSign, MessageSquare, UserCheck, BarChart3, Heart, Shield, ArrowRight, Play, CheckCircle, Menu, X, LogOut, Code, Globe, Zap, Compass } from "lucide-react"; // Added new icons
+import { Users, Calendar, DollarSign, MessageSquare, UserCheck, BarChart3, Heart, Shield, ArrowRight, Menu, X, LogOut, Code, Globe, Zap, Compass } from "lucide-react"; 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -15,7 +15,7 @@ const Index = () => {
   const { user, signOut, loading } = useAuth();
   const { toast } = useToast();
 
-  // --- Data Definitions (Kept the same for consistency) ---
+  // --- Data Definitions ---
   const features = [
     {
       icon: Users,
@@ -99,7 +99,6 @@ const Index = () => {
       href={to}
       className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors hover:font-semibold"
       onClick={() => {
-        // Optional: close menu on link click
         setIsMenuOpen(false);
       }}
     >
@@ -108,16 +107,16 @@ const Index = () => {
   );
 
   return (
-    <div className="min-h-screen bg-background"> {/* Simplified background for cleaner look */}
+    <div className="min-h-screen bg-background"> 
       {/* Navigation - REDESIGN */}
       <nav className="border-b border-border/40 bg-background/90 backdrop-blur-md sticky top-0 z-50 shadow-lg shadow-background/5">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex items-center justify-between h-20">
             {/* Logo Group */}
             <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
-              <img src={clbcLogo} alt="C.L.B.C Logo" className="h-10 w-auto" /> {/* Slightly smaller, more refined logo area */}
+              <img src={clbcLogo} alt="C.L.B.C Logo" className="h-10 w-auto" />
               <div className="flex flex-col">
-                <span className="text-xl font-extrabold text-foreground leading-tight tracking-tight">CLBC Manager</span> {/* Unified name for a product feel */}
+                <span className="text-xl font-extrabold text-foreground leading-tight tracking-tight">CLBC Manager</span> 
                 <span className="text-xs text-primary-dark/70 dark:text-muted-foreground leading-tight">Church Management</span>
               </div>
             </div>
@@ -126,7 +125,7 @@ const Index = () => {
             <div className="hidden md:flex items-center gap-6">
               <NavLink to="#features">Features</NavLink>
               <NavLink to="#values">Our Values</NavLink>
-              <NavLink to="#contact">Contact</NavLink> {/* Added a Contact link */}
+              <NavLink to="#contact">Contact</NavLink> 
             </div>
 
             {/* Desktop Actions */}
@@ -217,7 +216,7 @@ const Index = () => {
       </nav>
 
       <main>
-        {/* Hero Section - REDESIGN */}
+        {/* Hero Section - REDESIGN (Asterisks Corrected) */}
         <section className="relative overflow-hidden pt-24 pb-32 md:pt-32 md:pb-48 bg-gradient-to-br from-background via-muted/50 to-secondary/10">
           <div className="absolute inset-0 z-0 opacity-15">
             <img
@@ -225,25 +224,26 @@ const Index = () => {
               alt="Church community"
               className="w-full h-full object-cover object-top"
             />
-            <div className="absolute inset-0 bg-background/50 dark:bg-background/80" /> {/* Darker overlay for text contrast */}
+            <div className="absolute inset-0 bg-background/50 dark:bg-background/80" /> 
           </div>
           
           <div className="container mx-auto px-4 lg:px-8 relative z-10">
             <div className="max-w-5xl mx-auto text-center space-y-8">
-              {/* Tagline - More prominent */}
+              {/* Tagline - Bolding via span classes */}
               <div className="inline-flex items-center gap-2 px-5 py-2 bg-primary/10 rounded-full text-sm font-semibold text-primary border border-primary/20 shadow-md transform hover:scale-[1.03] transition-transform duration-300">
                 <Zap className="h-4 w-4 fill-primary/20 text-primary" />
-                **Simplify** Church Admin. **Magnify** Your Ministry.
+                <span className="font-extrabold">Simplify</span> Church Admin. <span className="font-extrabold">Magnify</span> Your Ministry.
               </div>
               
-              {/* Headline - More focused and powerful */}
+              {/* Headline */}
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-foreground leading-tight tracking-tight drop-shadow-lg">
                 The Complete Management Platform for
                 <span className="block text-primary mt-3">Changed Life Baptist Church</span>
               </h1>
               
+              {/* Body Copy - Bolding via span classes */}
               <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                Streamline operations, boost member engagement, and **reclaim time** to focus on **spiritual growth** and community connection.
+                Streamline operations, boost member engagement, and <span className="font-bold text-foreground">reclaim time</span> to focus on <span className="font-bold text-foreground">spiritual growth</span> and community connection.
               </p>
               
               {/* CTA Buttons - Clear Primary and Secondary */}
@@ -261,7 +261,7 @@ const Index = () => {
                   variant="secondary" 
                   className="text-lg px-10 py-7 gap-2 border-2 border-primary/50 text-primary hover:bg-primary/10 font-semibold shadow-md"
                 >
-                  <Compass className="h-6 w-6 fill-current text-primary" /> {/* Changed icon to Compass/Explore */}
+                  <Compass className="h-6 w-6 fill-current text-primary" /> 
                   Explore Features
                 </Button>
               </div>
@@ -279,9 +279,8 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Features Section - Kept largely the same, added ID for Navbar link */}
+        {/* Features Section */}
         <section id="features" className="py-24 bg-background/70 backdrop-blur-md">
-          {/* ... Features content ... (same as original) */}
           <div className="container mx-auto px-4 lg:px-8">
             <div className="text-center max-w-4xl mx-auto mb-16 space-y-4">
               <h2 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight">
@@ -313,9 +312,8 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Values Section - Added ID for Navbar link */}
+        {/* Values Section */}
         <section id="values" className="py-24">
-          {/* ... Values content ... (same as original) */}
           <div className="container mx-auto px-4 lg:px-8">
             <div className="text-center max-w-4xl mx-auto mb-16 space-y-4">
               <h2 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight">
@@ -340,9 +338,8 @@ const Index = () => {
           </div>
         </section>
 
-        {/* CTA Section - Added ID (for potential future contact link) */}
+        {/* CTA Section */}
         <section id="contact" className="py-24 bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10">
-          {/* ... CTA content ... (same as original) */}
           <div className="container mx-auto px-4 lg:px-8">
             <Card className="max-w-5xl mx-auto border-border/40 shadow-2xl shadow-primary/5">
               <CardContent className="p-12 md:p-16 text-center space-y-8">
@@ -365,9 +362,8 @@ const Index = () => {
         </section>
       </main>
 
-      {/* Footer - No significant changes needed */}
+      {/* Footer */}
       <footer className="border-t border-border/40 bg-background/50 backdrop-blur-sm py-12">
-        {/* ... Footer content ... (same as original) */}
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-start gap-8">
             {/* Logo Group */}
@@ -409,7 +405,7 @@ const Index = () => {
           </div>
           
           <div className="text-center text-sm text-muted-foreground mt-10 border-t border-border/30 pt-6">
-            © **{new Date().getFullYear()}** Changed Life Baptist Church. All rights reserved.
+            © <span className="font-bold">{new Date().getFullYear()}</span> Changed Life Baptist Church. All rights reserved.
           </div>
         </div>
       </footer>
