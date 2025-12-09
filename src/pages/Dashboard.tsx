@@ -560,13 +560,6 @@ const Dashboard = () => {
                                                     ))}
                                                 </TableBody>
                                             </Table>
-                                            {attendanceRecords.length > 8 && (
-                                                <div className="text-center py-4 border-t border-border/40 bg-muted/10 rounded-b-lg">
-                                                    <span className="text-sm text-muted-foreground font-medium">
-                                                        Showing 8 of **{attendanceRecords.length}** records.
-                                                    </span>
-                                                </div>
-                                            )}
                                         </div>
                                     )}
                                 </CardContent>
@@ -575,14 +568,17 @@ const Dashboard = () => {
                     </TabsContent>
 
                     <TabsContent value="manual" className="mt-0">
-                        <ManualAttendance />
+                        {/* Manual Attendance Component */}
+                        <ManualAttendance fetchRecords={fetchAttendanceRecords} />
                     </TabsContent>
 
                     <TabsContent value="followup" className="mt-0">
-                        <AbsenteeReport />
+                        {/* Absentee Report Component */}
+                        <AbsenteeReport attendanceRecords={attendanceRecords} isLoading={isLoading} />
                     </TabsContent>
-
+                    
                     <TabsContent value="members" className="mt-0">
+                        {/* Members Manager Component */}
                         <MembersManager />
                     </TabsContent>
                 </Tabs>
