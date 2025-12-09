@@ -56,6 +56,45 @@ export type Database = {
         }
         Relationships: []
       }
+      member_attendance: {
+        Row: {
+          attendance_record_id: string
+          created_at: string
+          id: string
+          is_present: boolean
+          member_id: string
+        }
+        Insert: {
+          attendance_record_id: string
+          created_at?: string
+          id?: string
+          is_present?: boolean
+          member_id: string
+        }
+        Update: {
+          attendance_record_id?: string
+          created_at?: string
+          id?: string
+          is_present?: boolean
+          member_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_attendance_attendance_record_id_fkey"
+            columns: ["attendance_record_id"]
+            isOneToOne: false
+            referencedRelation: "attendance_records"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "member_attendance_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       members: {
         Row: {
           birthday: string | null
