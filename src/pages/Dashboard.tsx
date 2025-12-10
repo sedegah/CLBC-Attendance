@@ -26,7 +26,8 @@ import {
     Loader2,
     ClipboardCheck,
     AlertTriangle,
-    FileBadge2
+    FileBadge2,
+    Image
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -37,6 +38,7 @@ import clbcLogo from "@/assets/clbc-logo.png";
 import MembersManager from "@/components/MembersManager";
 import ManualAttendance from "@/components/ManualAttendance";
 import AbsenteeReport from "@/components/AbsenteeReport";
+import { GalleryManager } from "@/components/GalleryManager";
 import * as XLSX from "xlsx";
 import { format } from "date-fns";
 
@@ -381,6 +383,10 @@ const Dashboard = () => {
                             <Users className="h-4 w-4" />
                             <span className="font-semibold">Members Manager</span>
                         </TabsTrigger>
+                        <TabsTrigger value="gallery" className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-md data-[state=active]:text-primary rounded-md transition-all">
+                            <Image className="h-4 w-4" />
+                            <span className="font-semibold">Gallery</span>
+                        </TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="attendance" className="space-y-8 mt-0">
@@ -569,17 +575,22 @@ const Dashboard = () => {
 
                     <TabsContent value="manual" className="mt-0">
                         {/* Manual Attendance Component */}
-                        <ManualAttendance fetchRecords={fetchAttendanceRecords} />
+                        <ManualAttendance />
                     </TabsContent>
 
                     <TabsContent value="followup" className="mt-0">
                         {/* Absentee Report Component */}
-                        <AbsenteeReport attendanceRecords={attendanceRecords} isLoading={isLoading} />
+                        <AbsenteeReport />
                     </TabsContent>
                     
                     <TabsContent value="members" className="mt-0">
                         {/* Members Manager Component */}
                         <MembersManager />
+                    </TabsContent>
+
+                    <TabsContent value="gallery" className="mt-0">
+                        {/* Gallery Manager Component */}
+                        <GalleryManager />
                     </TabsContent>
                 </Tabs>
             </main>
