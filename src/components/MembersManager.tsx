@@ -109,7 +109,8 @@ const MembersManager = () => {
             phone: formPhone.trim() || null,
             email: formEmail.trim() || null,
           })
-          .eq("id", editingMember.id);
+          .eq("id", editingMember.id)
+          .eq("user_id", user.id);
 
         if (error) throw error;
         toast({ title: "Member updated" });
