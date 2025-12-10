@@ -100,12 +100,18 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Desktop Navigation Links */}
-            <div className="hidden md:flex items-center gap-6">
-              <NavLink to="#features">Features</NavLink>
-              <NavLink to="#values">Our Values</NavLink>
-              <NavLink to="#contact">Contact</NavLink> 
-            </div>
+            {/* Desktop Navigation Links */}
+            <div className="hidden md:flex items-center gap-6">
+              <NavLink to="#features">Features</NavLink>
+              <NavLink to="#values">Our Values</NavLink>
+              <a
+                href="/gallery"
+                className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors hover:font-semibold"
+              >
+                Gallery
+              </a>
+              <NavLink to="#contact">Contact</NavLink> 
+            </div>
 
             {/* Desktop Actions */}
             <div className="hidden md:flex items-center gap-4">
@@ -154,12 +160,19 @@ const Index = () => {
           </div>
 
           {/* Mobile Navigation */}
-          {isMenuOpen && (
-            <div className="md:hidden py-4 space-y-3 border-t border-border/60">
-              <NavLink to="#features">Features</NavLink>
-              <NavLink to="#values">Our Values</NavLink>
-              <NavLink to="#contact">Contact</NavLink>
-              <div className="h-px bg-border/60 my-2" />
+          {isMenuOpen && (
+            <div className="md:hidden py-4 space-y-3 border-t border-border/60">
+              <NavLink to="#features">Features</NavLink>
+              <NavLink to="#values">Our Values</NavLink>
+              <a
+                href="/gallery"
+                className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors hover:font-semibold block"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Gallery
+              </a>
+              <NavLink to="#contact">Contact</NavLink>
+              <div className="h-px bg-border/60 my-2" />
               {!loading && (
                 user ? (
                   <div className="space-y-3">
