@@ -56,8 +56,36 @@ export type Database = {
         }
         Relationships: []
       }
+      gallery_albums: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       gallery_images: {
         Row: {
+          album_id: string | null
           created_at: string
           description: string | null
           file_name: string
@@ -67,6 +95,7 @@ export type Database = {
           uploaded_by: string
         }
         Insert: {
+          album_id?: string | null
           created_at?: string
           description?: string | null
           file_name: string
@@ -76,6 +105,7 @@ export type Database = {
           uploaded_by: string
         }
         Update: {
+          album_id?: string | null
           created_at?: string
           description?: string | null
           file_name?: string
@@ -84,7 +114,15 @@ export type Database = {
           title?: string | null
           uploaded_by?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "gallery_images_album_id_fkey"
+            columns: ["album_id"]
+            isOneToOne: false
+            referencedRelation: "gallery_albums"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       member_attendance: {
         Row: {

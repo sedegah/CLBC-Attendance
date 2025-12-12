@@ -1,14 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Calendar, DollarSign, MessageSquare, UserCheck, BarChart3, Heart, Shield, ArrowRight, Menu, X, LogOut, Code, Globe, Zap, Compass } from "lucide-react"; 
+import { Users, Calendar, DollarSign, MessageSquare, UserCheck, BarChart3, Heart, Shield, ArrowRight, Menu, X, LogOut, Code, Globe, Zap, Compass } from "lucide-react"; 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import heroImage from "@/assets/hero-church.jpg";
 import clbcLogo from "@/assets/clbc-logo.png";
-
 const Index = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -104,12 +103,12 @@ const Index = () => {
             <div className="hidden md:flex items-center gap-6">
               <NavLink to="#features">Features</NavLink>
               <NavLink to="#values">Our Values</NavLink>
-              <a
-                href="/gallery"
+              <Link
+                to="/gallery"
                 className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors hover:font-semibold"
               >
                 Gallery
-              </a>
+              </Link>
               <NavLink to="#contact">Contact</NavLink> 
             </div>
 
@@ -164,13 +163,13 @@ const Index = () => {
             <div className="md:hidden py-4 space-y-3 border-t border-border/60">
               <NavLink to="#features">Features</NavLink>
               <NavLink to="#values">Our Values</NavLink>
-              <a
-                href="/gallery"
+              <Link
+                to="/gallery"
                 className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors hover:font-semibold block"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Gallery
-              </a>
+              </Link>
               <NavLink to="#contact">Contact</NavLink>
               <div className="h-px bg-border/60 my-2" />
               {!loading && (
