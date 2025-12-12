@@ -366,25 +366,28 @@ const Dashboard = () => {
                 
                 {/* Tabs for different sections (No change) */}
                 <Tabs defaultValue="attendance" className="space-y-6">
-                    <TabsList className="bg-muted/50 dark:bg-muted/30 border border-border/40 rounded-lg p-1.5">
-                        <TabsTrigger value="attendance" className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-md data-[state=active]:text-primary rounded-md transition-all">
-                            <Calendar className="h-4 w-4" />
-                            <span className="font-semibold">Attendance Upload</span>
+                    <TabsList className="bg-muted/50 dark:bg-muted/30 border border-border/40 rounded-lg p-1 sm:p-1.5 flex flex-wrap gap-1 h-auto">
+                        <TabsTrigger value="attendance" className="gap-1.5 sm:gap-2 data-[state=active]:bg-background data-[state=active]:shadow-md data-[state=active]:text-primary rounded-md transition-all text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2">
+                            <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                            <span className="font-semibold hidden xs:inline">Attendance</span>
+                            <span className="font-semibold xs:hidden">Upload</span>
                         </TabsTrigger>
-                        <TabsTrigger value="manual" className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-md data-[state=active]:text-primary rounded-md transition-all">
-                            <ClipboardCheck className="h-4 w-4" />
-                            <span className="font-semibold">Manual Entry</span>
+                        <TabsTrigger value="manual" className="gap-1.5 sm:gap-2 data-[state=active]:bg-background data-[state=active]:shadow-md data-[state=active]:text-primary rounded-md transition-all text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2">
+                            <ClipboardCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                            <span className="font-semibold hidden xs:inline">Manual Entry</span>
+                            <span className="font-semibold xs:hidden">Manual</span>
                         </TabsTrigger>
-                        <TabsTrigger value="followup" className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-md data-[state=active]:text-primary rounded-md transition-all">
-                            <AlertTriangle className="h-4 w-4" />
-                            <span className="font-semibold">Absentee Follow-Up</span>
+                        <TabsTrigger value="followup" className="gap-1.5 sm:gap-2 data-[state=active]:bg-background data-[state=active]:shadow-md data-[state=active]:text-primary rounded-md transition-all text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2">
+                            <AlertTriangle className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                            <span className="font-semibold hidden sm:inline">Absentee Follow-Up</span>
+                            <span className="font-semibold sm:hidden">Follow-Up</span>
                         </TabsTrigger>
-                        <TabsTrigger value="members" className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-md data-[state=active]:text-primary rounded-md transition-all">
-                            <Users className="h-4 w-4" />
-                            <span className="font-semibold">Members Manager</span>
+                        <TabsTrigger value="members" className="gap-1.5 sm:gap-2 data-[state=active]:bg-background data-[state=active]:shadow-md data-[state=active]:text-primary rounded-md transition-all text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2">
+                            <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                            <span className="font-semibold">Members</span>
                         </TabsTrigger>
-                        <TabsTrigger value="gallery" className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-md data-[state=active]:text-primary rounded-md transition-all">
-                            <Image className="h-4 w-4" />
+                        <TabsTrigger value="gallery" className="gap-1.5 sm:gap-2 data-[state=active]:bg-background data-[state=active]:shadow-md data-[state=active]:text-primary rounded-md transition-all text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2">
+                            <Image className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                             <span className="font-semibold">Gallery</span>
                         </TabsTrigger>
                     </TabsList>
