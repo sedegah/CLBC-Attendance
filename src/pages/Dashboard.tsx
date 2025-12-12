@@ -329,34 +329,34 @@ const Dashboard = () => {
                 </div>
             </header>
 
-            <main className="container mx-auto px-4 lg:px-8 py-10 space-y-10">
+            <main className="container mx-auto px-4 lg:px-8 py-6 sm:py-10 space-y-6 sm:space-y-10">
                 
                 {/* // --- REDESIGNED WELCOME BANNER ---
                 // Enhanced with personalization, time context, and cleaner design.
                 */}
-                <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-primary to-primary/80 shadow-2xl shadow-primary/20 dark:shadow-primary/30 p-8 md:p-10 text-primary-foreground">
+                <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-primary to-primary/80 shadow-2xl shadow-primary/20 dark:shadow-primary/30 p-5 sm:p-8 md:p-10 text-primary-foreground">
                     <div className="absolute inset-0 bg-pattern-light opacity-5 dark:opacity-10" /> 
                     <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                         <div className="space-y-1">
                             {/* Personalized Greeting */}
-                            <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight">
+                            <h1 className="text-2xl sm:text-3xl md:text-5xl font-extrabold tracking-tight">
                                 Welcome back, <span className="text-primary-foreground/90">{userName.split(' ')[0]}!</span>
                             </h1>
                             
                             {/* Subtitle/Description */}
-                            <p className="text-primary-foreground/90 max-w-2xl text-lg md:text-xl font-medium">
+                            <p className="text-primary-foreground/90 max-w-2xl text-base sm:text-lg md:text-xl font-medium">
                                 Dashboard Overview for C.L.B.C Management System
                             </p>
                         </div>
 
                         {/* Date Context and Icon */}
-                        <div className="flex-shrink-0 text-right">
-                            <p className="text-sm font-light text-primary-foreground/80 uppercase tracking-widest mb-1">
+                        <div className="flex-shrink-0 text-left md:text-right">
+                            <p className="text-xs sm:text-sm font-light text-primary-foreground/80 uppercase tracking-widest mb-1">
                                 Today is
                             </p>
-                            <div className="flex items-center justify-end gap-2">
-                                <Calendar className="h-5 w-5 text-primary-foreground/80 hidden sm:block" />
-                                <span className="text-xl md:text-2xl font-semibold">{currentDate}</span>
+                            <div className="flex items-center gap-2">
+                                <Calendar className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground/80 hidden xs:block" />
+                                <span className="text-base sm:text-xl md:text-2xl font-semibold">{currentDate}</span>
                             </div>
                         </div>
                     </div>
@@ -392,21 +392,21 @@ const Dashboard = () => {
                         </TabsTrigger>
                     </TabsList>
 
-                    <TabsContent value="attendance" className="space-y-8 mt-0">
+                    <TabsContent value="attendance" className="space-y-6 sm:space-y-8 mt-0">
                         {/* Stats Grid (No change) */}
-                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
                             {memberStats.map((stat, index) => (
                                 <Card key={index} className="group border-border/40 hover:border-primary/50 transition-all duration-300 shadow-sm hover:shadow-lg hover:shadow-primary/5 overflow-hidden">
-                                    <CardContent className="p-6 relative">
+                                    <CardContent className="p-3 sm:p-4 md:p-6 relative">
                                         {/* Decorative element (uses new color properties) */}
-                                        <div className={`absolute top-0 right-0 w-24 h-24 ${stat.bgColor} ${stat.darkBgColor} rounded-full -translate-y-1/2 translate-x-1/2 opacity-50 group-hover:opacity-80 transition-opacity duration-500`} />
-                                        <div className="relative z-10 space-y-4">
-                                            <div className={`h-12 w-12 rounded-xl ${stat.bgColor} flex items-center justify-center shadow-md`}>
-                                                <stat.icon className={`h-6 w-6 ${stat.color}`} />
+                                        <div className={`absolute top-0 right-0 w-16 h-16 sm:w-24 sm:h-24 ${stat.bgColor} ${stat.darkBgColor} rounded-full -translate-y-1/2 translate-x-1/2 opacity-50 group-hover:opacity-80 transition-opacity duration-500`} />
+                                        <div className="relative z-10 space-y-2 sm:space-y-4">
+                                            <div className={`h-8 w-8 sm:h-10 md:h-12 sm:w-10 md:w-12 rounded-lg sm:rounded-xl ${stat.bgColor} flex items-center justify-center shadow-md`}>
+                                                <stat.icon className={`h-4 w-4 sm:h-5 md:h-6 sm:w-5 md:w-6 ${stat.color}`} />
                                             </div>
                                             <div>
-                                                <p className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight">{stat.value}</p>
-                                                <p className="text-sm font-medium text-muted-foreground mt-0.5">{stat.title}</p>
+                                                <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-foreground tracking-tight">{stat.value}</p>
+                                                <p className="text-xs sm:text-sm font-medium text-muted-foreground mt-0.5 truncate">{stat.title}</p>
                                             </div>
                                         </div>
                                     </CardContent>
@@ -414,22 +414,22 @@ const Dashboard = () => {
                             ))}
                         </div>
 
-                        {/* Main Content Grid (No change) */}
-                        <div className="grid lg:grid-cols-3 gap-8">
-                            {/* Upload Section (No change) */}
+                        {/* Main Content Grid */}
+                        <div className="grid lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+                            {/* Upload Section */}
                             <Card className="lg:col-span-1 border-border/40 border-dashed border-2 hover:border-primary/50 transition-colors duration-300 shadow-lg bg-background/80 backdrop-blur-sm">
-                                <CardHeader className="pb-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center shadow-sm">
-                                            <Upload className="h-5 w-5 text-primary" />
+                                <CardHeader className="pb-3 sm:pb-4">
+                                    <div className="flex items-center gap-2 sm:gap-3">
+                                        <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-lg sm:rounded-xl bg-primary/10 flex items-center justify-center shadow-sm">
+                                            <Upload className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                                         </div>
                                         <div>
-                                            <CardTitle className="text-xl font-bold">Upload Attendance</CardTitle>
-                                            <CardDescription className="text-sm">Process Excel or CSV files</CardDescription>
+                                            <CardTitle className="text-base sm:text-xl font-bold">Upload Attendance</CardTitle>
+                                            <CardDescription className="text-xs sm:text-sm">Process Excel or CSV files</CardDescription>
                                         </div>
                                     </div>
                                 </CardHeader>
-                                <CardContent className="space-y-5">
+                                <CardContent className="space-y-3 sm:space-y-5">
                                     <div className="space-y-2">
                                         <Label htmlFor="attendanceDate" className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Select Date</Label>
                                         <div className="relative">
@@ -438,7 +438,7 @@ const Dashboard = () => {
                                                 type="date"
                                                 value={attendanceDate}
                                                 onChange={(e) => setAttendanceDate(e.target.value)}
-                                                className="bg-muted/50 dark:bg-muted/30 border-border/40 text-base py-6 pr-10"
+                                                className="bg-muted/50 dark:bg-muted/30 border-border/40 text-sm sm:text-base py-5 sm:py-6 pr-10"
                                             />
                                             <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                                         </div>
@@ -453,12 +453,12 @@ const Dashboard = () => {
                                                 accept=".xlsx,.xls,.csv"
                                                 onChange={handleFileUpload}
                                                 disabled={isUploading}
-                                                className="cursor-pointer bg-muted/50 dark:bg-muted/30 border-border/40 file:bg-primary file:text-primary-foreground file:border-0 file:rounded-full file:px-4 file:py-1.5 file:mr-3 file:cursor-pointer file:font-medium hover:file:bg-primary/90 transition-colors"
+                                                className="cursor-pointer bg-muted/50 dark:bg-muted/30 border-border/40 text-xs sm:text-sm file:bg-primary file:text-primary-foreground file:border-0 file:rounded-full file:px-3 sm:file:px-4 file:py-1 sm:file:py-1.5 file:mr-2 sm:file:mr-3 file:cursor-pointer file:font-medium file:text-xs sm:file:text-sm hover:file:bg-primary/90 transition-colors"
                                             />
                                         </div>
                                     </div>
                                     {isUploading && (
-                                        <div className="flex items-center gap-2 p-3 rounded-lg bg-primary/10 text-primary text-sm font-medium border border-primary/20">
+                                        <div className="flex items-center gap-2 p-2 sm:p-3 rounded-lg bg-primary/10 text-primary text-xs sm:text-sm font-medium border border-primary/20">
                                             <Loader2 className="h-4 w-4 animate-spin" />
                                             <span>Processing file... Please wait.</span>
                                         </div>
