@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { Navigation } from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Image as ImageIcon, X, ChevronLeft, ChevronRight } from "lucide-react";
 import clbcLogo from "@/assets/clbc-logo.png";
@@ -96,25 +97,7 @@ const Gallery = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-card border-b border-border sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-3 sm:py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2 sm:gap-4">
-            <Link to="/">
-              <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-10 sm:w-10">
-                <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
-              </Button>
-            </Link>
-            <div className="flex items-center gap-2 sm:gap-3">
-              <img src={clbcLogo} alt="CLBC Logo" className="h-8 w-8 sm:h-10 sm:w-10" />
-              <div>
-                <h1 className="text-base sm:text-xl font-bold text-foreground">Photo Gallery</h1>
-                <p className="text-xs sm:text-sm text-muted-foreground hidden xs:block">Changed Life Baptist Church</p>
-              </div>
-            </div>
-          </div>
-          <ThemeToggle />
-        </div>
+      {Navigation /
       </header>
 
       {/* Album Filter */}

@@ -1,20 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Calendar, DollarSign, MessageSquare, UserCheck, BarChart3, Heart, Shield, ArrowRight, Menu, X, LogOut, Code, Globe, Zap, Compass } from "lucide-react"; 
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
-import { useToast } from "@/hooks/use-toast";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { Users, Calendar, BarChart3, Heart, Shield, ArrowRight, Code, Globe, Zap, Compass } from "lucide-react"; 
+import { useNavigate } from "react-router-dom";
+import { Navigation } from "@/components/Navigation";
 import heroImage from "@/assets/hero-church.jpg";
 import clbcLogo from "@/assets/clbc-logo.png";
-const Index = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const navigate = useNavigate();
-  const { user, signOut, loading } = useAuth();
-  const { toast } = useToast();
 
-  // --- Data Definitions ---
+const Index = () => {
+  const navigate = useNavigate();
   const features = [
     {
       icon: Users,
@@ -63,148 +56,12 @@ const Index = () => {
     { number: "99.9%", label: "Uptime" },
   ];
   // -----------------------------------------------------------
+  // -----------------------------------------------------------
 
-  const handleSignOut = async () => {
-    await signOut();
-    toast({
-      title: "Signed out",
-      description: "You have been signed out successfully.",
-    });
-  };
-
-  const NavLink = ({ to, children }) => (
-    <a
-      href={to}
-      className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors hover:font-semibold"
-      onClick={() => {
-        setIsMenuOpen(false);
-      }}
-    >
-      {children}
-    </a>
-  );
-
-  return (
-    <div className="min-h-screen bg-background"> 
-      {/* Navigation */}
-      <nav className="border-b border-border/40 bg-background/90 backdrop-blur-md sticky top-0 z-50 shadow-lg shadow-background/5">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="flex items-center justify-between h-20">
-            {/* Logo Group - UPDATED */}
-            <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
-              <img src={clbcLogo} alt="C.L.B.C Logo" className="h-10 w-auto" />
-              <div className="flex flex-col">
-                <span className="text-xl font-extrabold text-foreground leading-tight tracking-tight">CLBC Deliverance Centre</span> {/* CHANGED TEXT */}
-                <span className="text-xs text-primary-dark/70 dark:text-muted-foreground leading-tight">Church Management</span>
-              </div>
-            </div>
-
-            {/* Desktop Navigation Links */}
-            <div className="hidden md:flex items-center gap-6">
-              <NavLink to="#features">Features</NavLink>
-              <NavLink to="#values">Our Values</NavLink>
-              <Link
-                to="/gallery"
-                className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors hover:font-semibold"
-              >
-                Gallery
-              </Link>
-              <NavLink to="#contact">Contact</NavLink> 
-            </div>
-
-            {/* Desktop Actions */}
-            <div className="hidden md:flex items-center gap-4">
-              <ThemeToggle />
-              {!loading && (
-                user ? (
-                  <div className="flex items-center gap-3">
-                    <Button 
-                      variant="outline" 
-                      className="text-foreground font-medium hover:bg-primary/10 transition-colors"
-                      onClick={() => navigate("/dashboard")}
-                    >
-                      Dashboard
-                    </Button>
-                    <Button 
-                      variant="ghost" 
-                      className="gap-2 text-red-500 hover:bg-red-500/10"
-                      onClick={handleSignOut}
-                    >
-                      <LogOut className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ) : (
-                  <Button 
-                    variant="default" 
-                    className="gap-2 px-6 py-2.5 font-semibold transition-transform duration-200 hover:scale-[1.02] shadow-primary/30 shadow-lg"
-                    onClick={() => navigate("/auth")}
-                  >
-                    Get Started Free
-                    <ArrowRight className="h-4 w-4" />
-                  </Button>
-                )
-              )}
-            </div>
-
-            {/* Mobile Menu Button */}
-            <div className="flex items-center gap-2 md:hidden">
-              <ThemeToggle />
-              <button
-                className="text-foreground p-2 rounded-md hover:bg-muted/50 transition-colors"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-              >
-                {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              </button>
-            </div>
-          </div>
-
-          {/* Mobile Navigation */}
-          {isMenuOpen && (
-            <div className="md:hidden py-4 space-y-3 border-t border-border/60">
-              <NavLink to="#features">Features</NavLink>
-              <NavLink to="#values">Our Values</NavLink>
-              <Link
-                to="/gallery"
-                className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors hover:font-semibold block"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Gallery
-              </Link>
-              <NavLink to="#contact">Contact</NavLink>
-              <div className="h-px bg-border/60 my-2" />
-              {!loading && (
-                user ? (
-                  <div className="space-y-3">
-                    <Button 
-                      variant="default" 
-                      className="w-full text-base font-medium"
-                      onClick={() => { navigate("/dashboard"); setIsMenuOpen(false); }}
-                    >
-                      Go to Dashboard
-                    </Button>
-                    <Button 
-                      variant="ghost" 
-                      className="w-full gap-2 text-base font-medium text-red-500 hover:bg-red-500/10"
-                      onClick={() => { handleSignOut(); setIsMenuOpen(false); }}
-                    >
-                      <LogOut className="h-4 w-4" />
-                      Sign Out
-                    </Button>
-                  </div>
-                ) : (
-                  <Button 
-                    variant="default" 
-                    className="w-full text-base font-medium"
-                    onClick={() => { navigate("/auth"); setIsMenuOpen(false); }}
-                  >
-                    Get Started / Sign In
-                  </Button>
-                )
-              )}
-            </div>
-          )}
-        </div>
-      </nav>
+  return (
+    <div className="min-h-screen bg-background"> 
+      {/* Navigation */}
+      <Navigation />
 
       <main>
         {/* Hero Section - UPDATED THEME EMPHASIS AND TEXT FIXES */}

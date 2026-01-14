@@ -35,6 +35,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { Navigation } from "@/components/Navigation";
 import clbcLogo from "@/assets/clbc-logo.png";
 import MembersManager from "@/components/MembersManager";
 import ManualAttendance from "@/components/ManualAttendance";
@@ -299,37 +300,8 @@ const Dashboard = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-secondary/5">
-            {/* Header (No change) */}
-            <header className="border-b border-border/40 bg-background/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
-                <div className="container mx-auto px-4 lg:px-8">
-                    <div className="flex items-center justify-between h-16">
-                        <div className="flex items-center gap-3">
-                            <img src={clbcLogo} alt="C.L.B.C Logo" className="h-10 w-auto" />
-                            <div className="hidden sm:flex flex-col">
-                                <span className="text-xl font-extrabold text-foreground leading-tight tracking-tight">C.L.B.C</span>
-                                <span className="text-xs text-primary-dark/70 dark:text-muted-foreground leading-tight">Church Management</span>
-                            </div>
-                        </div>
-
-                        <div className="flex items-center gap-3">
-                            <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/50 dark:bg-muted/70 border border-border/60">
-                                <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-                                <span className="text-sm font-medium text-foreground">
-                                    {userName}
-                                </span>
-                            </div>
-                            <ThemeToggle />
-                            <Button variant="ghost" size="icon" onClick={() => navigate("/")} className="text-muted-foreground hover:text-foreground">
-                                <FileBadge2 className="h-5 w-5" />
-                            </Button>
-                            <Button variant="destructive" size="sm" onClick={handleSignOut} className="gap-2 border-transparent bg-destructive/90 hover:bg-destructive shadow-md">
-                                <LogOut className="h-4 w-4" />
-                                <span className="hidden sm:inline">Sign Out</span>
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            </header>
+            {/* Header */}
+            <Navigation variant="dashboard" />
 
             <main className="container mx-auto px-4 lg:px-8 py-6 sm:py-10 space-y-6 sm:space-y-10">
                 
