@@ -30,8 +30,27 @@ import {
   UserCheck, 
   UserX,
   TrendingUp,
-  BarChart3
+  BarChart3,
+  PieChart as PieChartIcon,
+  LineChart as LineChartIcon
 } from "lucide-react";
+import {
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  Area,
+  AreaChart,
+} from "recharts";
 
 interface AttendanceRecord {
   id: string;
@@ -379,6 +398,234 @@ export default function AttendanceReport() {
                 </div>
               </div>
             </div>
+
+            {/* Charts Section */}
+            {attendanceRecords.length > 0 && (
+              <div className="space-y-6 no-print">
+                {/* Attendance Trend Chart */}
+                <div className="bg-muted/20 rounded-lg p-4 sm:p-6 border border-border/40">
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <LineChartIcon className="h-5 w-5 text-primary" />
+                    Attendance Trend
+                  </h3>
+                  <div className="h-64 sm:h-80">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart
+                        data={attendanceRecords.map(r => ({
+                          date: format(parseISO(r.attendance_date), "MMM dd"),
+                          fullDate: format(parseISO(r.attendance_date), "MMM dd, yyyy"),
+                          rate: r.total_members > 0 ? Math.round((r.present_count / r.total_members) * 100) : 0,
+                          present: r.present_count,
+                          absent: r.absent_count,
+                        }))}
+                        margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
+                      >
+                        <defs>
+                          <linearGradient id="colorRate" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
+                            <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" className="stroke-border/50" />
+                        <XAxis 
+                          dataKey="date" 
+                          tick={{ fontSize: 11 }} 
+                          className="text-muted-foreground"
+                          tickLine={false}
+                        />
+                        <YAxis 
+                          tick={{ fontSize: 11 }} 
+                          className="text-muted-foreground"
+                          tickLine={false}
+                          domain={[0, 100]}
+                          tickFormatter={(v) => `${v}%`}
+                        />
+                        <Tooltip 
+                          contentStyle={{ 
+                            backgroundColor: 'hsl(var(--background))', 
+                            border: '1px solid hsl(var(--border))',
+                            borderRadius: '8px',
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                          }}
+                          labelFormatter={(label, payload) => payload[0]?.payload?.fullDate || label}
+                          formatter={(value: number) => [`${value}%`, 'Attendance Rate']}
+                        />
+                        <Area
+                          type="monotone"
+                          dataKey="rate"
+                          stroke="hsl(var(--primary))"
+                          strokeWidth={2}
+                          fillOpacity={1}
+                          fill="url(#colorRate)"
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                {/* Present vs Absent Bar Chart */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="bg-muted/20 rounded-lg p-4 sm:p-6 border border-border/40">
+                    <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                      <BarChart3 className="h-5 w-5 text-primary" />
+                      Present vs Absent by Session
+                    </h3>
+                    <div className="h-64 sm:h-72">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart
+                          data={attendanceRecords.map(r => ({
+                            date: format(parseISO(r.attendance_date), "MMM dd"),
+                            present: r.present_count,
+                            absent: r.absent_count,
+                          }))}
+                          margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" className="stroke-border/50" />
+                          <XAxis 
+                            dataKey="date" 
+                            tick={{ fontSize: 10 }} 
+                            className="text-muted-foreground"
+                            tickLine={false}
+                          />
+                          <YAxis 
+                            tick={{ fontSize: 11 }} 
+                            className="text-muted-foreground"
+                            tickLine={false}
+                          />
+                          <Tooltip 
+                            contentStyle={{ 
+                              backgroundColor: 'hsl(var(--background))', 
+                              border: '1px solid hsl(var(--border))',
+                              borderRadius: '8px',
+                              boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                            }}
+                          />
+                          <Legend wrapperStyle={{ fontSize: '12px' }} />
+                          <Bar dataKey="present" name="Present" fill="hsl(142, 76%, 36%)" radius={[4, 4, 0, 0]} />
+                          <Bar dataKey="absent" name="Absent" fill="hsl(0, 84%, 60%)" radius={[4, 4, 0, 0]} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+
+                  {/* Overall Attendance Pie Chart */}
+                  <div className="bg-muted/20 rounded-lg p-4 sm:p-6 border border-border/40">
+                    <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                      <PieChartIcon className="h-5 w-5 text-primary" />
+                      Overall Attendance Distribution
+                    </h3>
+                    <div className="h-64 sm:h-72">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={[
+                              { 
+                                name: 'Present', 
+                                value: attendanceRecords.reduce((sum, r) => sum + r.present_count, 0),
+                                color: 'hsl(142, 76%, 36%)'
+                              },
+                              { 
+                                name: 'Absent', 
+                                value: attendanceRecords.reduce((sum, r) => sum + r.absent_count, 0),
+                                color: 'hsl(0, 84%, 60%)'
+                              },
+                            ]}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={60}
+                            outerRadius={90}
+                            paddingAngle={5}
+                            dataKey="value"
+                            label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                            labelLine={{ stroke: 'hsl(var(--muted-foreground))', strokeWidth: 1 }}
+                          >
+                            <Cell fill="hsl(142, 76%, 36%)" />
+                            <Cell fill="hsl(0, 84%, 60%)" />
+                          </Pie>
+                          <Tooltip 
+                            contentStyle={{ 
+                              backgroundColor: 'hsl(var(--background))', 
+                              border: '1px solid hsl(var(--border))',
+                              borderRadius: '8px',
+                              boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                            }}
+                            formatter={(value: number, name: string) => [value, name]}
+                          />
+                          <Legend wrapperStyle={{ fontSize: '12px' }} />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Top Attendees Chart */}
+                {memberAttendance.length > 0 && (
+                  <div className="bg-muted/20 rounded-lg p-4 sm:p-6 border border-border/40">
+                    <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                      <Users className="h-5 w-5 text-primary" />
+                      Top 10 Attendees by Rate
+                    </h3>
+                    <div className="h-64 sm:h-80">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart
+                          data={memberAttendance.slice(0, 10).map(m => ({
+                            name: m.member_name.length > 15 ? m.member_name.substring(0, 15) + '...' : m.member_name,
+                            fullName: m.member_name,
+                            rate: m.attendance_rate,
+                            present: m.present_count,
+                            absent: m.absent_count,
+                          }))}
+                          layout="vertical"
+                          margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" className="stroke-border/50" />
+                          <XAxis 
+                            type="number" 
+                            domain={[0, 100]} 
+                            tick={{ fontSize: 11 }}
+                            tickFormatter={(v) => `${v}%`}
+                          />
+                          <YAxis 
+                            type="category" 
+                            dataKey="name" 
+                            tick={{ fontSize: 11 }}
+                            width={100}
+                          />
+                          <Tooltip 
+                            contentStyle={{ 
+                              backgroundColor: 'hsl(var(--background))', 
+                              border: '1px solid hsl(var(--border))',
+                              borderRadius: '8px',
+                              boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                            }}
+                            labelFormatter={(label, payload) => payload[0]?.payload?.fullName || label}
+                            formatter={(value: number) => [`${value}%`, 'Attendance Rate']}
+                          />
+                          <Bar 
+                            dataKey="rate" 
+                            name="Rate"
+                            radius={[0, 4, 4, 0]}
+                          >
+                            {memberAttendance.slice(0, 10).map((entry, index) => (
+                              <Cell 
+                                key={`cell-${index}`} 
+                                fill={
+                                  entry.attendance_rate >= 75 
+                                    ? 'hsl(142, 76%, 36%)' 
+                                    : entry.attendance_rate >= 50 
+                                      ? 'hsl(45, 93%, 47%)' 
+                                      : 'hsl(0, 84%, 60%)'
+                                } 
+                              />
+                            ))}
+                          </Bar>
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Session Breakdown */}
             <div className="print-break">
