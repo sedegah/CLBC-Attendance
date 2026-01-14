@@ -296,6 +296,24 @@ const Dashboard = () => {
         },
     ];
 
+    const quickActions = [
+        {
+            icon: Upload,
+            title: "Upload attendance",
+            description: "Process Excel/CSV files for this week",
+        },
+        {
+            icon: UserPlus,
+            title: "Add a member",
+            description: "Keep new families in the loop",
+        },
+        {
+            icon: BarChart3,
+            title: "View reports",
+            description: "Share-ready insights for leadership",
+        },
+    ];
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-secondary/5">
             {/* Header */}
@@ -319,6 +337,14 @@ const Dashboard = () => {
                             <p className="text-primary-foreground/90 max-w-2xl text-base sm:text-lg md:text-xl font-medium">
                                 Dashboard Overview for C.L.B.C Management System
                             </p>
+                            <div className="flex flex-wrap items-center gap-2 pt-2">
+                                <span className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 px-3 py-1 text-xs font-semibold text-primary-foreground">
+                                    A Changed Life for Christ
+                                </span>
+                                <span className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/5 px-3 py-1 text-[11px] font-medium text-primary-foreground/90">
+                                    Serving CLBC Deliverance Centre
+                                </span>
+                            </div>
                         </div>
 
                         {/* Date Context and Icon */}
@@ -335,6 +361,23 @@ const Dashboard = () => {
                 </div>
                 {/* // --- END REDESIGNED WELCOME BANNER --- 
                 */}
+
+                {/* Quick Actions */}
+                <div className="grid sm:grid-cols-3 gap-3 md:gap-4 lg:gap-6">
+                    {quickActions.map((action, idx) => (
+                        <Card key={idx} className="border-border/40 bg-background/80 backdrop-blur shadow-sm hover:shadow-md transition-all">
+                            <CardContent className="p-4 sm:p-5 flex items-start gap-3">
+                                <div className="h-10 w-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+                                    <action.icon className="h-5 w-5" />
+                                </div>
+                                <div className="space-y-1">
+                                    <p className="text-sm font-semibold text-foreground">{action.title}</p>
+                                    <p className="text-xs text-muted-foreground leading-relaxed">{action.description}</p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    ))}
+                </div>
                 
                 {/* Tabs for different sections (No change) */}
                 <Tabs defaultValue="attendance" className="space-y-6">
