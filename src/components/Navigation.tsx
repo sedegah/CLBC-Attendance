@@ -11,6 +11,7 @@ import {
   Home,
   LayoutDashboard,
   ChevronDown,
+  Image as ImageIcon,
 } from "lucide-react";
 import clbcLogo from "@/assets/clbc-logo.png";
 import { cn } from "@/lib/utils";
@@ -68,10 +69,10 @@ export const Navigation = ({ variant = "default" }: NavigationProps) => {
       <Link
         to={to}
         className={cn(
-          "flex items-center gap-3 px-4 py-3 text-base font-medium transition-all duration-200 rounded-lg",
+          "flex items-center gap-3 px-4 py-4 text-base font-medium transition-all duration-200 rounded-lg touch-target tap-highlight-none",
           active
             ? "bg-primary/10 text-primary border-l-4 border-primary"
-            : "text-foreground/70 hover:text-foreground hover:bg-accent/50"
+            : "text-foreground/70 hover:text-foreground hover:bg-accent/50 active:bg-accent/70"
         )}
         onClick={() => setIsMenuOpen(false)}
       >
@@ -83,15 +84,15 @@ export const Navigation = ({ variant = "default" }: NavigationProps) => {
 
   if (variant === "dashboard") {
     return (
-      <header className="border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 shadow-sm">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="flex items-center justify-between h-16 gap-4">
+      <header className="border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 shadow-sm safe-top">
+        <div className="container mx-auto px-3 sm:px-4 lg:px-8">
+          <div className="flex items-center justify-between h-14 sm:h-16 gap-2 sm:gap-4">
             {/* Logo */}
             <div 
-              className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity group"
+              className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity group tap-highlight-none"
               onClick={() => navigate("/dashboard")}
             >
-              <div className="h-12 w-12 rounded-full border border-primary/30 bg-white shadow-sm p-1 flex items-center justify-center overflow-hidden">
+              <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full border border-primary/30 bg-white shadow-sm p-1 flex items-center justify-center overflow-hidden">
                 <img 
                   src={clbcLogo} 
                   alt="C.L.B.C Logo" 
@@ -99,7 +100,7 @@ export const Navigation = ({ variant = "default" }: NavigationProps) => {
                 />
               </div>
               <div className="hidden sm:flex flex-col">
-                <span className="text-lg font-bold text-foreground leading-tight" style={{ fontFamily: "'Poppins', 'Inter', 'Segoe UI', sans-serif" }}>
+                <span className="text-base sm:text-lg font-bold text-foreground leading-tight" style={{ fontFamily: "'Poppins', 'Inter', 'Segoe UI', sans-serif" }}>
                   C.L.B.C
                 </span>
                 <span className="text-xs text-muted-foreground leading-tight" style={{ fontFamily: "'Poppins', 'Inter', 'Segoe UI', sans-serif" }}>
@@ -109,7 +110,7 @@ export const Navigation = ({ variant = "default" }: NavigationProps) => {
             </div>
 
             {/* Right Actions */}
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-1 sm:gap-2">
               {user && (
                 <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20">
                   <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
@@ -123,7 +124,7 @@ export const Navigation = ({ variant = "default" }: NavigationProps) => {
                 variant="ghost"
                 size="icon"
                 onClick={() => navigate("/")}
-                className="text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
+                className="text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors touch-target tap-highlight-none h-10 w-10"
                 title="Back to Home"
               >
                 <Home className="h-5 w-5" />
@@ -132,7 +133,7 @@ export const Navigation = ({ variant = "default" }: NavigationProps) => {
                 variant="destructive"
                 size="sm"
                 onClick={handleSignOut}
-                className="gap-2 transition-all duration-200 hover:shadow-md"
+                className="gap-2 transition-all duration-200 hover:shadow-md touch-target tap-highlight-none px-3 sm:px-4"
               >
                 <LogOut className="h-4 w-4" />
                 <span className="hidden sm:inline">Sign Out</span>
@@ -216,6 +217,78 @@ export const Navigation = ({ variant = "default" }: NavigationProps) => {
             )}
           </div>
 
+  return (
+    <nav className="border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 shadow-sm safe-top">
+      <div className="container mx-auto px-3 sm:px-4 lg:px-8">
+        <div className="flex items-center justify-between h-16 sm:h-20">
+          {/* Logo */}
+          <div 
+            className="flex items-center gap-2 sm:gap-3 cursor-pointer group transition-opacity hover:opacity-80 tap-highlight-none"
+            onClick={() => navigate("/")}
+          >
+            <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full border border-primary/30 bg-white shadow-sm p-1 flex items-center justify-center overflow-hidden">
+              <img
+                src={clbcLogo}
+                alt="C.L.B.C Logo"
+                className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-110"
+              />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-base sm:text-lg font-bold text-foreground leading-tight tracking-tight" style={{ fontFamily: "'Poppins', 'Inter', 'Segoe UI', sans-serif" }}>
+                CLBC Deliverance
+              </span>
+              <span className="text-xs text-muted-foreground leading-tight hidden sm:block" style={{ fontFamily: "'Poppins', 'Inter', 'Segoe UI', sans-serif" }}>
+                Church Management
+              </span>
+            </div>
+          </div>
+
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex items-center gap-1">
+            <NavItem to="/" icon={Home}>
+              Home
+            </NavItem>
+            {user && (
+              <NavItem to="/dashboard" icon={LayoutDashboard}>
+                Dashboard
+              </NavItem>
+            )}
+          </div>
+
+          {/* Desktop Actions */}
+          <div className="hidden lg:flex items-center gap-3">
+            <ThemeToggle />
+            {!loading && (
+              user ? (
+                <div className="flex items-center gap-3 pl-3 border-l border-border/40">
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20">
+                    <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                    <span className="text-sm font-medium text-foreground/80">
+                      {user.email?.split("@")[0]}
+                    </span>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={handleSignOut}
+                    className="text-muted-foreground hover:text-red-500 hover:bg-red-500/10 transition-colors touch-target tap-highlight-none"
+                    title="Sign out"
+                  >
+                    <LogOut className="h-5 w-5" />
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  onClick={() => navigate("/auth")}
+                  className="gap-2 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-200 touch-target tap-highlight-none"
+                >
+                  Get Started
+                  <ChevronDown className="h-4 w-4 rotate-[-90deg]" />
+                </Button>
+              )
+            )}
+          </div>
+
           {/* Mobile Menu Button */}
           <div className="flex items-center gap-2 lg:hidden">
             <ThemeToggle />
@@ -223,7 +296,7 @@ export const Navigation = ({ variant = "default" }: NavigationProps) => {
               variant="ghost"
               size="icon"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-foreground hover:bg-accent/50 transition-colors"
+              className="text-foreground hover:bg-accent/50 transition-colors touch-target tap-highlight-none h-10 w-10"
             >
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </Button>
@@ -232,13 +305,10 @@ export const Navigation = ({ variant = "default" }: NavigationProps) => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="lg:hidden border-t border-border/40 bg-background/50 backdrop-blur animate-in slide-in-from-top-2 duration-200">
-            <div className="py-4 px-4 space-y-1">
+          <div className="lg:hidden border-t border-border/40 bg-background/50 backdrop-blur animate-in slide-in-from-top-2 duration-200 safe-bottom">
+            <div className="py-4 px-3 space-y-1 smooth-scroll max-h-[calc(100vh-5rem)] overflow-y-auto">
               <MobileNavItem to="/" icon={Home}>
                 Home
-              </MobileNavItem>
-              <MobileNavItem to="/gallery" icon={ImageIcon}>
-                Gallery
               </MobileNavItem>
               {user && (
                 <MobileNavItem to="/dashboard" icon={LayoutDashboard}>
@@ -251,15 +321,15 @@ export const Navigation = ({ variant = "default" }: NavigationProps) => {
               {!loading && (
                 user ? (
                   <div className="space-y-2">
-                    <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/10 border border-primary/20">
+                    <div className="flex items-center gap-2 px-4 py-3 rounded-lg bg-primary/10 border border-primary/20">
                       <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-                      <span className="text-sm font-medium text-foreground/80">
+                      <span className="text-sm font-medium text-foreground/80 truncate">
                         {user.email?.split("@")[0]}
                       </span>
                     </div>
                     <Button
                       variant="ghost"
-                      className="w-full justify-start gap-3 text-muted-foreground hover:text-red-500 hover:bg-red-500/10 transition-colors"
+                      className="w-full justify-start gap-3 text-muted-foreground hover:text-red-500 hover:bg-red-500/10 transition-colors touch-target tap-highlight-none py-4"
                       onClick={() => {
                         handleSignOut();
                         setIsMenuOpen(false);
@@ -271,7 +341,7 @@ export const Navigation = ({ variant = "default" }: NavigationProps) => {
                   </div>
                 ) : (
                   <Button
-                    className="w-full transition-all duration-200"
+                    className="w-full transition-all duration-200 touch-target tap-highlight-none py-4"
                     onClick={() => {
                       navigate("/auth");
                       setIsMenuOpen(false);
