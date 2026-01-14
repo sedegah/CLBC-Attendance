@@ -122,22 +122,22 @@ const Index = () => {
               <div className="space-y-8">
                 <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary">
                   <Zap className="h-4 w-4" />
-                  Built for ministry teams who want time back
+                  Built for our CLBC team to serve better
                 </div>
 
                 <div className="space-y-4">
                   <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
-                    Shepherd people, not spreadsheets.
-                    <span className="block text-primary">We handle the admin.</span>
+                    Shepherd our people, not spreadsheets.
+                    <span className="block text-primary">Let the tool handle the admin.</span>
                   </h1>
                   <p className="text-lg md:text-xl text-muted-foreground max-w-2xl">
-                    CLBC Deliverance Centre keeps attendance, member care, and leadership reporting in one calm place. Less busywork, more discipleship.
+                    CLBC Deliverance Centre keeps our attendance, member care, and leadership reporting in one calm place. Less busywork, more discipleship time.
                   </p>
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Button size="lg" className="gap-2 px-8" onClick={() => navigate("/auth")}> 
-                    Start now
+                    Sign in
                     <ArrowRight className="h-5 w-5" />
                   </Button>
                   <Button size="lg" variant="outline" className="gap-2 px-8" onClick={() => navigate("/dashboard")}> 
@@ -164,7 +164,7 @@ const Index = () => {
                     </div>
                     <div>
                       <p className="text-xs uppercase tracking-wide text-muted-foreground">Trust signals</p>
-                      <p className="font-semibold">Fast onboarding. Secure by default.</p>
+                      <p className="font-semibold">Fast to use. Secure by default.</p>
                     </div>
                   </div>
 
@@ -185,8 +185,8 @@ const Index = () => {
                   <div className="rounded-lg border border-dashed border-primary/40 bg-primary/5 p-4 flex items-start gap-3">
                     <Radio className="h-5 w-5 text-primary mt-1" />
                     <div className="space-y-1">
-                      <p className="font-semibold">Go live this week.</p>
-                      <p className="text-sm text-muted-foreground">Import members, set attendance, and share reports with leadership without new hire training.</p>
+                      <p className="font-semibold">Ready for Sunday.</p>
+                      <p className="text-sm text-muted-foreground">Import members, set attendance, and share reports with leadership without extra training.</p>
                     </div>
                   </div>
                 </CardContent>
@@ -199,11 +199,11 @@ const Index = () => {
           <div className="container mx-auto px-4 lg:px-8">
             <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-12">
               <div className="space-y-2 max-w-2xl">
-                <p className="text-sm font-semibold text-primary">What you get</p>
-                <h2 className="text-3xl md:text-4xl font-bold tracking-tight">A calm command center for ministry</h2>
-                <p className="text-muted-foreground">Three pillars keep your church organized, secure, and connected.</p>
+                <p className="text-sm font-semibold text-primary">What we use weekly</p>
+                <h2 className="text-3xl md:text-4xl font-bold tracking-tight">A calm command center for our church</h2>
+                <p className="text-muted-foreground">Three pillars keep CLBC organized, secure, and connected.</p>
               </div>
-              <Button variant="ghost" size="sm" className="gap-2" onClick={() => navigate("/dashboard")}>Peek inside <ArrowRight className="h-4 w-4" /></Button>
+              <Button variant="ghost" size="sm" className="gap-2" onClick={() => navigate("/dashboard")}>Open our dashboard <ArrowRight className="h-4 w-4" /></Button>
             </div>
 
             <div className="grid md:grid-cols-3 gap-6">
@@ -265,7 +265,7 @@ const Index = () => {
                 </ul>
 
                 <Button className="w-full" onClick={() => navigate("/auth")}>
-                  Get started this week
+                  Sign in
                 </Button>
               </CardContent>
             </Card>
@@ -282,7 +282,7 @@ const Index = () => {
                   </div>
                   <div>
                     <p className="text-xs uppercase tracking-wide text-muted-foreground">Story from the field</p>
-                    <p className="font-semibold">Lead pastors see more faces, not more forms.</p>
+                    <p className="font-semibold">Our pastors see more faces, not more forms.</p>
                   </div>
                 </div>
                 <p className="text-lg text-foreground">
@@ -295,9 +295,9 @@ const Index = () => {
             </Card>
 
             <div className="space-y-4">
-              <p className="text-sm font-semibold text-primary">Why churches switch</p>
+              <p className="text-sm font-semibold text-primary">Why we built it</p>
               <h3 className="text-3xl md:text-4xl font-bold tracking-tight">Stay organized without feeling corporate</h3>
-              <p className="text-muted-foreground max-w-2xl">A modern system that still feels pastoral: gentle design, intentional flows, and privacy that respects your people.</p>
+              <p className="text-muted-foreground max-w-2xl">A modern system that still feels pastoral: gentle design, intentional flows, and privacy that respects our people.</p>
 
               <div className="grid md:grid-cols-3 gap-4 mt-6">
                 {values.map((value, idx) => (
@@ -321,7 +321,7 @@ const Index = () => {
                 <div className="space-y-3 max-w-2xl">
                   <p className="text-sm font-semibold text-primary">Next step</p>
                   <h3 className="text-3xl font-bold">Ready to focus on changed lives?</h3>
-                  <p className="text-muted-foreground">Join churches using CLBC Deliverance Centre to keep people first while staying organized.</p>
+                  <p className="text-muted-foreground">Keep our people first while staying organized for every service, meeting, and visit.</p>
                   <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
                     <span className="inline-flex items-center gap-2 rounded-full bg-background/80 px-3 py-1 border border-border/60"><Shield className="h-4 w-4 text-primary" /> Secure by design</span>
                     <span className="inline-flex items-center gap-2 rounded-full bg-background/80 px-3 py-1 border border-border/60"><Zap className="h-4 w-4 text-primary" /> Fast setup</span>
@@ -331,7 +331,7 @@ const Index = () => {
 
                 <div className="flex gap-3">
                   <Button size="lg" className="px-8" onClick={() => navigate("/auth")}>
-                    Start free
+                    Sign in
                   </Button>
                   <Button size="lg" variant="outline" className="px-8" onClick={() => navigate("/dashboard")}>
                     View dashboard
