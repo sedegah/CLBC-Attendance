@@ -97,8 +97,7 @@ const Gallery = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {Navigation /
-      </header>
+      <Navigation />
 
       {/* Album Filter */}
       <div className="bg-card/50 border-b border-border/50">
