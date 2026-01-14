@@ -10,9 +10,7 @@ import {
   LogOut,
   Home,
   LayoutDashboard,
-  Image as ImageIcon,
   ChevronDown,
-  Settings,
 } from "lucide-react";
 import clbcLogo from "@/assets/clbc-logo.png";
 import { cn } from "@/lib/utils";
@@ -174,9 +172,6 @@ export const Navigation = ({ variant = "default" }: NavigationProps) => {
           <div className="hidden lg:flex items-center gap-1">
             <NavItem to="/" icon={Home}>
               Home
-            </NavItem>
-            <NavItem to="/gallery" icon={ImageIcon}>
-              Gallery
             </NavItem>
             {user && (
               <NavItem to="/dashboard" icon={LayoutDashboard}>

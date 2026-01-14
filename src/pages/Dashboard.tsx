@@ -27,7 +27,6 @@ import {
     ClipboardCheck,
     AlertTriangle,
     FileBadge2,
-    Image,
     BarChart3
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -41,7 +40,6 @@ import MembersManager from "@/components/MembersManager";
 import ManualAttendance from "@/components/ManualAttendance";
 import AbsenteeReport from "@/components/AbsenteeReport";
 import AttendanceReport from "@/components/AttendanceReport";
-import { GalleryManager } from "@/components/GalleryManager";
 import * as XLSX from "xlsx";
 import { format } from "date-fns";
 
@@ -360,10 +358,6 @@ const Dashboard = () => {
                             <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                             <span className="font-semibold">Members</span>
                         </TabsTrigger>
-                        <TabsTrigger value="gallery" className="gap-1.5 sm:gap-2 data-[state=active]:bg-background data-[state=active]:shadow-md data-[state=active]:text-primary rounded-md transition-all text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2">
-                            <Image className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                            <span className="font-semibold">Gallery</span>
-                        </TabsTrigger>
                         <TabsTrigger value="reports" className="gap-1.5 sm:gap-2 data-[state=active]:bg-background data-[state=active]:shadow-md data-[state=active]:text-primary rounded-md transition-all text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2">
                             <BarChart3 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                             <span className="font-semibold hidden sm:inline">Reports</span>
@@ -568,11 +562,6 @@ const Dashboard = () => {
                     <TabsContent value="members" className="mt-0">
                         {/* Members Manager Component */}
                         <MembersManager />
-                    </TabsContent>
-
-                    <TabsContent value="gallery" className="mt-0">
-                        {/* Gallery Manager Component */}
-                        <GalleryManager />
                     </TabsContent>
 
                     <TabsContent value="reports" className="mt-0">
