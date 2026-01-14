@@ -51,8 +51,8 @@ export const GalleryManager = () => {
   const [newAlbumDescription, setNewAlbumDescription] = useState("");
   const [isCreatingAlbum, setIsCreatingAlbum] = useState(false);
   const [albumDialogOpen, setAlbumDialogOpen] = useState(false);
-
   useEffect(() => {
+    console.log("GalleryManager mounted, fetching data...");
     fetchAlbums();
     fetchImages();
   }, []);
@@ -64,7 +64,12 @@ export const GalleryManager = () => {
         .select("*")
         .order("name", { ascending: true });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Database error fetching albums:", error);
+        throw error;
+      }
+      
+      console.log("Successfully fetched albums:", data?.length || 0);
       setAlbums(data || []);
     } catch (error) {
       console.error("Error fetching albums:", error);
@@ -78,7 +83,12 @@ export const GalleryManager = () => {
         .select("*")
         .order("created_at", { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Database error fetching images:", error);
+        throw error;
+      }
+      
+      console.log("Successfully fetched images:", data?.length || 0);
       setImages(data || []);
     } catch (error) {
       console.error("Error fetching images:", error);
@@ -239,8 +249,13 @@ export const GalleryManager = () => {
   };
 
   const getImageUrl = (filePath: string) => {
-    const { data } = supabase.storage.from("gallery").getPublicUrl(filePath);
-    return data.publicUrl;
+    try {
+      const { data } = supabase.storage.from("gallery").getPublicUrl(filePath);
+      return data?.publicUrl || '';
+    } catch (error) {
+      console.error("Error getting image URL:", error);
+      return '';
+    }
   };
 
   const filteredImages = selectedAlbum === "all" 
@@ -504,6 +519,10 @@ export const GalleryManager = () => {
                     alt={image.title || "Gallery image"}
                     className="w-full h-full object-cover transition-transform group-hover:scale-105"
                     loading="lazy"
+                    onError={(e) => {
+                      console.error("Error loading image:", image.file_path);
+                      (e.target as HTMLImageElement).src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect fill="%23ddd" width="100" height="100"/%3E%3C/svg%3E';
+                    }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
                     <div className="absolute bottom-0 left-0 right-0 p-2">
@@ -511,7 +530,7 @@ export const GalleryManager = () => {
                         <p className="text-white text-xs font-medium truncate">{image.title}</p>
                       )}
                       <p className="text-white/70 text-xs truncate">
-                        {getAlbumName(image.album_id)}
+                        {getAlbumName(image.album_id) || "Uncategorized"}
                       </p>
                     </div>
                     <Button
