@@ -347,10 +347,12 @@ const Index = () => {
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-start gap-8">
             <div className="flex items-center gap-3">
-              <img src={clbcLogo} alt="C.L.B.C Logo" className="h-12 w-auto" />
+              <div className="h-12 w-12 rounded-full border border-primary/30 bg-white shadow-sm p-1 flex items-center justify-center overflow-hidden">
+                <img src={clbcLogo} alt="C.L.B.C Logo" className="h-full w-full object-contain" />
+              </div>
               <div className="flex flex-col">
-                <span className="text-xl font-extrabold leading-tight tracking-tight">CLBC Deliverance Centre</span>
-                <span className="text-sm text-muted-foreground leading-tight">Church Management System</span>
+                <span className="text-xl font-extrabold leading-tight tracking-tight" style={{ fontFamily: "'Poppins', 'Inter', 'Segoe UI', sans-serif" }}>CLBC Deliverance Centre</span>
+                <span className="text-sm text-muted-foreground leading-tight" style={{ fontFamily: "'Poppins', 'Inter', 'Segoe UI', sans-serif" }}>Church Management System</span>
               </div>
             </div>
 

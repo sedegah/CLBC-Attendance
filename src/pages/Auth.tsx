@@ -118,7 +118,9 @@ const Auth = () => {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-4">
           <div className="flex justify-center">
-            <img src={clbcLogo} alt="C.L.B.C Logo" className="h-16 w-auto" />
+            <div className="h-16 w-16 rounded-full border border-primary/30 bg-white shadow-sm p-1 flex items-center justify-center overflow-hidden">
+              <img src={clbcLogo} alt="C.L.B.C Logo" className="h-full w-full object-contain" />
+            </div>
           </div>
           <div className="text-center">
             <CardTitle className="text-2xl">

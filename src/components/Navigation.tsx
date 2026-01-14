@@ -91,16 +91,18 @@ export const Navigation = ({ variant = "default" }: NavigationProps) => {
               className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity group"
               onClick={() => navigate("/dashboard")}
             >
-              <img 
-                src={clbcLogo} 
-                alt="C.L.B.C Logo" 
-                className="h-10 w-auto group-hover:scale-105 transition-transform duration-200" 
-              />
+              <div className="h-12 w-12 rounded-full border border-primary/30 bg-white shadow-sm p-1 flex items-center justify-center overflow-hidden">
+                <img 
+                  src={clbcLogo} 
+                  alt="C.L.B.C Logo" 
+                  className="h-full w-full object-contain transition-transform duration-200 group-hover:scale-105" 
+                />
+              </div>
               <div className="hidden sm:flex flex-col">
-                <span className="text-lg font-bold text-foreground leading-tight">
+                <span className="text-lg font-bold text-foreground leading-tight" style={{ fontFamily: "'Poppins', 'Inter', 'Segoe UI', sans-serif" }}>
                   C.L.B.C
                 </span>
-                <span className="text-xs text-muted-foreground leading-tight">
+                <span className="text-xs text-muted-foreground leading-tight" style={{ fontFamily: "'Poppins', 'Inter', 'Segoe UI', sans-serif" }}>
                   Church Management
                 </span>
               </div>
@@ -151,18 +153,18 @@ export const Navigation = ({ variant = "default" }: NavigationProps) => {
             className="flex items-center gap-3 cursor-pointer group transition-opacity hover:opacity-80"
             onClick={() => navigate("/")}
           >
-            <div className="relative">
+            <div className="h-12 w-12 rounded-full border border-primary/30 bg-white shadow-sm p-1 flex items-center justify-center overflow-hidden">
               <img
                 src={clbcLogo}
                 alt="C.L.B.C Logo"
-                className="h-12 w-auto transition-transform duration-300 group-hover:scale-110"
+                className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-110"
               />
             </div>
             <div className="flex flex-col">
-              <span className="text-lg font-bold text-foreground leading-tight tracking-tight">
+              <span className="text-lg font-bold text-foreground leading-tight tracking-tight" style={{ fontFamily: "'Poppins', 'Inter', 'Segoe UI', sans-serif" }}>
                 CLBC Deliverance
               </span>
-              <span className="text-xs text-muted-foreground leading-tight">
+              <span className="text-xs text-muted-foreground leading-tight" style={{ fontFamily: "'Poppins', 'Inter', 'Segoe UI', sans-serif" }}>
                 Church Management
               </span>
             </div>
