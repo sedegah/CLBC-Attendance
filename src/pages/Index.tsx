@@ -330,21 +330,13 @@ const Index = () => {
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
-                  <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-                    A Changed Life for Christ
-                  </div>
-                  <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
-                    <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-                      A Changed Life for Christ
-                    </div>
-                    <div className="flex gap-3">
-                      <Button size="lg" className="px-8" onClick={() => navigate("/auth")}>
-                        Sign in
-                      </Button>
-                      <Button size="lg" variant="outline" className="px-8" onClick={() => navigate("/dashboard")}>
-                        View dashboard
-                      </Button>
-                    </div>
+                  <div className="flex gap-3">
+                    <Button size="lg" className="px-8" onClick={() => navigate("/auth")}>
+                      Sign in
+                    </Button>
+                    <Button size="lg" variant="outline" className="px-8" onClick={() => navigate("/dashboard")}>
+                      View dashboard
+                    </Button>
                   </div>
                 </div>
               </CardContent>
