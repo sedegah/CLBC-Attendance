@@ -145,12 +145,26 @@ All colors MUST be HSL.
       /* Prevent text size adjustment on orientation change */
       -webkit-text-size-adjust: 100%;
       text-size-adjust: 100%;
+      /* Prevent rubber band scrolling on iOS */
+      overscroll-behavior: none;
     }
 
     body {
       /* Smooth scrolling on mobile */
       -webkit-overflow-scrolling: touch;
       overscroll-behavior-y: none;
+      /* Prevent horizontal scrolling */
+      overflow-x: hidden;
+    }
+
+    /* Prevent text overflow in navigation */
+    nav, header {
+      overflow-x: hidden;
+    }
+
+    /* Better spacing for mobile navigation */
+    nav > div, header > div {
+      max-width: 100vw;
     }
   }
 
@@ -221,6 +235,38 @@ All colors MUST be HSL.
   /* Better tap feedback */
   .tap-highlight-none {
     -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+  }
+
+  /* Prevent text overflow */
+  .text-truncate-mobile {
+    @apply truncate;
+  }
+
+  @media (max-width: 640px) {
+    .text-truncate-mobile {
+      max-width: calc(100vw - 200px);
+    }
+  }
+
+  /* Better container for mobile */
+  .mobile-container {
+    @apply mx-auto;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  /* Overscroll behavior utilities */
+  .overscroll-none {
+    overscroll-behavior: none;
+  }
+
+  .overscroll-contain {
+    overscroll-behavior: contain;
+  }
+
+  .overscroll-auto {
+    overscroll-behavior: auto;
   }
 
   /* Mobile-optimized shadows */

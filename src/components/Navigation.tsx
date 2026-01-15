@@ -69,15 +69,15 @@ export const Navigation = ({ variant = "default" }: NavigationProps) => {
       <Link
         to={to}
         className={cn(
-          "flex items-center gap-3 px-4 py-4 text-base font-medium transition-all duration-200 rounded-lg touch-target tap-highlight-none",
+          "flex items-center gap-3 px-4 py-3 text-base font-medium transition-all duration-200 rounded-lg touch-target tap-highlight-none min-h-[48px]",
           active
-            ? "bg-primary/10 text-primary border-l-4 border-primary"
-            : "text-foreground/70 hover:text-foreground hover:bg-accent/50 active:bg-accent/70"
+            ? "bg-primary/10 text-primary border-l-4 border-primary font-semibold"
+            : "text-foreground/70 hover:text-foreground hover:bg-accent/50 active:bg-accent/70 border-l-4 border-transparent"
         )}
         onClick={() => setIsMenuOpen(false)}
       >
-        {Icon && <Icon className="h-5 w-5" />}
-        {children}
+        {Icon && <Icon className="h-5 w-5 flex-shrink-0" />}
+        <span className="flex-1">{children}</span>
       </Link>
     );
   };
@@ -89,32 +89,32 @@ export const Navigation = ({ variant = "default" }: NavigationProps) => {
           <div className="flex items-center justify-between h-14 sm:h-16 gap-2 sm:gap-4">
             {/* Logo */}
             <div 
-              className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity group tap-highlight-none"
+              className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity group tap-highlight-none flex-shrink-0"
               onClick={() => navigate("/dashboard")}
             >
-              <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full border border-primary/30 bg-white shadow-sm p-1 flex items-center justify-center overflow-hidden">
+              <div className="h-9 w-9 sm:h-12 sm:w-12 rounded-full border border-primary/30 bg-white shadow-sm p-1 flex items-center justify-center overflow-hidden flex-shrink-0">
                 <img 
                   src={clbcLogo} 
                   alt="C.L.B.C Logo" 
                   className="h-full w-full object-contain transition-transform duration-200 group-hover:scale-105" 
                 />
               </div>
-              <div className="hidden sm:flex flex-col">
-                <span className="text-base sm:text-lg font-bold text-foreground leading-tight" style={{ fontFamily: "'Poppins', 'Inter', 'Segoe UI', sans-serif" }}>
+              <div className="hidden sm:flex flex-col min-w-0">
+                <span className="text-base sm:text-lg font-bold text-foreground leading-tight truncate" style={{ fontFamily: "'Poppins', 'Inter', 'Segoe UI', sans-serif" }}>
                   C.L.B.C
                 </span>
-                <span className="text-xs text-muted-foreground leading-tight" style={{ fontFamily: "'Poppins', 'Inter', 'Segoe UI', sans-serif" }}>
+                <span className="text-xs text-muted-foreground leading-tight truncate" style={{ fontFamily: "'Poppins', 'Inter', 'Segoe UI', sans-serif" }}>
                   Church Management
                 </span>
               </div>
             </div>
 
             {/* Right Actions */}
-            <div className="flex items-center gap-1 sm:gap-2">
+            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
               {user && (
                 <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20">
-                  <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-                  <span className="text-xs sm:text-sm font-medium text-foreground/80">
+                  <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse flex-shrink-0" />
+                  <span className="text-xs sm:text-sm font-medium text-foreground/80 truncate max-w-[100px]">
                     {user.email?.split("@")[0]}
                   </span>
                 </div>
@@ -126,6 +126,7 @@ export const Navigation = ({ variant = "default" }: NavigationProps) => {
                 onClick={() => navigate("/")}
                 className="text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors touch-target tap-highlight-none h-10 w-10"
                 title="Back to Home"
+                aria-label="Back to Home"
               >
                 <Home className="h-5 w-5" />
               </Button>
@@ -133,7 +134,7 @@ export const Navigation = ({ variant = "default" }: NavigationProps) => {
                 variant="destructive"
                 size="sm"
                 onClick={handleSignOut}
-                className="gap-2 transition-all duration-200 hover:shadow-md touch-target tap-highlight-none px-3 sm:px-4"
+                className="gap-2 transition-all duration-200 hover:shadow-md touch-target tap-highlight-none px-3 sm:px-4 min-h-[40px]"
               >
                 <LogOut className="h-4 w-4" />
                 <span className="hidden sm:inline">Sign Out</span>
@@ -151,19 +152,19 @@ export const Navigation = ({ variant = "default" }: NavigationProps) => {
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Logo */}
           <div 
-            className="flex items-center gap-2 sm:gap-3 cursor-pointer group transition-opacity hover:opacity-80 tap-highlight-none"
+            className="flex items-center gap-2 sm:gap-3 cursor-pointer group transition-opacity hover:opacity-80 tap-highlight-none flex-shrink-0"
             onClick={() => navigate("/")}
           >
-            <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full border border-primary/30 bg-white shadow-sm p-1 flex items-center justify-center overflow-hidden">
+            <div className="h-9 w-9 sm:h-12 sm:w-12 rounded-full border border-primary/30 bg-white shadow-sm p-1 flex items-center justify-center overflow-hidden flex-shrink-0">
               <img
                 src={clbcLogo}
                 alt="C.L.B.C Logo"
                 className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-110"
               />
             </div>
-            <div className="flex flex-col">
-              <span className="text-base sm:text-lg font-bold text-foreground leading-tight tracking-tight" style={{ fontFamily: "'Poppins', 'Inter', 'Segoe UI', sans-serif" }}>
-                CLBC Deliverance
+            <div className="flex flex-col min-w-0 flex-1">
+              <span className="text-sm sm:text-lg font-bold text-foreground leading-tight tracking-tight truncate" style={{ fontFamily: "'Poppins', 'Inter', 'Segoe UI', sans-serif" }}>
+                CLBC Deliverance Centre
               </span>
               <span className="text-xs text-muted-foreground leading-tight hidden sm:block" style={{ fontFamily: "'Poppins', 'Inter', 'Segoe UI', sans-serif" }}>
                 Church Management
@@ -218,13 +219,14 @@ export const Navigation = ({ variant = "default" }: NavigationProps) => {
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="flex items-center gap-2 lg:hidden">
+          <div className="flex items-center gap-1 sm:gap-2 lg:hidden flex-shrink-0">
             <ThemeToggle />
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-foreground hover:bg-accent/50 transition-colors touch-target tap-highlight-none h-10 w-10"
+              className="text-foreground hover:bg-accent/50 transition-colors touch-target tap-highlight-none h-10 w-10 sm:h-11 sm:w-11"
+              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
             >
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </Button>
@@ -233,8 +235,8 @@ export const Navigation = ({ variant = "default" }: NavigationProps) => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="lg:hidden border-t border-border/40 bg-background/50 backdrop-blur animate-in slide-in-from-top-2 duration-200 safe-bottom">
-            <div className="py-4 px-3 space-y-1 smooth-scroll max-h-[calc(100vh-5rem)] overflow-y-auto">
+          <div className="lg:hidden border-t border-border/40 bg-background/95 backdrop-blur-md animate-in slide-in-from-top-2 duration-200">
+            <div className="py-3 px-2 sm:px-3 space-y-1 smooth-scroll max-h-[calc(100vh-4rem)] overflow-y-auto overscroll-contain" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 1rem)' }}>
               <MobileNavItem to="/" icon={Home}>
                 Home
               </MobileNavItem>
@@ -244,20 +246,20 @@ export const Navigation = ({ variant = "default" }: NavigationProps) => {
                 </MobileNavItem>
               )}
 
-              <div className="h-px bg-border/40 my-4" />
+              <div className="h-px bg-border/40 my-3" />
 
               {!loading && (
                 user ? (
-                  <div className="space-y-2">
+                  <div className="space-y-2 px-2">
                     <div className="flex items-center gap-2 px-4 py-3 rounded-lg bg-primary/10 border border-primary/20">
-                      <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                      <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse flex-shrink-0" />
                       <span className="text-sm font-medium text-foreground/80 truncate">
                         {user.email?.split("@")[0]}
                       </span>
                     </div>
                     <Button
                       variant="ghost"
-                      className="w-full justify-start gap-3 text-muted-foreground hover:text-red-500 hover:bg-red-500/10 transition-colors touch-target tap-highlight-none py-4"
+                      className="w-full justify-start gap-3 text-muted-foreground hover:text-red-500 hover:bg-red-500/10 transition-colors touch-target tap-highlight-none min-h-[48px] py-3"
                       onClick={() => {
                         handleSignOut();
                         setIsMenuOpen(false);
@@ -268,15 +270,17 @@ export const Navigation = ({ variant = "default" }: NavigationProps) => {
                     </Button>
                   </div>
                 ) : (
-                  <Button
-                    className="w-full transition-all duration-200 touch-target tap-highlight-none py-4"
-                    onClick={() => {
-                      navigate("/auth");
-                      setIsMenuOpen(false);
-                    }}
-                  >
-                    Get Started
-                  </Button>
+                  <div className="px-2">
+                    <Button
+                      className="w-full transition-all duration-200 touch-target tap-highlight-none min-h-[48px] py-3"
+                      onClick={() => {
+                        navigate("/auth");
+                        setIsMenuOpen(false);
+                      }}
+                    >
+                      Get Started
+                    </Button>
+                  </div>
                 )
               )}
             </div>
