@@ -16,11 +16,53 @@ import {
   Radio,
   Clock,
   ShieldCheck,
+  TrendingUp,
+  Target,
+  Award,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
+import { useCountUp } from "@/hooks/useCountUp";
 import heroImage from "@/assets/hero-church.jpg";
 import clbcLogo from "@/assets/clbc-logo.png";
+
+const StatCard = ({ end, suffix, label, icon: Icon, decimals = 0 }: { 
+  end: number; 
+  suffix?: string; 
+  label: string; 
+  icon: any;
+  decimals?: number;
+}) => {
+  const { value, ref } = useCountUp({ end, suffix: suffix || "", decimals, duration: 2500 });
+  
+  return (
+    <div
+      ref={ref}
+      className="group relative overflow-hidden rounded-2xl border-2 border-border/50 bg-gradient-to-br from-background via-background to-primary/5 p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:border-primary/50 hover:scale-105"
+    >
+      {/* Animated background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/0 via-primary/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      
+      {/* Icon */}
+      <div className="relative mb-4 inline-flex items-center justify-center h-12 w-12 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 text-primary group-hover:scale-110 transition-transform duration-300">
+        <Icon className="h-6 w-6" />
+      </div>
+      
+      {/* Number */}
+      <div className="relative text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-br from-primary via-primary to-secondary bg-clip-text text-transparent mb-2 tabular-nums">
+        {value}
+      </div>
+      
+      {/* Label */}
+      <div className="relative text-sm md:text-base text-muted-foreground font-medium">
+        {label}
+      </div>
+
+      {/* Decorative corner accent */}
+      <div className="absolute top-0 right-0 h-20 w-20 bg-gradient-to-br from-primary/10 to-transparent rounded-bl-full opacity-50 group-hover:opacity-100 transition-opacity" />
+    </div>
+  );
+};
 
 const Index = () => {
   const navigate = useNavigate();
@@ -101,9 +143,9 @@ const Index = () => {
   ];
 
   const stats = [
-    { number: "9+", label: "Churches served" },
-    { number: "1k+", label: "Members cared for" },
-    { number: "99.9%", label: "Uptime reliability" },
+    { end: 9, suffix: "+", label: "Churches served", icon: Award },
+    { end: 1, suffix: "k+", label: "Members cared for", icon: Users },
+    { end: 99.9, suffix: "%", label: "Uptime reliability", icon: TrendingUp, decimals: 1 },
   ];
 
   return (
@@ -146,12 +188,17 @@ const Index = () => {
                   </Button>
                 </div>
 
-                <div className="grid grid-cols-3 gap-4 max-w-xl">
+                {/* Statistics Section - Redesigned */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 max-w-4xl">
                   {stats.map((stat, idx) => (
-                    <div key={idx} className="rounded-xl border border-border/70 bg-background/70 p-4 shadow-sm">
-                      <div className="text-3xl md:text-4xl font-bold text-primary">{stat.number}</div>
-                      <div className="text-sm text-muted-foreground">{stat.label}</div>
-                    </div>
+                    <StatCard 
+                      key={idx} 
+                      end={stat.end} 
+                      suffix={stat.suffix} 
+                      label={stat.label} 
+                      icon={stat.icon}
+                      decimals={stat.decimals || 0}
+                    />
                   ))}
                 </div>
               </div>
