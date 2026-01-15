@@ -189,7 +189,7 @@ const Index = () => {
                 </div>
 
                 {/* Statistics Section - Redesigned */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 max-w-4xl">
+                <div className="hidden xs:grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 md:gap-6 max-w-4xl">
                   {stats.map((stat, idx) => (
                     <StatCard 
                       key={idx} 
@@ -253,9 +253,9 @@ const Index = () => {
               <Button variant="ghost" size="sm" className="gap-2" onClick={() => navigate("/dashboard")}>Open our dashboard <ArrowRight className="h-4 w-4" /></Button>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {features.map((feature, idx) => (
-                <Card key={idx} className="group border-border/50 bg-background/80 backdrop-blur hover:-translate-y-1 hover:shadow-lg transition-all">
+                <Card key={idx} className={cn("group border-border/50 bg-background/80 backdrop-blur hover:-translate-y-1 hover:shadow-lg transition-all", idx === 2 && "hidden md:block")}>
                   <CardHeader className="space-y-3">
                     <div className="flex items-center justify-between">
                       <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
@@ -276,16 +276,16 @@ const Index = () => {
           <div className="container mx-auto px-4 lg:px-8 grid lg:grid-cols-[1.1fr_0.9fr] gap-6 lg:gap-10 items-center">
             <div className="space-y-4">
               <p className="text-sm font-semibold text-primary">How it works</p>
-              <h3 className="text-3xl md:text-4xl font-bold tracking-tight">Launch, lead, and learn without chaos</h3>
-              <p className="text-muted-foreground max-w-2xl">A simple three-step path to get your teams aligned and your data trustworthy.</p>
+              <h3 className="text-2xl md:text-4xl font-bold tracking-tight">Launch, lead, and learn</h3>
+              <p className="hidden sm:block text-muted-foreground max-w-2xl">A simple three-step path to get your teams aligned and your data trustworthy.</p>
 
               <div className="space-y-3">
                 {steps.map((step, idx) => (
-                  <div key={idx} className="flex gap-4 rounded-lg border border-border/60 bg-muted/30 p-4">
-                    <div className="h-10 w-10 flex items-center justify-center rounded-full bg-primary text-primary-foreground font-bold">{idx + 1}</div>
-                    <div>
-                      <p className="font-semibold text-foreground">{step.title}</p>
-                      <p className="text-sm text-muted-foreground">{step.text}</p>
+                  <div key={idx} className="flex gap-3 sm:gap-4 rounded-lg border border-border/60 bg-muted/30 p-3 sm:p-4">
+                    <div className="h-9 w-9 sm:h-10 sm:w-10 flex items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-sm sm:text-base flex-shrink-0">{idx + 1}</div>
+                    <div className="min-w-0">
+                      <p className="font-semibold text-foreground text-sm sm:text-base">{step.title}</p>
+                      <p className="hidden sm:block text-sm text-muted-foreground">{step.text}</p>
                     </div>
                   </div>
                 ))}
@@ -319,7 +319,7 @@ const Index = () => {
           </div>
         </section>
 
-        <section className="py-12 md:py-20 bg-muted/30">
+        <section className="hidden md:block py-12 md:py-20 bg-muted/30">
           <div className="container mx-auto px-4 lg:px-8 grid lg:grid-cols-[0.9fr_1.1fr] gap-6 lg:gap-10 items-center">
             <Card className="hidden lg:block border-border/50 bg-background/80 shadow-lg">
               <CardContent className="p-8 space-y-6">
@@ -346,7 +346,7 @@ const Index = () => {
               <h3 className="text-3xl md:text-4xl font-bold tracking-tight">Stay organized without feeling corporate</h3>
               <p className="text-muted-foreground max-w-2xl">A modern system that still feels pastoral: gentle design, intentional flows, and privacy that respects our people.</p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+              <div className="hidden sm:grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
                 {values.map((value, idx) => (
                   <div key={idx} className="rounded-xl border border-border/60 bg-background/70 p-4 shadow-sm">
                     <div className="h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-3">
@@ -403,22 +403,23 @@ const Index = () => {
               </div>
             </div>
 
-            <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-              <a href="https://www.kimathi.tech/" className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2 font-medium">
-                <Code className="h-4 w-4 text-primary/70" />
-                Developers
+            <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6">
+              <a href="https://www.kimathi.tech/" className="text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2 font-medium">
+                <Code className="h-3 w-3 sm:h-4 sm:w-4 text-primary/70" />
+                <span className="hidden sm:inline">Developers</span>
+                <span className="sm:hidden">Dev</span>
               </a>
-              <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2 font-medium">
+              <a href="#" className="hidden md:flex text-sm text-muted-foreground hover:text-primary transition-colors items-center gap-2 font-medium">
                 <Globe className="h-4 w-4 text-primary/70" />
                 Language
               </a>
-              <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors font-medium">Privacy Policy</a>
-              <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors font-medium">Terms</a>
+              <a href="#" className="hidden md:inline text-sm text-muted-foreground hover:text-primary transition-colors font-medium">Privacy Policy</a>
+              <a href="#" className="hidden md:inline text-sm text-muted-foreground hover:text-primary transition-colors font-medium">Terms</a>
             </div>
           </div>
 
-          <div className="text-center text-sm text-muted-foreground mt-10 border-t border-border/30 pt-6">
-            © <span className="font-bold">{new Date().getFullYear()}</span> Changed Life Baptist Church. All rights reserved.
+          <div className="text-center text-xs sm:text-sm text-muted-foreground mt-6 sm:mt-10 border-t border-border/30 pt-4 sm:pt-6">
+            © <span className="font-bold">{new Date().getFullYear()}</span> <span className="hidden sm:inline">Changed Life Baptist Church. All rights reserved.</span><span className="sm:hidden">CLBC</span>
           </div>
         </div>
       </footer>

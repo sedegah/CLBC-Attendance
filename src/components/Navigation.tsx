@@ -69,14 +69,14 @@ export const Navigation = ({ variant = "default" }: NavigationProps) => {
       <Link
         to={to}
         className={cn(
-          "flex items-center gap-3 px-4 py-3 text-base font-medium transition-all duration-200 rounded-lg touch-target tap-highlight-none min-h-[48px]",
+          "flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-all duration-200 rounded-lg touch-target tap-highlight-none min-h-[44px]",
           active
             ? "bg-primary/10 text-primary border-l-4 border-primary font-semibold"
             : "text-foreground/70 hover:text-foreground hover:bg-accent/50 active:bg-accent/70 border-l-4 border-transparent"
         )}
         onClick={() => setIsMenuOpen(false)}
       >
-        {Icon && <Icon className="h-5 w-5 flex-shrink-0" />}
+        {Icon && <Icon className="h-4 w-4 flex-shrink-0" />}
         <span className="flex-1">{children}</span>
       </Link>
     );
@@ -235,8 +235,8 @@ export const Navigation = ({ variant = "default" }: NavigationProps) => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="lg:hidden border-t border-border/40 bg-background/95 backdrop-blur-md animate-in slide-in-from-top-2 duration-200">
-            <div className="py-3 px-2 sm:px-3 space-y-1 smooth-scroll max-h-[calc(100vh-4rem)] overflow-y-auto overscroll-contain" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 1rem)' }}>
+          <div className="lg:hidden border-t border-border/40 bg-background backdrop-blur-xl shadow-2xl animate-in slide-in-from-top-2 duration-200">
+            <div className="py-2 px-3 space-y-1 smooth-scroll max-h-[calc(100vh-4rem)] overflow-y-auto overscroll-contain" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 0.5rem)' }}>
               <MobileNavItem to="/" icon={Home}>
                 Home
               </MobileNavItem>
@@ -246,41 +246,45 @@ export const Navigation = ({ variant = "default" }: NavigationProps) => {
                 </MobileNavItem>
               )}
 
-              <div className="h-px bg-border/40 my-3" />
-
               {!loading && (
                 user ? (
-                  <div className="space-y-2 px-2">
-                    <div className="flex items-center gap-2 px-4 py-3 rounded-lg bg-primary/10 border border-primary/20">
-                      <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse flex-shrink-0" />
-                      <span className="text-sm font-medium text-foreground/80 truncate">
-                        {user.email?.split("@")[0]}
-                      </span>
+                  <>
+                    <div className="h-px bg-border/40 my-2" />
+                    <div className="space-y-2 px-1">
+                      <div className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-primary/5 border border-primary/10">
+                        <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse flex-shrink-0" />
+                        <span className="text-xs font-medium text-foreground/70 truncate">
+                          {user.email?.split("@")[0]}
+                        </span>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start gap-3 text-sm text-muted-foreground hover:text-red-500 hover:bg-red-500/10 transition-colors touch-target tap-highlight-none min-h-[44px] py-2.5 rounded-lg"
+                        onClick={() => {
+                          handleSignOut();
+                          setIsMenuOpen(false);
+                        }}
+                      >
+                        <LogOut className="h-4 w-4" />
+                        Sign Out
+                      </Button>
                     </div>
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-start gap-3 text-muted-foreground hover:text-red-500 hover:bg-red-500/10 transition-colors touch-target tap-highlight-none min-h-[48px] py-3"
-                      onClick={() => {
-                        handleSignOut();
-                        setIsMenuOpen(false);
-                      }}
-                    >
-                      <LogOut className="h-5 w-5" />
-                      Sign Out
-                    </Button>
-                  </div>
+                  </>
                 ) : (
-                  <div className="px-2">
-                    <Button
-                      className="w-full transition-all duration-200 touch-target tap-highlight-none min-h-[48px] py-3"
-                      onClick={() => {
-                        navigate("/auth");
-                        setIsMenuOpen(false);
-                      }}
-                    >
-                      Get Started
-                    </Button>
-                  </div>
+                  <>
+                    <div className="h-px bg-border/40 my-2" />
+                    <div className="px-1 pt-1">
+                      <Button
+                        className="w-full transition-all duration-200 touch-target tap-highlight-none min-h-[44px] py-2.5 rounded-lg shadow-md"
+                        onClick={() => {
+                          navigate("/auth");
+                          setIsMenuOpen(false);
+                        }}
+                      >
+                        Get Started
+                      </Button>
+                    </div>
+                  </>
                 )
               )}
             </div>
