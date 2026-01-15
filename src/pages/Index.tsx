@@ -23,6 +23,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 import { useCountUp } from "@/hooks/useCountUp";
+import { cn } from "@/lib/utils";
 import heroImage from "@/assets/hero-church.jpg";
 import clbcLogo from "@/assets/clbc-logo.png";
 
