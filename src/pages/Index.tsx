@@ -38,28 +38,28 @@ const StatCard = ({ end, suffix, label, icon: Icon, decimals = 0 }: {
   return (
     <div
       ref={ref}
-      className="group relative overflow-hidden rounded-2xl border-2 border-border/50 bg-gradient-to-br from-background via-background to-primary/5 p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:border-primary/50 hover:scale-105"
+      className="group relative overflow-hidden rounded-xl border border-border/50 bg-gradient-to-br from-background via-background to-primary/5 p-4 sm:p-5 shadow-md hover:shadow-lg transition-all duration-300 hover:border-primary/50 hover:scale-[1.02]"
     >
       {/* Animated background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/0 via-primary/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       
       {/* Icon */}
-      <div className="relative mb-4 inline-flex items-center justify-center h-12 w-12 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 text-primary group-hover:scale-110 transition-transform duration-300">
-        <Icon className="h-6 w-6" />
+      <div className="relative mb-3 inline-flex items-center justify-center h-9 w-9 sm:h-10 sm:w-10 rounded-lg bg-gradient-to-br from-primary/20 to-secondary/20 text-primary group-hover:scale-110 transition-transform duration-300">
+        <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
       </div>
       
       {/* Number */}
-      <div className="relative text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-br from-primary via-primary to-secondary bg-clip-text text-transparent mb-2 tabular-nums">
+      <div className="relative text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-br from-primary via-primary to-secondary bg-clip-text text-transparent mb-1.5 tabular-nums leading-tight">
         {value}
       </div>
       
       {/* Label */}
-      <div className="relative text-sm md:text-base text-muted-foreground font-medium">
+      <div className="relative text-xs sm:text-sm text-muted-foreground font-medium">
         {label}
       </div>
 
       {/* Decorative corner accent */}
-      <div className="absolute top-0 right-0 h-20 w-20 bg-gradient-to-br from-primary/10 to-transparent rounded-bl-full opacity-50 group-hover:opacity-100 transition-opacity" />
+      <div className="absolute top-0 right-0 h-16 w-16 bg-gradient-to-br from-primary/10 to-transparent rounded-bl-full opacity-50 group-hover:opacity-100 transition-opacity" />
     </div>
   );
 };
@@ -153,7 +153,7 @@ const Index = () => {
       <Navigation />
 
       <main>
-        <section className="relative overflow-hidden pt-24 pb-28 md:pt-32 md:pb-36">
+        <section className="relative overflow-hidden pt-20 pb-16 md:pt-32 md:pb-36">
           <div className="absolute inset-0">
             <img src={heroImage} alt="Church community" className="h-full w-full object-cover object-top opacity-30" />
             <div className="absolute inset-0 bg-gradient-to-br from-background via-background/90 to-primary/10" />
@@ -168,21 +168,21 @@ const Index = () => {
                 </div>
 
                 <div className="space-y-4">
-                  <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
+                  <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
                     Shepherd our people, not spreadsheets.
                     <span className="block text-primary">Let the tool handle the admin.</span>
                   </h1>
-                  <p className="text-lg md:text-xl text-muted-foreground max-w-2xl">
-                      CLBC Deliverance Centre keeps our attendance, member care, and leadership reporting in one calm place so the motto "A Changed Life for Christ" stays at the center of every service.
+                  <p className="text-base md:text-xl text-muted-foreground max-w-2xl">
+                      CLBC Deliverance Centre keeps our attendance, member care, and leadership reporting in one calm place.
                   </p>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex flex-col sm:flex-row gap-3">
                   <Button size="lg" className="gap-2 px-8" onClick={() => navigate("/auth")}> 
                     Sign in
                     <ArrowRight className="h-5 w-5" />
                   </Button>
-                  <Button size="lg" variant="outline" className="gap-2 px-8" onClick={() => navigate("/dashboard")}> 
+                  <Button size="lg" variant="outline" className="gap-2 px-8 hidden sm:flex" onClick={() => navigate("/dashboard")}> 
                     See dashboard
                     <Compass className="h-5 w-5" />
                   </Button>
@@ -203,7 +203,7 @@ const Index = () => {
                 </div>
               </div>
 
-              <Card className="border-border/50 bg-background/70 backdrop-blur shadow-2xl shadow-primary/10">
+              <Card className="hidden lg:block border-border/50 bg-background/70 backdrop-blur shadow-2xl shadow-primary/10">
                 <CardContent className="p-8 space-y-6">
                   <div className="flex items-center gap-3">
                     <div className="h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center">
@@ -242,7 +242,7 @@ const Index = () => {
           </div>
         </section>
 
-        <section id="features" className="py-20 bg-muted/30">
+        <section id="features" className="py-12 md:py-20 bg-muted/30">
           <div className="container mx-auto px-4 lg:px-8">
             <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-12">
               <div className="space-y-2 max-w-2xl">
@@ -258,13 +258,13 @@ const Index = () => {
                 <Card key={idx} className="group border-border/50 bg-background/80 backdrop-blur hover:-translate-y-1 hover:shadow-lg transition-all">
                   <CardHeader className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <div className="h-12 w-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
-                        <feature.icon className="h-6 w-6" />
+                      <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                        <feature.icon className="h-5 w-5 sm:h-6 sm:w-6" />
                       </div>
-                      <span className="text-xs font-semibold uppercase tracking-wide text-primary/80 bg-primary/10 px-3 py-1 rounded-full">{feature.badge}</span>
+                      <span className="hidden sm:inline-flex text-xs font-semibold uppercase tracking-wide text-primary/80 bg-primary/10 px-3 py-1 rounded-full">{feature.badge}</span>
                     </div>
-                    <CardTitle className="text-xl">{feature.title}</CardTitle>
-                    <CardDescription className="text-base text-muted-foreground">{feature.description}</CardDescription>
+                    <CardTitle className="text-lg sm:text-xl">{feature.title}</CardTitle>
+                    <CardDescription className="text-sm sm:text-base text-muted-foreground">{feature.description}</CardDescription>
                   </CardHeader>
                 </Card>
               ))}
@@ -272,8 +272,8 @@ const Index = () => {
           </div>
         </section>
 
-        <section className="py-20">
-          <div className="container mx-auto px-4 lg:px-8 grid lg:grid-cols-[1.1fr_0.9fr] gap-10 items-center">
+        <section className="py-12 md:py-20">
+          <div className="container mx-auto px-4 lg:px-8 grid lg:grid-cols-[1.1fr_0.9fr] gap-6 lg:gap-10 items-center">
             <div className="space-y-4">
               <p className="text-sm font-semibold text-primary">How it works</p>
               <h3 className="text-3xl md:text-4xl font-bold tracking-tight">Launch, lead, and learn without chaos</h3>
@@ -292,7 +292,7 @@ const Index = () => {
               </div>
             </div>
 
-            <Card className="border-border/50 bg-background/70 backdrop-blur shadow-xl">
+            <Card className="hidden lg:block border-border/50 bg-background/70 backdrop-blur shadow-xl">
               <CardContent className="p-8 space-y-6">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center">
@@ -319,9 +319,9 @@ const Index = () => {
           </div>
         </section>
 
-        <section className="py-20 bg-muted/30">
-          <div className="container mx-auto px-4 lg:px-8 grid lg:grid-cols-[0.9fr_1.1fr] gap-10 items-center">
-            <Card className="border-border/50 bg-background/80 shadow-lg">
+        <section className="py-12 md:py-20 bg-muted/30">
+          <div className="container mx-auto px-4 lg:px-8 grid lg:grid-cols-[0.9fr_1.1fr] gap-6 lg:gap-10 items-center">
+            <Card className="hidden lg:block border-border/50 bg-background/80 shadow-lg">
               <CardContent className="p-8 space-y-6">
                 <div className="flex items-center gap-3">
                   <div className="h-12 w-12 rounded-full bg-primary/10 text-primary flex items-center justify-center">
@@ -346,7 +346,7 @@ const Index = () => {
               <h3 className="text-3xl md:text-4xl font-bold tracking-tight">Stay organized without feeling corporate</h3>
               <p className="text-muted-foreground max-w-2xl">A modern system that still feels pastoral: gentle design, intentional flows, and privacy that respects our people.</p>
 
-              <div className="grid md:grid-cols-3 gap-4 mt-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
                 {values.map((value, idx) => (
                   <div key={idx} className="rounded-xl border border-border/60 bg-background/70 p-4 shadow-sm">
                     <div className="h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-3">
@@ -361,30 +361,28 @@ const Index = () => {
           </div>
         </section>
 
-        <section className="py-20">
+        <section className="py-12 md:py-20">
           <div className="container mx-auto px-4 lg:px-8">
             <Card className="border-border/60 bg-gradient-to-r from-primary/10 via-primary/5 to-background shadow-xl">
-              <CardContent className="p-10 md:p-12 flex flex-col lg:flex-row gap-8 lg:items-center lg:justify-between">
+              <CardContent className="p-6 md:p-12 flex flex-col lg:flex-row gap-6 lg:gap-8 lg:items-center lg:justify-between">
                 <div className="space-y-3 max-w-2xl">
                   <p className="text-sm font-semibold text-primary">Next step</p>
                   <h3 className="text-3xl font-bold">Ready to focus on changed lives?</h3>
                   <p className="text-muted-foreground">Keep our people first while staying organized for every service, meeting, and visit.</p>
-                  <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
+                  <div className="hidden sm:flex flex-wrap gap-3 text-sm text-muted-foreground">
                     <span className="inline-flex items-center gap-2 rounded-full bg-background/80 px-3 py-1 border border-border/60"><Shield className="h-4 w-4 text-primary" /> Secure by design</span>
                     <span className="inline-flex items-center gap-2 rounded-full bg-background/80 px-3 py-1 border border-border/60"><Zap className="h-4 w-4 text-primary" /> Fast setup</span>
                     <span className="inline-flex items-center gap-2 rounded-full bg-background/80 px-3 py-1 border border-border/60"><Globe className="h-4 w-4 text-primary" /> Works anywhere</span>
                   </div>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
-                  <div className="flex gap-3">
-                    <Button size="lg" className="px-8" onClick={() => navigate("/auth")}>
-                      Sign in
-                    </Button>
-                    <Button size="lg" variant="outline" className="px-8" onClick={() => navigate("/dashboard")}>
-                      View dashboard
-                    </Button>
-                  </div>
+                <div className="flex flex-col gap-3">
+                  <Button size="lg" className="w-full sm:w-auto px-8" onClick={() => navigate("/auth")}>
+                    Sign in
+                  </Button>
+                  <Button size="lg" variant="outline" className="w-full sm:w-auto px-8 hidden sm:flex" onClick={() => navigate("/dashboard")}>
+                    View dashboard
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -392,7 +390,7 @@ const Index = () => {
         </section>
       </main>
 
-      <footer className="border-t border-border/40 bg-background/60 backdrop-blur-sm py-12">
+      <footer className="border-t border-border/40 bg-background/60 backdrop-blur-sm py-8 md:py-12">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-start gap-8">
             <div className="flex items-center gap-3">

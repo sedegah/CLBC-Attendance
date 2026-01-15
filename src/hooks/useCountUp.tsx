@@ -81,7 +81,7 @@ export const useCountUp = ({
     : Math.floor(count).toString();
 
   return {
-    value: displayValue + suffix,
+    value: `${displayValue}${suffix}`,
     ref: elementRef,
   };
 };
