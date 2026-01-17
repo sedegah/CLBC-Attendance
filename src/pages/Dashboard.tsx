@@ -551,7 +551,7 @@ const Dashboard = () => {
 
                     <TabsContent value="manual" className="mt-0">
                         {/* Manual Attendance Component */}
-                        <ManualAttendance />
+                        <ManualAttendance onAttendanceSaved={fetchAttendanceRecords} />
                     </TabsContent>
 
                     <TabsContent value="followup" className="mt-0">

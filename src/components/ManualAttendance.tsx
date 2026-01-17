@@ -21,7 +21,11 @@ interface AttendanceEntry {
   present: boolean;
 }
 
-export default function ManualAttendance() {
+interface ManualAttendanceProps {
+  onAttendanceSaved?: () => void;
+}
+
+export default function ManualAttendance({ onAttendanceSaved }: ManualAttendanceProps) {
   const { user } = useAuth();
   const { toast } = useToast();
   const [members, setMembers] = useState<Member[]>([]);
@@ -139,6 +143,11 @@ export default function ManualAttendance() {
       setAttendance(members.map(m => ({ memberId: m.id, present: false })));
       setAttendanceDate(format(new Date(), "yyyy-MM-dd"));
       setSearchQuery("");
+
+      // Call the callback to refresh parent component data
+      if (onAttendanceSaved) {
+        onAttendanceSaved();
+      }
     } catch (error: any) {
       console.error("Error saving attendance:", error);
       toast({
