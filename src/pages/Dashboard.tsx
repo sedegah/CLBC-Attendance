@@ -66,10 +66,9 @@ const Dashboard = () => {
     const [isUploading, setIsUploading] = useState(false);
     const [attendanceDate, setAttendanceDate] = useState(format(new Date(), "yyyy-MM-dd"));
 
-    // Determine user name for personalization
-    const userName = user?.user_metadata?.full_name
-        || user?.email?.split('@')[0]
-        || 'Church Administrator';
+    // Determine user name for personalization — use full_name from our custom auth
+    const rawName = (user as any)?.full_name || user?.email?.split('@')[0] || 'Church Administrator';
+    const userName = rawName.split(' ')[0]; // Show only first name
 
     // Determine current day and date for the banner
     const currentDate = format(new Date(), "EEEE, MMMM dd, yyyy");

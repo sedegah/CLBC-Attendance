@@ -139,6 +139,11 @@ All colors MUST be HSL.
     padding-right: env(safe-area-inset-right);
   }
 
+  html {
+    zoom: 90%;
+  }
+
+
   /* Mobile-specific optimizations */
   @media (max-width: 768px) {
     html {

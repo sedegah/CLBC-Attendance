@@ -1,8 +1,9 @@
 import { Hono } from 'hono'
-import { getCookie } from 'hono/cookie'
+import { verify } from 'hono/jwt'
 
 type Bindings = {
     DB: D1Database
+    JWT_SECRET: string
 }
 
 type Variables = {
@@ -17,13 +18,15 @@ members.use('*', async (c, next) => {
     const token = authHeader?.split(' ')[1]
     if (!token) return c.json({ error: 'Unauthorized' }, 401)
 
-    const session = await c.env.DB.prepare('SELECT user_id, expires_at FROM sessions WHERE id = ?').bind(token).first()
-    if (!session || new Date(session.expires_at as string) < new Date()) {
+    try {
+        const secret = c.env.JWT_SECRET || 'fallback-secret-key-clbc-system-2026'
+        const payload = await verify(token, secret, 'HS256') as any
+        if (!payload || !payload.sub) return c.json({ error: 'Unauthorized' }, 401)
+        c.set('userId', payload.sub as string)
+    } catch (e) {
         return c.json({ error: 'Unauthorized' }, 401)
     }
 
-    // Attach user_id
-    c.set('userId', session.user_id as string)
     await next()
 })
 
