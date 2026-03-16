@@ -20,9 +20,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { 
-  Users, 
-  UserPlus, 
+import {
+  Users,
+  UserPlus,
   Upload,
   Trash2,
   Edit2,
@@ -32,7 +32,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { fetchApi } from "@/lib/apiClient";
 import * as XLSX from "xlsx";
 import { format, parse, isValid } from "date-fns";
 
@@ -50,14 +50,14 @@ const MembersManager = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
+
   const [members, setMembers] = useState<Member[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingMember, setEditingMember] = useState<Member | null>(null);
-  
+
   // Form state
   const [formName, setFormName] = useState("");
   const [formBirthday, setFormBirthday] = useState("");
@@ -70,12 +70,7 @@ const MembersManager = () => {
 
   const fetchMembers = async () => {
     try {
-      const { data, error } = await supabase
-        .from("members")
-        .select("*")
-        .order("full_name", { ascending: true });
-
-      if (error) throw error;
+      const data = await fetchApi("/members");
       setMembers(data || []);
     } catch (error: any) {
       console.error("Error fetching members:", error);
@@ -101,31 +96,28 @@ const MembersManager = () => {
 
     try {
       if (editingMember) {
-        const { error } = await supabase
-          .from("members")
-          .update({
+        await fetchApi(`/members/${editingMember.id}`, {
+          method: 'PUT',
+          body: JSON.stringify({
             full_name: formName.trim(),
             birthday: formBirthday || null,
             phone: formPhone.trim() || null,
             email: formEmail.trim() || null,
           })
-          .eq("id", editingMember.id)
-          .eq("user_id", user.id);
+        });
 
-        if (error) throw error;
         toast({ title: "Member updated" });
       } else {
-        const { error } = await supabase
-          .from("members")
-          .insert({
-            user_id: user.id,
+        await fetchApi('/members', {
+          method: 'POST',
+          body: JSON.stringify({
             full_name: formName.trim(),
             birthday: formBirthday || null,
             phone: formPhone.trim() || null,
             email: formEmail.trim() || null,
-          });
+          })
+        });
 
-        if (error) throw error;
         toast({ title: "Member added" });
       }
 
@@ -144,12 +136,10 @@ const MembersManager = () => {
 
   const handleDelete = async (member: Member) => {
     try {
-      const { error } = await supabase
-        .from("members")
-        .delete()
-        .eq("id", member.id);
+      await fetchApi(`/members/${member.id}`, {
+        method: 'DELETE'
+      });
 
-      if (error) throw error;
       toast({ title: "Member deleted" });
       fetchMembers();
     } catch (error: any) {
@@ -237,11 +227,14 @@ const MembersManager = () => {
         return;
       }
 
-      const { error } = await supabase
-        .from("members")
-        .insert(membersToInsert);
-
-      if (error) throw error;
+      // Worker API does not have a batch insert endpoint, so we insert one by one.
+      // In a real app we'd add a bulk insert endpoint.
+      for (const m of membersToInsert) {
+        await fetchApi('/members', {
+          method: 'POST',
+          body: JSON.stringify(m)
+        });
+      }
 
       toast({
         title: "Import successful",
@@ -249,7 +242,7 @@ const MembersManager = () => {
       });
 
       fetchMembers();
-      
+
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
@@ -265,7 +258,7 @@ const MembersManager = () => {
     }
   };
 
-  const filteredMembers = members.filter(m => 
+  const filteredMembers = members.filter(m =>
     m.full_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -310,7 +303,7 @@ const MembersManager = () => {
               className="pl-9 bg-muted/30 border-border/40"
             />
           </div>
-          
+
           <Dialog open={isDialogOpen} onOpenChange={(open) => {
             setIsDialogOpen(open);
             if (!open) resetForm();

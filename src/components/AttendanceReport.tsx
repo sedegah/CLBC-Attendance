@@ -19,15 +19,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { fetchApi, API_BASE_URL } from "@/lib/apiClient";
 import { format, parseISO, startOfMonth, endOfMonth, subMonths } from "date-fns";
-import { 
-  Loader2, 
-  FileDown, 
-  Printer, 
-  Calendar, 
-  Users, 
-  UserCheck, 
+import {
+  Loader2,
+  FileDown,
+  Printer,
+  Calendar,
+  Users,
+  UserCheck,
   UserX,
   TrendingUp,
   BarChart3,
@@ -78,7 +78,7 @@ export default function AttendanceReport() {
   const [startDate, setStartDate] = useState(format(startOfMonth(new Date()), "yyyy-MM-dd"));
   const [endDate, setEndDate] = useState(format(endOfMonth(new Date()), "yyyy-MM-dd"));
   const [selectedMonth, setSelectedMonth] = useState(format(new Date(), "yyyy-MM"));
-  
+
   const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>([]);
   const [memberAttendance, setMemberAttendance] = useState<MemberAttendance[]>([]);
   const [summary, setSummary] = useState({
@@ -113,44 +113,29 @@ export default function AttendanceReport() {
       const { start, end } = getDateFilters();
 
       // Fetch attendance records
-      let recordsQuery = supabase
-        .from("attendance_records")
-        .select("id, attendance_date, total_members, present_count, absent_count")
-        .order("attendance_date", { ascending: true });
+      const queryParams = new URLSearchParams();
+      if (start) queryParams.append('start', start);
+      if (end) queryParams.append('end', end);
+      const queryString = queryParams.toString();
 
-      if (start) recordsQuery = recordsQuery.gte("attendance_date", start);
-      if (end) recordsQuery = recordsQuery.lte("attendance_date", end);
-
-      const { data: records, error: recordsError } = await recordsQuery;
-      if (recordsError) throw recordsError;
-
+      const records = await fetchApi(`/attendance${queryString ? `?${queryString}` : ''}`);
       setAttendanceRecords(records || []);
 
       // Fetch members
-      const { data: members, error: membersError } = await supabase
-        .from("members")
-        .select("id, full_name, phone")
-        .order("full_name");
-
-      if (membersError) throw membersError;
+      const members = await fetchApi("/members");
 
       // Fetch member attendance for these records
-      const recordIds = (records || []).map(r => r.id);
-      
-      let memberStats: MemberAttendance[] = [];
-      
-      if (recordIds.length > 0) {
-        const { data: attendance, error: attendanceError } = await supabase
-          .from("member_attendance")
-          .select("member_id, is_present, attendance_record_id")
-          .in("attendance_record_id", recordIds);
+      const recordIds = (records || []).map((r: any) => r.id);
 
-        if (attendanceError) throw attendanceError;
+      let memberStats: MemberAttendance[] = [];
+
+      if (recordIds.length > 0) {
+        const attendance = await fetchApi("/attendance/details");
 
         // Calculate stats per member
-        memberStats = (members || []).map(member => {
-          const memberRecords = (attendance || []).filter(a => a.member_id === member.id);
-          const presentCount = memberRecords.filter(a => a.is_present).length;
+        memberStats = (members || []).map((member: any) => {
+          const memberRecords = (attendance || []).filter((a: any) => a.member_id === member.id && recordIds.includes(a.attendance_record_id));
+          const presentCount = memberRecords.filter((a: any) => a.is_present || a.is_present === 1).length;
           const totalSessions = memberRecords.length;
 
           return {
@@ -174,8 +159,8 @@ export default function AttendanceReport() {
       const totalPresent = records?.reduce((sum, r) => sum + r.present_count, 0) || 0;
       const totalTracked = records?.reduce((sum, r) => sum + r.total_members, 0) || 0;
       const avgAttendance = totalTracked > 0 ? Math.round((totalPresent / totalTracked) * 100) : 0;
-      
-      const attendanceRates = records?.map(r => 
+
+      const attendanceRates = records?.map(r =>
         r.total_members > 0 ? Math.round((r.present_count / r.total_members) * 100) : 0
       ) || [];
 
@@ -422,27 +407,27 @@ export default function AttendanceReport() {
                       >
                         <defs>
                           <linearGradient id="colorRate" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
-                            <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                            <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                            <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
                           </linearGradient>
                         </defs>
                         <CartesianGrid strokeDasharray="3 3" className="stroke-border/50" />
-                        <XAxis 
-                          dataKey="date" 
-                          tick={{ fontSize: 11 }} 
+                        <XAxis
+                          dataKey="date"
+                          tick={{ fontSize: 11 }}
                           className="text-muted-foreground"
                           tickLine={false}
                         />
-                        <YAxis 
-                          tick={{ fontSize: 11 }} 
+                        <YAxis
+                          tick={{ fontSize: 11 }}
                           className="text-muted-foreground"
                           tickLine={false}
                           domain={[0, 100]}
                           tickFormatter={(v) => `${v}%`}
                         />
-                        <Tooltip 
-                          contentStyle={{ 
-                            backgroundColor: 'hsl(var(--background))', 
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: 'hsl(var(--background))',
                             border: '1px solid hsl(var(--border))',
                             borderRadius: '8px',
                             boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
@@ -481,20 +466,20 @@ export default function AttendanceReport() {
                           margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
                         >
                           <CartesianGrid strokeDasharray="3 3" className="stroke-border/50" />
-                          <XAxis 
-                            dataKey="date" 
-                            tick={{ fontSize: 10 }} 
+                          <XAxis
+                            dataKey="date"
+                            tick={{ fontSize: 10 }}
                             className="text-muted-foreground"
                             tickLine={false}
                           />
-                          <YAxis 
-                            tick={{ fontSize: 11 }} 
+                          <YAxis
+                            tick={{ fontSize: 11 }}
                             className="text-muted-foreground"
                             tickLine={false}
                           />
-                          <Tooltip 
-                            contentStyle={{ 
-                              backgroundColor: 'hsl(var(--background))', 
+                          <Tooltip
+                            contentStyle={{
+                              backgroundColor: 'hsl(var(--background))',
                               border: '1px solid hsl(var(--border))',
                               borderRadius: '8px',
                               boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
@@ -519,13 +504,13 @@ export default function AttendanceReport() {
                         <PieChart>
                           <Pie
                             data={[
-                              { 
-                                name: 'Present', 
+                              {
+                                name: 'Present',
                                 value: attendanceRecords.reduce((sum, r) => sum + r.present_count, 0),
                                 color: 'hsl(142, 76%, 36%)'
                               },
-                              { 
-                                name: 'Absent', 
+                              {
+                                name: 'Absent',
                                 value: attendanceRecords.reduce((sum, r) => sum + r.absent_count, 0),
                                 color: 'hsl(0, 84%, 60%)'
                               },
@@ -542,9 +527,9 @@ export default function AttendanceReport() {
                             <Cell fill="hsl(142, 76%, 36%)" />
                             <Cell fill="hsl(0, 84%, 60%)" />
                           </Pie>
-                          <Tooltip 
-                            contentStyle={{ 
-                              backgroundColor: 'hsl(var(--background))', 
+                          <Tooltip
+                            contentStyle={{
+                              backgroundColor: 'hsl(var(--background))',
                               border: '1px solid hsl(var(--border))',
                               borderRadius: '8px',
                               boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
@@ -579,21 +564,21 @@ export default function AttendanceReport() {
                           margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
                         >
                           <CartesianGrid strokeDasharray="3 3" className="stroke-border/50" />
-                          <XAxis 
-                            type="number" 
-                            domain={[0, 100]} 
+                          <XAxis
+                            type="number"
+                            domain={[0, 100]}
                             tick={{ fontSize: 11 }}
                             tickFormatter={(v) => `${v}%`}
                           />
-                          <YAxis 
-                            type="category" 
-                            dataKey="name" 
+                          <YAxis
+                            type="category"
+                            dataKey="name"
                             tick={{ fontSize: 11 }}
                             width={100}
                           />
-                          <Tooltip 
-                            contentStyle={{ 
-                              backgroundColor: 'hsl(var(--background))', 
+                          <Tooltip
+                            contentStyle={{
+                              backgroundColor: 'hsl(var(--background))',
                               border: '1px solid hsl(var(--border))',
                               borderRadius: '8px',
                               boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
@@ -601,21 +586,21 @@ export default function AttendanceReport() {
                             labelFormatter={(label, payload) => payload[0]?.payload?.fullName || label}
                             formatter={(value: number) => [`${value}%`, 'Attendance Rate']}
                           />
-                          <Bar 
-                            dataKey="rate" 
+                          <Bar
+                            dataKey="rate"
                             name="Rate"
                             radius={[0, 4, 4, 0]}
                           >
                             {memberAttendance.slice(0, 10).map((entry, index) => (
-                              <Cell 
-                                key={`cell-${index}`} 
+                              <Cell
+                                key={`cell-${index}`}
                                 fill={
-                                  entry.attendance_rate >= 75 
-                                    ? 'hsl(142, 76%, 36%)' 
-                                    : entry.attendance_rate >= 50 
-                                      ? 'hsl(45, 93%, 47%)' 
+                                  entry.attendance_rate >= 75
+                                    ? 'hsl(142, 76%, 36%)'
+                                    : entry.attendance_rate >= 50
+                                      ? 'hsl(45, 93%, 47%)'
                                       : 'hsl(0, 84%, 60%)'
-                                } 
+                                }
                               />
                             ))}
                           </Bar>
@@ -649,8 +634,8 @@ export default function AttendanceReport() {
                     </TableHeader>
                     <TableBody>
                       {attendanceRecords.map((record) => {
-                        const rate = record.total_members > 0 
-                          ? Math.round((record.present_count / record.total_members) * 100) 
+                        const rate = record.total_members > 0
+                          ? Math.round((record.present_count / record.total_members) * 100)
                           : 0;
                         return (
                           <TableRow key={record.id}>
@@ -708,13 +693,12 @@ export default function AttendanceReport() {
                           <TableCell className="text-center text-green-600 dark:text-green-400">{member.present_count}</TableCell>
                           <TableCell className="text-center text-red-600 dark:text-red-400">{member.absent_count}</TableCell>
                           <TableCell className="text-center">
-                            <span className={`inline-flex items-center justify-center min-w-12 px-2 py-0.5 rounded-full text-xs font-semibold ${
-                              member.attendance_rate >= 75 
-                                ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' 
-                                : member.attendance_rate >= 50 
-                                  ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' 
+                            <span className={`inline-flex items-center justify-center min-w-12 px-2 py-0.5 rounded-full text-xs font-semibold ${member.attendance_rate >= 75
+                                ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                                : member.attendance_rate >= 50
+                                  ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
                                   : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-                            }`}>
+                              }`}>
                               {member.attendance_rate}%
                             </span>
                           </TableCell>

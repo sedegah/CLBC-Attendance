@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { fetchApi } from "@/lib/apiClient";
 import { format } from "date-fns";
 import { AlertTriangle, Loader2, Phone, Calendar, Download } from "lucide-react";
 
@@ -34,19 +34,10 @@ export default function AbsenteeReport() {
   const fetchAbsenteeData = async () => {
     try {
       // Get all members
-      const { data: members, error: membersError } = await supabase
-        .from("members")
-        .select("id, full_name, phone");
-
-      if (membersError) throw membersError;
+      const members = await fetchApi("/members");
 
       // Get all member attendance records ordered by date
-      const { data: attendanceRecords, error: attendanceError } = await supabase
-        .from("attendance_records")
-        .select("id, attendance_date")
-        .order("attendance_date", { ascending: false });
-
-      if (attendanceError) throw attendanceError;
+      const attendanceRecords = await fetchApi("/attendance");
 
       if (!attendanceRecords || attendanceRecords.length === 0) {
         setAbsentees([]);
@@ -55,16 +46,13 @@ export default function AbsenteeReport() {
       }
 
       // Get member attendance data
-      const { data: memberAttendance, error: maError } = await supabase
-        .from("member_attendance")
-        .select("member_id, attendance_record_id, is_present");
-
-      if (maError) throw maError;
+      const memberAttendance = await fetchApi("/attendance/details");
 
       // Create a map of attendance records by id
-      const recordDateMap = new Map(
-        attendanceRecords.map(r => [r.id, r.attendance_date])
-      );
+      const recordDateMap = new Map();
+      attendanceRecords.forEach((r: any) => {
+        recordDateMap.set(r.id, r.attendance_date);
+      });
 
       // Process each member
       const absenteeList: AbsenteeInfo[] = [];
@@ -72,12 +60,14 @@ export default function AbsenteeReport() {
       for (const member of members || []) {
         // Get this member's attendance sorted by date (most recent first)
         const memberRecords = (memberAttendance || [])
-          .filter(ma => ma.member_id === member.id)
-          .map(ma => ({
+          .filter((ma: any) => ma.member_id === member.id)
+          .map((ma: any) => ({
             ...ma,
+            is_present: ma.is_present || ma.is_present === 1,
             date: recordDateMap.get(ma.attendance_record_id) || "",
           }))
-          .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+          .filter((ma: any) => ma.date) // ensure date exists
+          .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
         // Count consecutive absences from most recent
         let consecutiveAbsences = 0;
@@ -224,17 +214,16 @@ export default function AbsenteeReport() {
                       </span>
                     </TableCell>
                     <TableCell className="text-center">
-                      <span className={`inline-flex items-center justify-center h-7 min-w-[2rem] px-2 rounded-md text-sm font-medium ${
-                        absentee.consecutiveAbsences >= 5 
-                          ? "bg-destructive/20 text-destructive" 
+                      <span className={`inline-flex items-center justify-center h-7 min-w-[2rem] px-2 rounded-md text-sm font-medium ${absentee.consecutiveAbsences >= 5
+                          ? "bg-destructive/20 text-destructive"
                           : "bg-destructive/10 text-destructive"
-                      }`}>
+                        }`}>
                         {absentee.consecutiveAbsences}
                       </span>
                     </TableCell>
                     <TableCell>
                       <span className="text-sm text-muted-foreground">
-                        {absentee.lastPresentDate 
+                        {absentee.lastPresentDate
                           ? format(new Date(absentee.lastPresentDate), "MMM dd, yyyy")
                           : "Never"
                         }

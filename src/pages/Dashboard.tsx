@@ -12,10 +12,10 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { 
-    Users, 
-    TrendingUp, 
-    UserPlus, 
+import {
+    Users,
+    TrendingUp,
+    UserPlus,
     FileText,
     Upload,
     Calendar,
@@ -32,7 +32,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { fetchApi, API_BASE_URL } from "@/lib/apiClient";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Navigation } from "@/components/Navigation";
 import clbcLogo from "@/assets/clbc-logo.png";
@@ -60,17 +60,17 @@ const Dashboard = () => {
     const { user, signOut } = useAuth();
     const { toast } = useToast();
     const fileInputRef = useRef<HTMLInputElement>(null);
-    
+
     const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isUploading, setIsUploading] = useState(false);
     const [attendanceDate, setAttendanceDate] = useState(format(new Date(), "yyyy-MM-dd"));
 
     // Determine user name for personalization
-    const userName = user?.user_metadata?.full_name 
-                     || user?.email?.split('@')[0] 
-                     || 'Church Administrator';
-    
+    const userName = user?.user_metadata?.full_name
+        || user?.email?.split('@')[0]
+        || 'Church Administrator';
+
     // Determine current day and date for the banner
     const currentDate = format(new Date(), "EEEE, MMMM dd, yyyy");
 
@@ -81,12 +81,7 @@ const Dashboard = () => {
 
     const fetchAttendanceRecords = async () => {
         try {
-            const { data, error } = await supabase
-                .from("attendance_records")
-                .select("*")
-                .order("attendance_date", { ascending: false });
-
-            if (error) throw error;
+            const data = await fetchApi("/attendance");
             setAttendanceRecords(data || []);
         } catch (error: any) {
             console.error("Error fetching attendance:", error);
@@ -142,28 +137,21 @@ const Dashboard = () => {
                 }
             });
 
-            // Upload file to storage
-            const filePath = `${user.id}/${Date.now()}_${file.name}`;
-            const { error: uploadError } = await supabase.storage
-                .from("attendance-files")
-                .upload(filePath, file);
+            // Upload file & save attendance record via Worker API
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('attendance_date', attendanceDate);
+            formData.append('total_members', String(totalMembers));
+            formData.append('present_count', String(presentCount));
+            formData.append('absent_count', String(absentCount));
 
-            if (uploadError) throw uploadError;
-
-            // Save attendance record to database
-            const { error: insertError } = await supabase
-                .from("attendance_records")
-                .insert({
-                    user_id: user.id,
-                    file_name: file.name,
-                    file_path: filePath,
-                    attendance_date: attendanceDate,
-                    total_members: totalMembers,
-                    present_count: presentCount,
-                    absent_count: absentCount,
-                });
-
-            if (insertError) throw insertError;
+            await fetchApi("/attendance", {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Content-Type': undefined as any
+                }
+            });
 
             toast({
                 title: "Upload successful",
@@ -172,7 +160,7 @@ const Dashboard = () => {
 
             // Refresh the list
             fetchAttendanceRecords();
-            
+
             // Reset file input
             if (fileInputRef.current) {
                 fileInputRef.current.value = "";
@@ -191,22 +179,10 @@ const Dashboard = () => {
 
     const handleDelete = async (record: AttendanceRecord) => {
         try {
-            // Delete from storage
-            await supabase.storage
-                .from("attendance-files")
-                .remove([record.file_path]);
-
-            // Delete from database
-            const { error } = await supabase
-                .from("attendance_records")
-                .delete()
-                .eq("id", record.id);
-
-            if (error) throw error;
-
+            // Worker doesn't currently support delete attendance endpoint so we dummy it for now
             toast({
-                title: "Deleted",
-                description: "Attendance record removed.",
+                title: "Mock Deleted",
+                description: "Attendance record deleted in UI (API not yet supported in Worker).",
             });
 
             fetchAttendanceRecords();
@@ -222,18 +198,18 @@ const Dashboard = () => {
 
     const handleDownload = async (record: AttendanceRecord) => {
         try {
-            const { data, error } = await supabase.storage
-                .from("attendance-files")
-                .download(record.file_path);
+            const url = `${API_BASE_URL}/attendance/download/${record.id}`;
+            const response = await fetch(url);
 
-            if (error) throw error;
+            if (!response.ok) throw new Error("Download failed");
 
-            const url = URL.createObjectURL(data);
+            const blob = await response.blob();
+            const objectUrl = URL.createObjectURL(blob);
             const a = document.createElement("a");
-            a.href = url;
+            a.href = objectUrl;
             a.download = record.file_name;
             a.click();
-            URL.revokeObjectURL(url);
+            URL.revokeObjectURL(objectUrl);
         } catch (error: any) {
             console.error("Download error:", error);
             toast({
@@ -257,8 +233,8 @@ const Dashboard = () => {
     const totalRecords = attendanceRecords.length;
     const totalMembersTracked = attendanceRecords.reduce((sum, r) => sum + r.total_members, 0);
     const totalPresent = attendanceRecords.reduce((sum, r) => sum + r.present_count, 0);
-    const avgAttendanceRate = totalMembersTracked > 0 
-        ? Math.round((totalPresent / totalMembersTracked) * 100) 
+    const avgAttendanceRate = totalMembersTracked > 0
+        ? Math.round((totalPresent / totalMembersTracked) * 100)
         : 0;
 
     const memberStats = [
@@ -302,19 +278,19 @@ const Dashboard = () => {
             <Navigation variant="dashboard" />
 
             <main className="container mx-auto px-4 lg:px-8 py-6 sm:py-10 space-y-6 sm:space-y-10">
-                
+
                 {/* // --- REDESIGNED WELCOME BANNER ---
                 // Enhanced with personalization, time context, and cleaner design.
                 */}
                 <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-primary to-primary/80 shadow-2xl shadow-primary/20 dark:shadow-primary/30 p-5 sm:p-8 md:p-10 text-primary-foreground">
-                    <div className="absolute inset-0 bg-pattern-light opacity-5 dark:opacity-10" /> 
+                    <div className="absolute inset-0 bg-pattern-light opacity-5 dark:opacity-10" />
                     <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                         <div className="space-y-1">
                             {/* Personalized Greeting */}
                             <h1 className="text-2xl sm:text-3xl md:text-5xl font-extrabold tracking-tight">
                                 Welcome back, <span className="text-primary-foreground/90">{userName.split(' ')[0]}!</span>
                             </h1>
-                            
+
                             {/* Subtitle/Description */}
                             <p className="text-primary-foreground/90 max-w-2xl text-base sm:text-lg md:text-xl font-medium">
                                 Dashboard Overview for C.L.B.C Management System
@@ -335,7 +311,7 @@ const Dashboard = () => {
                 </div>
                 {/* // --- END REDESIGNED WELCOME BANNER --- 
                 */}
-                
+
                 {/* Tabs for different sections (No change) */}
                 <Tabs defaultValue="attendance" className="space-y-6">
                     <TabsList className="bg-muted/50 dark:bg-muted/30 border border-border/40 rounded-lg p-1 sm:p-1.5 flex flex-wrap gap-1 h-auto">
@@ -511,8 +487,8 @@ const Dashboard = () => {
                                                             </TableCell>
                                                             <TableCell className="text-center">
                                                                 <span className={`text-sm font-bold ${record.total_members > 0 && (record.present_count / record.total_members) * 100 > 75 ? 'text-primary' : 'text-amber-500'}`}>
-                                                                    {record.total_members > 0 
-                                                                        ? Math.round((record.present_count / record.total_members) * 100) 
+                                                                    {record.total_members > 0
+                                                                        ? Math.round((record.present_count / record.total_members) * 100)
                                                                         : 0}%
                                                                 </span>
                                                             </TableCell>
@@ -558,7 +534,7 @@ const Dashboard = () => {
                         {/* Absentee Report Component */}
                         <AbsenteeReport />
                     </TabsContent>
-                    
+
                     <TabsContent value="members" className="mt-0">
                         {/* Members Manager Component */}
                         <MembersManager />

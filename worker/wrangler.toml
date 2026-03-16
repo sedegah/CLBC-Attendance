@@ -1,0 +1,20 @@
+name = "clbcsystem-api"
+main = "src/index.ts"
+compatibility_date = "2024-12-24"
+compatibility_flags = [ "nodejs_compat" ]
+
+# Binding to D1 Database
+[[d1_databases]]
+binding = "DB"
+database_name = "clbcsystem-db"
+database_id = "a8d36416-a9c2-47d5-8df1-6f3276cb0ade"
+migrations_dir = "migrations"
+
+# Binding to R2 Buckets
+[[r2_buckets]]
+binding = "BUCKET_ATTENDANCE"
+bucket_name = "clbcsystem-attendance"
+
+[[r2_buckets]]
+binding = "BUCKET_GALLERY"
+bucket_name = "clbcsystem-gallery"
