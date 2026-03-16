@@ -53,15 +53,7 @@ auth.post('/login', async (c) => {
     }
     const token = await sign(payload, getJwtSecret(c))
 
-    setCookie(c, 'auth_session', token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'Lax',
-        expires: expiresAt,
-        path: '/'
-    })
-
-    return c.json({ user })
+    return c.json({ user, token })
 })
 
 auth.post('/signup', async (c) => {
@@ -97,21 +89,15 @@ auth.post('/signup', async (c) => {
     }
     const token = await sign(payload, getJwtSecret(c))
 
-    setCookie(c, 'auth_session', token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'Lax',
-        expires: expiresAt,
-        path: '/'
-    })
-
     return c.json({
-        user: { id: userId, full_name, role: 'member' }
+        user: { id: userId, full_name, role: 'member' },
+        token
     })
 })
 
 auth.post('/logout', async (c) => {
-    const token = getCookie(c, 'auth_session')
+    const authHeader = c.req.header('Authorization')
+    const token = authHeader?.split(' ')[1]
     if (token) {
         try {
             const decoded = decode(token)
@@ -123,12 +109,12 @@ auth.post('/logout', async (c) => {
             // Ignore token decode errors on logout
         }
     }
-    deleteCookie(c, 'auth_session', { path: '/' })
     return c.json({ success: true })
 })
 
 auth.get('/me', async (c) => {
-    const token = getCookie(c, 'auth_session')
+    const authHeader = c.req.header('Authorization')
+    const token = authHeader?.split(' ')[1]
     if (!token) return c.json({ user: null })
 
     const db = c.env.DB

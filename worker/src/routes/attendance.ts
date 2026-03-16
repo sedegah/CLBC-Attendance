@@ -14,7 +14,8 @@ const attendance = new Hono<{ Bindings: Bindings, Variables: Variables }>()
 
 // Middleware to check authentication
 attendance.use('*', async (c, next) => {
-    const token = getCookie(c, 'auth_session')
+    const authHeader = c.req.header('Authorization')
+    const token = authHeader?.split(' ')[1]
     if (!token) return c.json({ error: 'Unauthorized' }, 401)
 
     const session = await c.env.DB.prepare('SELECT user_id, expires_at FROM sessions WHERE id = ?').bind(token).first()

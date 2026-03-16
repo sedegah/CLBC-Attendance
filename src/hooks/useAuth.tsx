@@ -26,22 +26,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Check for existing session on mount
     fetchApi('/auth/me')
       .then((data) => {
-        setUser(data.user);
+        if (data && data.user) {
+          setUser(data.user);
+          if (data.token) {
+            localStorage.setItem('auth_token', data.token);
+          }
+        } else {
+          setUser(null);
+          localStorage.removeItem('auth_token');
+        }
         setLoading(false);
       })
       .catch(() => {
         setUser(null);
+        localStorage.removeItem('auth_token');
         setLoading(false);
       });
   }, []);
 
   const signIn = async (email: string, password: string) => {
     try {
-      const { user } = await fetchApi('/auth/login', {
+      const data = await fetchApi('/auth/login', {
         method: 'POST',
         body: JSON.stringify({ email, password }),
       });
-      setUser(user);
+      setUser(data.user);
+      if (data.token) {
+        localStorage.setItem('auth_token', data.token);
+      }
       return { error: null };
     } catch (error) {
       return { error };
@@ -50,11 +62,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signUp = async (email: string, password: string, fullName: string) => {
     try {
-      const { user } = await fetchApi('/auth/signup', {
+      const data = await fetchApi('/auth/signup', {
         method: 'POST',
         body: JSON.stringify({ email, password, full_name: fullName }),
       });
-      setUser(user);
+      setUser(data.user);
+      if (data.token) {
+        localStorage.setItem('auth_token', data.token);
+      }
       return { error: null };
     } catch (error) {
       return { error };
@@ -67,6 +82,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (e) {
       console.error(e);
     }
+    localStorage.removeItem('auth_token');
     setUser(null);
   };
 

@@ -3,18 +3,23 @@ export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localho
 export const fetchApi = async (endpoint: string, options: RequestInit = {}) => {
     const url = `${API_BASE_URL}${endpoint}`;
 
-    // Include credentials for cookies
     const config: RequestInit = {
         ...options,
-        credentials: 'include',
     };
+
+    const token = localStorage.getItem('auth_token');
+
+    config.headers = {
+        ...options.headers,
+    } as HeadersInit;
+
+    if (token) {
+        (config.headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
+    }
 
     // If payload is JSON
     if (options.body && typeof options.body === 'string') {
-        config.headers = {
-            'Content-Type': 'application/json',
-            ...options.headers,
-        };
+        (config.headers as Record<string, string>)['Content-Type'] = 'application/json';
     }
 
     const response = await fetch(url, config);

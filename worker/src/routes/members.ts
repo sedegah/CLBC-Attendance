@@ -5,11 +5,16 @@ type Bindings = {
     DB: D1Database
 }
 
-const members = new Hono<{ Bindings: Bindings }>()
+type Variables = {
+    userId: string
+}
+
+const members = new Hono<{ Bindings: Bindings, Variables: Variables }>()
 
 // Middleware to check authentication
 members.use('*', async (c, next) => {
-    const token = getCookie(c, 'auth_session')
+    const authHeader = c.req.header('Authorization')
+    const token = authHeader?.split(' ')[1]
     if (!token) return c.json({ error: 'Unauthorized' }, 401)
 
     const session = await c.env.DB.prepare('SELECT user_id, expires_at FROM sessions WHERE id = ?').bind(token).first()
@@ -18,7 +23,7 @@ members.use('*', async (c, next) => {
     }
 
     // Attach user_id
-    c.set('userId', session.user_id)
+    c.set('userId', session.user_id as string)
     await next()
 })
 

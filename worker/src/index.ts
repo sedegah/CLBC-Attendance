@@ -9,7 +9,10 @@ type Bindings = {
 
 const app = new Hono<{ Bindings: Bindings }>()
 
-app.use('*', cors())
+app.use('*', cors({
+    origin: (origin) => origin || '*',
+    credentials: true,
+}))
 
 app.get('/api/health', (c) => {
     return c.json({ status: 'ok', message: 'CLBC API is running' })
