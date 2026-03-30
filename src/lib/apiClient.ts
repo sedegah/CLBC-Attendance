@@ -4,22 +4,24 @@ export const fetchApi = async (endpoint: string, options: RequestInit = {}) => {
     const url = `${API_BASE_URL}${endpoint}`;
 
     const token = localStorage.getItem('auth_token');
-    const headers: Record<string, string> = {};
+    const headers = new Headers(options.headers || {});
 
     if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
+        headers.set('Authorization', `Bearer ${token}`);
     }
 
-    // Only set Content-Type for JSON string bodies.
-    // For FormData, the browser MUST set Content-Type itself (with the multipart boundary).
-    const isFormData = options.body instanceof FormData;
-    if (options.body && typeof options.body === 'string') {
-        headers['Content-Type'] = 'application/json';
+    const isFormData = options.body instanceof FormData || (options.body && typeof (options.body as any).append === 'function');
+    
+    if (isFormData) {
+        // We MUST NOT set Content-Type for FormData, the browser will add it with the specific form boundary.
+        headers.delete('Content-Type');
+    } else if (options.body && typeof options.body === 'string') {
+        headers.set('Content-Type', 'application/json');
     }
 
     const config: RequestInit = {
         ...options,
-        headers: isFormData ? headers : { ...headers, ...options.headers },
+        headers,
     };
 
     const response = await fetch(url, config);

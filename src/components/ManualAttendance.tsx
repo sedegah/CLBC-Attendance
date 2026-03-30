@@ -135,7 +135,7 @@ export default function ManualAttendance({ onAttendanceSaved }: ManualAttendance
       console.error("Error saving attendance:", error);
       toast({
         title: "Error",
-        description: "Failed to save attendance.",
+        description: error.message || "Failed to save attendance.",
         variant: "destructive",
       });
     } finally {
