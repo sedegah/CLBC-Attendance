@@ -147,9 +147,6 @@ const Dashboard = () => {
             await fetchApi("/attendance", {
                 method: 'POST',
                 body: formData,
-                headers: {
-                    'Content-Type': undefined as any
-                }
             });
 
             toast({

@@ -114,10 +114,7 @@ export default function ManualAttendance({ onAttendanceSaved }: ManualAttendance
 
       await fetchApi('/attendance', {
         method: 'POST',
-        body: formData, // FormData doesn't need content-type header, fetch sets it automatically
-        headers: {
-          'Content-Type': undefined as any // Unset so fetch uses multipart form correctly
-        }
+        body: formData,
       });
 
       toast({

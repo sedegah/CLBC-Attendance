@@ -3,24 +3,24 @@ export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localho
 export const fetchApi = async (endpoint: string, options: RequestInit = {}) => {
     const url = `${API_BASE_URL}${endpoint}`;
 
-    const config: RequestInit = {
-        ...options,
-    };
-
     const token = localStorage.getItem('auth_token');
-
-    config.headers = {
-        ...options.headers,
-    } as HeadersInit;
+    const headers: Record<string, string> = {};
 
     if (token) {
-        (config.headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
+        headers['Authorization'] = `Bearer ${token}`;
     }
 
-    // If payload is JSON
+    // Only set Content-Type for JSON string bodies.
+    // For FormData, the browser MUST set Content-Type itself (with the multipart boundary).
+    const isFormData = options.body instanceof FormData;
     if (options.body && typeof options.body === 'string') {
-        (config.headers as Record<string, string>)['Content-Type'] = 'application/json';
+        headers['Content-Type'] = 'application/json';
     }
+
+    const config: RequestInit = {
+        ...options,
+        headers: isFormData ? headers : { ...headers, ...options.headers },
+    };
 
     const response = await fetch(url, config);
 

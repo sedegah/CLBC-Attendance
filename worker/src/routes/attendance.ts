@@ -85,7 +85,7 @@ attendance.post('/', async (c) => {
         file_name = file.name
         file_path = `${userId}/${crypto.randomUUID()}-${file.name}`
 
-        // Upload to R2 -> replacing Supabase Storage
+        // Upload to R2
         await c.env.BUCKET_ATTENDANCE.put(file_path, file)
     }
 
