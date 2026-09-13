@@ -115,12 +115,10 @@ export default function ManualAttendance({ onAttendanceSaved }: ManualAttendance
         description: `Recorded ${presentCount} present, ${absentCount} absent for ${format(new Date(attendanceDate), "MMM dd, yyyy")}.`,
       });
 
-      // Reset attendance
       setAttendance(members.map(m => ({ memberId: m.id, present: false })));
       setAttendanceDate(format(new Date(), "yyyy-MM-dd"));
       setSearchQuery("");
 
-      // Call the callback to refresh parent component data
       if (onAttendanceSaved) {
         onAttendanceSaved();
       }
@@ -191,7 +189,6 @@ export default function ManualAttendance({ onAttendanceSaved }: ManualAttendance
           </div>
         </div>
 
-        {/* Search to mark present */}
         <div className="space-y-2">
           <Label className="text-xs font-medium text-muted-foreground">Search Member to Mark Present</Label>
           <div className="relative">
@@ -204,7 +201,6 @@ export default function ManualAttendance({ onAttendanceSaved }: ManualAttendance
             />
           </div>
 
-          {/* Search results dropdown */}
           {searchQuery.trim() && (
             <div className="border border-border/40 rounded-lg bg-card max-h-[200px] overflow-y-auto">
               {filteredMembers.length === 0 ? (
@@ -235,7 +231,6 @@ export default function ManualAttendance({ onAttendanceSaved }: ManualAttendance
           )}
         </div>
 
-        {/* Attendance summary */}
         <div className="flex items-center gap-4 text-sm">
           <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-success/10 text-success font-medium">
             Present: {presentCount}
@@ -245,7 +240,6 @@ export default function ManualAttendance({ onAttendanceSaved }: ManualAttendance
           </span>
         </div>
 
-        {/* Present members list */}
         <div className="space-y-2">
           <Label className="text-xs font-medium text-muted-foreground">
             Members Marked Present ({presentCount})
