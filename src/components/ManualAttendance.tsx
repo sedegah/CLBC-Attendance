@@ -97,20 +97,14 @@ export default function ManualAttendance({ onAttendanceSaved }: ManualAttendance
       const absentCount = attendance.filter(a => !a.present).length;
       const totalMembers = attendance.length;
 
-      // Note: we'd need a backend endpoint that takes the attendance array directly
-      // Or we can mock the File upload here with an empty or synthetic file to match the current backend
+      // Send manual flag so the worker skips R2 upload
       const formData = new FormData();
-      const fakeFile = new File(["manual"], `Manual Entry - ${format(new Date(attendanceDate), "MMM dd, yyyy")}.txt`, { type: 'text/plain' });
-      formData.append('file', fakeFile);
+      formData.append('manual', 'true');
       formData.append('attendance_date', attendanceDate);
       formData.append('total_members', String(totalMembers));
       formData.append('present_count', String(presentCount));
       formData.append('absent_count', String(absentCount));
       formData.append('notes', `Manual attendance: ${presentCount} present, ${absentCount} absent`);
-
-      // We also need to send the actual member attendance details 
-      // The worker currently doesn't support array insert, so we'll just log the primary record for now
-      // This is a tradeoff of moving to the simple worker we wrote earlier
 
       await fetchApi('/attendance', {
         method: 'POST',
