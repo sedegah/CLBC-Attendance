@@ -104,6 +104,12 @@ export default function ManualAttendance({ onAttendanceSaved }: ManualAttendance
       formData.append('present_count', String(presentCount));
       formData.append('absent_count', String(absentCount));
       formData.append('notes', `Manual attendance: ${presentCount} present, ${absentCount} absent`);
+      formData.append('member_attendance', JSON.stringify(
+        attendance.map(a => ({
+          member_id: a.memberId,
+          is_present: a.present ? 1 : 0
+        }))
+      ));
 
       await fetchApi('/attendance', {
         method: 'POST',

@@ -103,6 +103,25 @@ attendance.post('/', async (c) => {
         id, userId, file_name, file_path, attendance_date, parseInt(total_members), parseInt(present_count), parseInt(absent_count), notes
     ).run()
 
+    // Save individual member attendance rows if provided
+    const memberAttendanceStr = formData.get('member_attendance') as string
+    if (memberAttendanceStr) {
+        try {
+            const memberList = JSON.parse(memberAttendanceStr)
+            if (Array.isArray(memberList) && memberList.length > 0) {
+                for (const item of memberList) {
+                    if (item.member_id) {
+                        await c.env.DB.prepare(
+                            'INSERT INTO member_attendance (id, attendance_record_id, member_id, is_present) VALUES (?, ?, ?, ?)'
+                        ).bind(crypto.randomUUID(), id, item.member_id, item.is_present ? 1 : 0).run()
+                    }
+                }
+            }
+        } catch (e) {
+            console.error('Error inserting member attendance details:', e)
+        }
+    }
+
     const record = await c.env.DB.prepare('SELECT * FROM attendance_records WHERE id = ?').bind(id).first()
     return c.json(record)
 })
