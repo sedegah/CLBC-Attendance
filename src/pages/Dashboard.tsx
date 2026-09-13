@@ -175,10 +175,11 @@ const Dashboard = () => {
 
     const handleDelete = async (record: AttendanceRecord) => {
         try {
-            // Worker doesn't currently support delete attendance endpoint so we dummy it for now
+            await fetchApi(`/attendance/${record.id}`, { method: "DELETE" });
+
             toast({
-                title: "Mock Deleted",
-                description: "Attendance record deleted in UI (API not yet supported in Worker).",
+                title: "Record deleted",
+                description: `Attendance record for ${record.attendance_date} has been deleted.`,
             });
 
             fetchAttendanceRecords();

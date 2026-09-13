@@ -122,4 +122,32 @@ attendance.get('/download/:id', async (c) => {
     });
 })
 
+attendance.delete('/:id', async (c) => {
+    const recordId = c.req.param('id')
+
+    // Fetch the record so we can clean up R2
+    const record: any = await c.env.DB.prepare(
+        'SELECT id, file_path FROM attendance_records WHERE id = ?'
+    ).bind(recordId).first()
+
+    if (!record) return c.json({ error: 'Record not found' }, 404)
+
+    // Delete file from R2 if one was stored
+    if (record.file_path) {
+        await c.env.BUCKET_ATTENDANCE.delete(record.file_path)
+    }
+
+    // Delete linked member attendance rows first (FK safety)
+    await c.env.DB.prepare(
+        'DELETE FROM member_attendance WHERE attendance_record_id = ?'
+    ).bind(recordId).run()
+
+    // Delete the attendance record itself
+    await c.env.DB.prepare(
+        'DELETE FROM attendance_records WHERE id = ?'
+    ).bind(recordId).run()
+
+    return c.json({ success: true })
+})
+
 export default attendance
