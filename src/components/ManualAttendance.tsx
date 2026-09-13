@@ -97,7 +97,6 @@ export default function ManualAttendance({ onAttendanceSaved }: ManualAttendance
       const absentCount = attendance.filter(a => !a.present).length;
       const totalMembers = attendance.length;
 
-      // Send manual flag so the worker skips R2 upload
       const formData = new FormData();
       formData.append('manual', 'true');
       formData.append('attendance_date', attendanceDate);
