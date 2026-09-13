@@ -77,11 +77,17 @@ attendance.post('/', async (c) => {
     const present_count = formData.get('present_count') as string || '0'
     const absent_count = formData.get('absent_count') as string || '0'
     const notes = formData.get('notes') as string || ''
+    const isManual = formData.get('manual') === 'true'
+
+    if (!attendance_date) {
+        return c.json({ error: 'attendance_date is required' }, 400)
+    }
 
     let file_name = ''
     let file_path = ''
 
-    if (file && file.size > 0) {
+    // Only upload to R2 if a real file is provided (not a manual entry)
+    if (!isManual && file && file.size > 0) {
         file_name = file.name
         file_path = `${userId}/${crypto.randomUUID()}-${file.name}`
 

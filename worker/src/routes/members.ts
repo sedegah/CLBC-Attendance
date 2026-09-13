@@ -53,16 +53,14 @@ members.post('/', async (c) => {
 })
 
 members.put('/:id', async (c) => {
-    const userId = c.get('userId')
     const memberId = c.req.param('id')
     const { full_name, birthday, phone, email, notes } = await c.req.json()
 
-    // Verify ownership
-    const existing = await c.env.DB.prepare('SELECT id FROM members WHERE id = ? AND user_id = ?')
-        .bind(memberId, userId)
+    const existing = await c.env.DB.prepare('SELECT id FROM members WHERE id = ?')
+        .bind(memberId)
         .first()
 
-    if (!existing) return c.json({ error: 'Not found or unauthorized' }, 403)
+    if (!existing) return c.json({ error: 'Not found' }, 404)
 
     await c.env.DB.prepare(
         'UPDATE members SET full_name = ?, birthday = ?, phone = ?, email = ?, notes = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?'
@@ -75,14 +73,13 @@ members.put('/:id', async (c) => {
 })
 
 members.delete('/:id', async (c) => {
-    const userId = c.get('userId')
     const memberId = c.req.param('id')
 
-    const existing = await c.env.DB.prepare('SELECT id FROM members WHERE id = ? AND user_id = ?')
-        .bind(memberId, userId)
+    const existing = await c.env.DB.prepare('SELECT id FROM members WHERE id = ?')
+        .bind(memberId)
         .first()
 
-    if (!existing) return c.json({ error: 'Not found or unauthorized' }, 403)
+    if (!existing) return c.json({ error: 'Not found' }, 404)
 
     await c.env.DB.prepare('DELETE FROM members WHERE id = ?').bind(memberId).run()
     return c.json({ success: true })
