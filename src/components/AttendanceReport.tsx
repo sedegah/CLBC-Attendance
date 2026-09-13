@@ -502,8 +502,8 @@ export default function AttendanceReport() {
       const col1 = margin + 8;
       const col2 = margin + (pageWidth - margin * 2) / 2 + 8;
 
-      doc.text("Prepared By: ___________________________", col1, currentY + 8);
-      doc.text("Date: ___________________________", col1, currentY + 17);
+      doc.text("Prepared By: Kimathi Sedegah", col1, currentY + 8);
+      doc.text(`Date: ${format(new Date(), "MMMM dd, yyyy")}`, col1, currentY + 17);
 
       doc.text("Pastor / Lead Signature: ___________________________", col2, currentY + 8);
       doc.text("Official Stamp: ___________________________", col2, currentY + 17);
@@ -1080,8 +1080,8 @@ export default function AttendanceReport() {
             <div className="hidden print:block text-center mt-12 pt-6 border-t border-gray-300 text-xs text-gray-500">
               <div className="flex justify-between items-center mb-4 text-left">
                 <div>
-                  <p>Prepared By: ________________________________</p>
-                  <p className="mt-1">Date: ________________________________</p>
+                  <p>Prepared By: <span className="font-semibold text-gray-800">Kimathi Sedegah</span></p>
+                  <p className="mt-1">Date: <span className="font-semibold text-gray-800">{format(new Date(), "MMMM dd, yyyy")}</span></p>
                 </div>
                 <div>
                   <p>Pastor / Ministry Lead: ________________________________</p>
