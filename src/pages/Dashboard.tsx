@@ -195,23 +195,81 @@ const Dashboard = () => {
 
     const handleDownload = async (record: AttendanceRecord) => {
         try {
-            const url = `${API_BASE_URL}/attendance/download/${record.id}`;
-            const response = await fetch(url);
+            const token = localStorage.getItem('token');
+            // If uploaded file exists in R2, download original file
+            if (record.file_path && record.file_name) {
+                const url = `${API_BASE_URL}/attendance/download/${record.id}`;
+                const response = await fetch(url, {
+                    headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+                });
 
-            if (!response.ok) throw new Error("Download failed");
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const objectUrl = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = objectUrl;
+                    a.download = record.file_name;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(objectUrl);
+                    toast({
+                        title: "Downloaded",
+                        description: `Downloaded ${record.file_name}`,
+                    });
+                    return;
+                }
+            }
 
-            const blob = await response.blob();
-            const objectUrl = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = objectUrl;
-            a.download = record.file_name;
-            a.click();
-            URL.revokeObjectURL(objectUrl);
+            // Fallback for manual attendance entries: Generate XLSX spreadsheet
+            let memberRows: any[] = [];
+            try {
+                const details = await fetchApi('/attendance/details');
+                const members = await fetchApi('/members');
+                if (Array.isArray(details) && Array.isArray(members)) {
+                    const sessionDetails = details.filter((d: any) => d.attendance_record_id === record.id);
+                    if (sessionDetails.length > 0) {
+                        memberRows = members.map((m: any) => {
+                            const found = sessionDetails.find((d: any) => d.member_id === m.id);
+                            return {
+                                "Member Name": m.full_name,
+                                "Phone": m.phone || "—",
+                                "Email": m.email || "—",
+                                "Status": found ? (found.is_present ? "Present" : "Absent") : "Present"
+                            };
+                        });
+                    }
+                }
+            } catch (e) {
+                console.warn("Could not fetch individual member details for sheet:", e);
+            }
+
+            const dataToExport = memberRows.length > 0 ? memberRows : [
+                {
+                    "Session Date": record.attendance_date,
+                    "Total Expected": record.total_members,
+                    "Present Count": record.present_count,
+                    "Absent Count": record.absent_count,
+                    "Attendance Rate": `${record.total_members > 0 ? Math.round((record.present_count / record.total_members) * 100) : 0}%`,
+                    "Notes": record.notes || "Manual Attendance Record"
+                }
+            ];
+
+            const ws = XLSX.utils.json_to_sheet(dataToExport);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Attendance");
+            const fileName = `CLBC_Attendance_${record.attendance_date || "record"}.xlsx`;
+            XLSX.writeFile(wb, fileName);
+
+            toast({
+                title: "Downloaded",
+                description: `Exported attendance sheet as ${fileName}`,
+            });
         } catch (error: any) {
             console.error("Download error:", error);
             toast({
                 title: "Download failed",
-                description: "Failed to download file.",
+                description: error.message || "Failed to download file.",
                 variant: "destructive",
             });
         }
@@ -469,7 +527,7 @@ const Dashboard = () => {
                                                             </TableCell>
                                                             <TableCell className="hidden md:table-cell">
                                                                 <span className="text-sm text-muted-foreground truncate max-w-[150px] block font-mono">
-                                                                    {record.file_name}
+                                                                    {record.file_name || "Manual Attendance"}
                                                                 </span>
                                                             </TableCell>
                                                             <TableCell className="text-center">
