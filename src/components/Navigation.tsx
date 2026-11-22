@@ -58,7 +58,8 @@ export const Navigation = ({ variant = "default", onGiveOnline }: NavigationProp
           <button
             type="button"
             className="flex items-center gap-2.5 text-left transition-opacity hover:opacity-90"
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate("/")}
+            title="Back to the church website"
           >
             <img
               src={clbcLogo}
