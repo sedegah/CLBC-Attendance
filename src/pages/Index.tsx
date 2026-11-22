@@ -1,429 +1,114 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Users,
-  Calendar,
-  BarChart3,
-  Heart,
-  Shield,
-  ArrowRight,
-  Code,
-  Globe,
-  Zap,
-  Compass,
-  CheckCircle2,
-  Sparkles,
-  Radio,
-  Clock,
-  ShieldCheck,
-  TrendingUp,
-  Target,
-  Award,
-} from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { AnnouncementBar } from "@/components/church/AnnouncementBar";
 import { Navigation } from "@/components/Navigation";
-import { useCountUp } from "@/hooks/useCountUp";
-import { cn } from "@/lib/utils";
-import heroImage from "@/assets/hero-church.jpg";
-import clbcLogo from "@/assets/clbc-logo.png";
+import { HeroSection } from "@/components/church/HeroSection";
+import { ServiceTimesCards } from "@/components/church/ServiceTimesCards";
+import { AboutSection } from "@/components/church/AboutSection";
+import { MinistriesSection } from "@/components/church/MinistriesSection";
+import { SermonsAndEventsSection } from "@/components/church/SermonsAndEventsSection";
+import { GivingSection } from "@/components/church/GivingSection";
+import { VisitContactSection } from "@/components/church/VisitContactSection";
+import { ChurchFooter } from "@/components/church/ChurchFooter";
 
-const StatCard = ({ end, suffix, label, icon: Icon, decimals = 0 }: { 
-  end: number; 
-  suffix?: string; 
-  label: string; 
-  icon: any;
-  decimals?: number;
-}) => {
-  const { value, ref } = useCountUp({ end, suffix: suffix || "", decimals, duration: 2500 });
-  
-  return (
-    <div
-      ref={ref}
-      className="group relative overflow-hidden rounded-xl border border-border/50 bg-gradient-to-br from-background via-background to-primary/5 p-4 sm:p-5 shadow-md hover:shadow-lg transition-all duration-300 hover:border-primary/50 hover:scale-[1.02]"
-    >
-      {/* Animated background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/0 via-primary/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      
-      {/* Icon */}
-      <div className="relative mb-3 inline-flex items-center justify-center h-9 w-9 sm:h-10 sm:w-10 rounded-lg bg-gradient-to-br from-primary/20 to-secondary/20 text-primary group-hover:scale-110 transition-transform duration-300">
-        <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
-      </div>
-      
-      {/* Number */}
-      <div className="relative text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-br from-primary via-primary to-secondary bg-clip-text text-transparent mb-1.5 tabular-nums leading-tight">
-        {value}
-      </div>
-      
-      {/* Label */}
-      <div className="relative text-xs sm:text-sm text-muted-foreground font-medium">
-        {label}
-      </div>
-
-      {/* Decorative corner accent */}
-      <div className="absolute top-0 right-0 h-16 w-16 bg-gradient-to-br from-primary/10 to-transparent rounded-bl-full opacity-50 group-hover:opacity-100 transition-opacity" />
-    </div>
-  );
-};
+import { GiveOnlineModal } from "@/components/church/GiveOnlineModal";
+import { PlanVisitModal } from "@/components/church/PlanVisitModal";
+import { PrayerRequestModal } from "@/components/church/PrayerRequestModal";
+import { SermonPlayerModal } from "@/components/church/SermonPlayerModal";
+import { AboutModal } from "@/components/church/AboutModal";
+import { AllEventsModal } from "@/components/church/AllEventsModal";
 
 const Index = () => {
-  const navigate = useNavigate();
-
-  const highlights = [
-    {
-      icon: Sparkles,
-      label: "Built for Ministry",
-      text: "Everything you need to shepherd well—without extra noise.",
-    },
-    {
-      icon: ShieldCheck,
-      label: "Data Peace of Mind",
-      text: "Secure, private, and reliable so you can focus on people.",
-    },
-    {
-      icon: Clock,
-      label: "Hours Back Weekly",
-      text: "Automations that return your time to discipleship and care.",
-    },
-  ];
-
-  const features = [
-    {
-      icon: Users,
-      title: "Member Care",
-      description:
-        "Keep families, milestones, and follow-ups organized so no one slips through the cracks.",
-      badge: "Pastoral lens",
-    },
-    {
-      icon: Calendar,
-      title: "Attendance & Events",
-      description:
-        "Track services, teams, and gatherings with clear visibility into participation trends.",
-      badge: "Automated logs",
-    },
-    {
-      icon: BarChart3,
-      title: "Health Dashboards",
-      description:
-        "See growth, engagement, and ministry momentum at a glance with ready-to-share reports.",
-      badge: "Leadership-ready",
-    },
-  ];
-
-  const values = [
-    {
-      icon: Heart,
-      title: "Ministry First",
-      description: "Tools that amplify discipleship and community, not bureaucracy.",
-    },
-    {
-      icon: Users,
-      title: "People Over Profiles",
-      description: "Every member story stays central, from visits to baptisms and beyond.",
-    },
-    {
-      icon: Shield,
-      title: "Guarded & Trusted",
-      description: "Security-forward by default so leadership can steward with confidence.",
-    },
-  ];
-
-  const steps = [
-    {
-      title: "1) Launch",
-      text: "Import your members and attendance in minutes with guided setup.",
-    },
-    {
-      title: "2) Lead",
-      text: "Run services, teams, and follow-ups with clean, ministry-ready workflows.",
-    },
-    {
-      title: "3) Learn",
-      text: "Share clear insights with pastors and boards to fuel wise decisions.",
-    },
-  ];
-
-  const stats = [
-    { end: 9, suffix: "+", label: "Churches served", icon: Award },
-    { end: 1, suffix: "k+", label: "Members cared for", icon: Users },
-    { end: 99.9, suffix: "%", label: "Uptime reliability", icon: TrendingUp, decimals: 1 },
-  ];
+  const [giveModalOpen, setGiveModalOpen] = useState(false);
+  const [visitModalOpen, setVisitModalOpen] = useState(false);
+  const [prayerModalOpen, setPrayerModalOpen] = useState(false);
+  const [sermonModalOpen, setSermonModalOpen] = useState(false);
+  const [aboutModalOpen, setAboutModalOpen] = useState(false);
+  const [eventsModalOpen, setEventsModalOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Navigation />
+    <div className="min-h-screen bg-white text-[#1B2430] flex flex-col font-sans selection:bg-[#0F3E6B] selection:text-white">
+      {/* Top Announcement Bar */}
+      <AnnouncementBar />
 
-      <main>
-        <section className="relative overflow-hidden pt-20 pb-16 md:pt-32 md:pb-36">
-          <div className="absolute inset-0">
-            <img src={heroImage} alt="Church community" className="h-full w-full object-cover object-top opacity-30" />
-            <div className="absolute inset-0 bg-gradient-to-br from-background via-background/90 to-primary/10" />
-          </div>
+      {/* Main Church Navigation */}
+      <Navigation
+        variant="default"
+        onGiveOnline={() => setGiveModalOpen(true)}
+      />
 
-          <div className="relative z-10 container mx-auto px-4 lg:px-8">
-            <div className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr] items-center">
-              <div className="space-y-8">
-                <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary">
-                  <Zap className="h-4 w-4" />
-                  A Changed Life for Christ
-                </div>
+      {/* Main Content Sections */}
+      <main className="flex-1">
+        {/* Section 1: Hero */}
+        <HeroSection
+          onPlanVisit={() => setVisitModalOpen(true)}
+          onWatchOnline={() => setSermonModalOpen(true)}
+        />
 
-                <div className="space-y-4">
-                  <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
-                    Shepherd our people, not spreadsheets.
-                    <span className="block text-primary">Let the tool handle the admin.</span>
-                  </h1>
-                  <p className="text-base md:text-xl text-muted-foreground max-w-2xl">
-                      CLBC Deliverance Centre keeps our attendance, member care, and leadership reporting in one calm place.
-                  </p>
-                </div>
+        {/* Section 2: Service Times Floating Cards */}
+        <ServiceTimesCards
+          onPlanVisit={() => setVisitModalOpen(true)}
+          onPrayerRequest={() => setPrayerModalOpen(true)}
+        />
 
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <Button size="lg" className="gap-2 px-8" onClick={() => navigate("/auth")}> 
-                    Sign in
-                    <ArrowRight className="h-5 w-5" />
-                  </Button>
-                  <Button size="lg" variant="outline" className="gap-2 px-8 hidden sm:flex" onClick={() => navigate("/dashboard")}> 
-                    See dashboard
-                    <Compass className="h-5 w-5" />
-                  </Button>
-                </div>
+        {/* Section 3: About Church & Heritage */}
+        <AboutSection
+          onLearnMore={() => setAboutModalOpen(true)}
+        />
 
-                {/* Statistics Section - Redesigned */}
-                <div className="hidden xs:grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 md:gap-6 max-w-4xl">
-                  {stats.map((stat, idx) => (
-                    <StatCard 
-                      key={idx} 
-                      end={stat.end} 
-                      suffix={stat.suffix} 
-                      label={stat.label} 
-                      icon={stat.icon}
-                      decimals={stat.decimals || 0}
-                    />
-                  ))}
-                </div>
-              </div>
+        {/* Section 4: Ministries for Every Season */}
+        <MinistriesSection />
 
-              <Card className="hidden lg:block border-border/50 bg-background/70 backdrop-blur shadow-2xl shadow-primary/10">
-                <CardContent className="p-8 space-y-6">
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center">
-                      <ShieldCheck className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <p className="text-xs uppercase tracking-wide text-muted-foreground">Trust signals</p>
-                      <p className="font-semibold">Fast to use. Secure by default.</p>
-                    </div>
-                  </div>
+        {/* Section 5: Watch Latest Message & Upcoming Events */}
+        <SermonsAndEventsSection
+          onWatchSermon={() => setSermonModalOpen(true)}
+          onViewAllEvents={() => setEventsModalOpen(true)}
+        />
 
-                  <div className="space-y-4">
-                    {highlights.map((item, idx) => (
-                      <div key={idx} className="flex gap-3 rounded-lg border border-border/60 bg-muted/40 p-3">
-                        <div className="h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center">
-                          <item.icon className="h-5 w-5" />
-                        </div>
-                        <div>
-                          <p className="font-semibold text-foreground">{item.label}</p>
-                          <p className="text-sm text-muted-foreground">{item.text}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+        {/* Section 6: Partner With Us / Giving */}
+        <GivingSection
+          onGiveOnline={() => setGiveModalOpen(true)}
+        />
 
-                  <div className="rounded-lg border border-dashed border-primary/40 bg-primary/5 p-4 flex items-start gap-3">
-                    <Radio className="h-5 w-5 text-primary mt-1" />
-                    <div className="space-y-1">
-                      <p className="font-semibold">Ready for Sunday.</p>
-                      <p className="text-sm text-muted-foreground">Import members, set attendance, and share reports with leadership without extra training.</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </section>
-
-        <section id="features" className="py-12 md:py-20 bg-muted/30">
-          <div className="container mx-auto px-4 lg:px-8">
-            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-12">
-              <div className="space-y-2 max-w-2xl">
-                <p className="text-sm font-semibold text-primary">What we use weekly</p>
-                <h2 className="text-3xl md:text-4xl font-bold tracking-tight">A calm command center for our church</h2>
-                <p className="text-muted-foreground">Three pillars keep CLBC organized, secure, and connected.</p>
-              </div>
-              <Button variant="ghost" size="sm" className="gap-2" onClick={() => navigate("/dashboard")}>Open our dashboard <ArrowRight className="h-4 w-4" /></Button>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {features.map((feature, idx) => (
-                <Card key={idx} className={cn("group border-border/50 bg-background/80 backdrop-blur hover:-translate-y-1 hover:shadow-lg transition-all", idx === 2 && "hidden md:block")}>
-                  <CardHeader className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
-                        <feature.icon className="h-5 w-5 sm:h-6 sm:w-6" />
-                      </div>
-                      <span className="hidden sm:inline-flex text-xs font-semibold uppercase tracking-wide text-primary/80 bg-primary/10 px-3 py-1 rounded-full">{feature.badge}</span>
-                    </div>
-                    <CardTitle className="text-lg sm:text-xl">{feature.title}</CardTitle>
-                    <CardDescription className="text-sm sm:text-base text-muted-foreground">{feature.description}</CardDescription>
-                  </CardHeader>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="py-12 md:py-20">
-          <div className="container mx-auto px-4 lg:px-8 grid lg:grid-cols-[1.1fr_0.9fr] gap-6 lg:gap-10 items-center">
-            <div className="space-y-4">
-              <p className="text-sm font-semibold text-primary">How it works</p>
-              <h3 className="text-2xl md:text-4xl font-bold tracking-tight">Launch, lead, and learn</h3>
-              <p className="hidden sm:block text-muted-foreground max-w-2xl">A simple three-step path to get your teams aligned and your data trustworthy.</p>
-
-              <div className="space-y-3">
-                {steps.map((step, idx) => (
-                  <div key={idx} className="flex gap-3 sm:gap-4 rounded-lg border border-border/60 bg-muted/30 p-3 sm:p-4">
-                    <div className="h-9 w-9 sm:h-10 sm:w-10 flex items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-sm sm:text-base flex-shrink-0">{idx + 1}</div>
-                    <div className="min-w-0">
-                      <p className="font-semibold text-foreground text-sm sm:text-base">{step.title}</p>
-                      <p className="hidden sm:block text-sm text-muted-foreground">{step.text}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <Card className="hidden lg:block border-border/50 bg-background/70 backdrop-blur shadow-xl">
-              <CardContent className="p-8 space-y-6">
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center">
-                    <CheckCircle2 className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <p className="text-xs uppercase tracking-wide text-muted-foreground">Trusted rhythms</p>
-                    <p className="font-semibold">Weekly attendance. Monthly reporting. Annual clarity.</p>
-                  </div>
-                </div>
-
-                <ul className="space-y-3 text-sm text-muted-foreground">
-                  <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 text-primary mt-0.5" /> Guided onboarding and import support</li>
-                  <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 text-primary mt-0.5" /> Role-based access for staff and volunteers</li>
-                  <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 text-primary mt-0.5" /> Download-ready reports for leadership meetings</li>
-                  <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 text-primary mt-0.5" /> Email and SMS-friendly member updates</li>
-                </ul>
-
-                <Button className="w-full" onClick={() => navigate("/auth")}>
-                  Sign in
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        </section>
-
-        <section className="hidden md:block py-12 md:py-20 bg-muted/30">
-          <div className="container mx-auto px-4 lg:px-8 grid lg:grid-cols-[0.9fr_1.1fr] gap-6 lg:gap-10 items-center">
-            <Card className="hidden lg:block border-border/50 bg-background/80 shadow-lg">
-              <CardContent className="p-8 space-y-6">
-                <div className="flex items-center gap-3">
-                  <div className="h-12 w-12 rounded-full bg-primary/10 text-primary flex items-center justify-center">
-                    <Heart className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <p className="text-xs uppercase tracking-wide text-muted-foreground">Story from the field</p>
-                    <p className="font-semibold">Our pastors see more faces, not more forms.</p>
-                  </div>
-                </div>
-                <p className="text-lg text-foreground">
-                  “Within two Sundays we stopped chasing paper and started spotting who needed follow-up. Reports take minutes now, and our leaders spend that time visiting instead.”
-                </p>
-                <div className="text-sm text-muted-foreground">
-                  Pastor, CLBC Deliverance Centre
-                </div>
-              </CardContent>
-            </Card>
-
-            <div className="space-y-4">
-              <p className="text-sm font-semibold text-primary">Why we built it</p>
-              <h3 className="text-3xl md:text-4xl font-bold tracking-tight">Stay organized without feeling corporate</h3>
-              <p className="text-muted-foreground max-w-2xl">A modern system that still feels pastoral: gentle design, intentional flows, and privacy that respects our people.</p>
-
-              <div className="hidden sm:grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
-                {values.map((value, idx) => (
-                  <div key={idx} className="rounded-xl border border-border/60 bg-background/70 p-4 shadow-sm">
-                    <div className="h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-3">
-                      <value.icon className="h-5 w-5" />
-                    </div>
-                    <p className="font-semibold text-foreground">{value.title}</p>
-                    <p className="text-sm text-muted-foreground mt-1">{value.description}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="py-12 md:py-20">
-          <div className="container mx-auto px-4 lg:px-8">
-            <Card className="border-border/60 bg-gradient-to-r from-primary/10 via-primary/5 to-background shadow-xl">
-              <CardContent className="p-6 md:p-12 flex flex-col lg:flex-row gap-6 lg:gap-8 lg:items-center lg:justify-between">
-                <div className="space-y-3 max-w-2xl">
-                  <p className="text-sm font-semibold text-primary">Next step</p>
-                  <h3 className="text-3xl font-bold">Ready to focus on changed lives?</h3>
-                  <p className="text-muted-foreground">Keep our people first while staying organized for every service, meeting, and visit.</p>
-                  <div className="hidden sm:flex flex-wrap gap-3 text-sm text-muted-foreground">
-                    <span className="inline-flex items-center gap-2 rounded-full bg-background/80 px-3 py-1 border border-border/60"><Shield className="h-4 w-4 text-primary" /> Secure by design</span>
-                    <span className="inline-flex items-center gap-2 rounded-full bg-background/80 px-3 py-1 border border-border/60"><Zap className="h-4 w-4 text-primary" /> Fast setup</span>
-                    <span className="inline-flex items-center gap-2 rounded-full bg-background/80 px-3 py-1 border border-border/60"><Globe className="h-4 w-4 text-primary" /> Works anywhere</span>
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-3">
-                  <Button size="lg" className="w-full sm:w-auto px-8" onClick={() => navigate("/auth")}>
-                    Sign in
-                  </Button>
-                  <Button size="lg" variant="outline" className="w-full sm:w-auto px-8 hidden sm:flex" onClick={() => navigate("/dashboard")}>
-                    View dashboard
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </section>
+        {/* Section 7: Visit & Contact Details */}
+        <VisitContactSection
+          onPlanVisit={() => setVisitModalOpen(true)}
+          onPrayerRequest={() => setPrayerModalOpen(true)}
+        />
       </main>
 
-      <footer className="border-t border-border/40 bg-background/60 backdrop-blur-sm py-8 md:py-12">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-start gap-8">
-            <div className="flex items-center gap-3">
-              <div className="h-12 w-12 rounded-full border border-primary/30 bg-white shadow-sm p-1 flex items-center justify-center overflow-hidden">
-                <img src={clbcLogo} alt="C.L.B.C Logo" className="h-full w-full object-contain" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-xl font-extrabold leading-tight tracking-tight" style={{ fontFamily: "'Poppins', 'Inter', 'Segoe UI', sans-serif" }}>CLBC Deliverance Centre</span>
-                <span className="text-sm text-muted-foreground leading-tight" style={{ fontFamily: "'Poppins', 'Inter', 'Segoe UI', sans-serif" }}>Church Management System</span>
-              </div>
-            </div>
+      {/* Church Footer */}
+      <ChurchFooter />
 
-            <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6">
-              <a href="https://www.kimathi.tech/" className="text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2 font-medium">
-                <Code className="h-3 w-3 sm:h-4 sm:w-4 text-primary/70" />
-                <span className="hidden sm:inline">Developers</span>
-                <span className="sm:hidden">Dev</span>
-              </a>
-              <a href="#" className="hidden md:flex text-sm text-muted-foreground hover:text-primary transition-colors items-center gap-2 font-medium">
-                <Globe className="h-4 w-4 text-primary/70" />
-                Language
-              </a>
-              <a href="#" className="hidden md:inline text-sm text-muted-foreground hover:text-primary transition-colors font-medium">Privacy Policy</a>
-              <a href="#" className="hidden md:inline text-sm text-muted-foreground hover:text-primary transition-colors font-medium">Terms</a>
-            </div>
-          </div>
+      {/* Interactive Modals */}
+      <GiveOnlineModal
+        open={giveModalOpen}
+        onOpenChange={setGiveModalOpen}
+      />
 
-          <div className="text-center text-xs sm:text-sm text-muted-foreground mt-6 sm:mt-10 border-t border-border/30 pt-4 sm:pt-6">
-            © <span className="font-bold">{new Date().getFullYear()}</span> <span className="hidden sm:inline">Changed Life Baptist Church. All rights reserved.</span><span className="sm:hidden">CLBC</span>
-          </div>
-        </div>
-      </footer>
+      <PlanVisitModal
+        open={visitModalOpen}
+        onOpenChange={setVisitModalOpen}
+      />
+
+      <PrayerRequestModal
+        open={prayerModalOpen}
+        onOpenChange={setPrayerModalOpen}
+      />
+
+      <SermonPlayerModal
+        open={sermonModalOpen}
+        onOpenChange={setSermonModalOpen}
+      />
+
+      <AboutModal
+        open={aboutModalOpen}
+        onOpenChange={setAboutModalOpen}
+      />
+
+      <AllEventsModal
+        open={eventsModalOpen}
+        onOpenChange={setEventsModalOpen}
+      />
     </div>
   );
 };

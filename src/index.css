@@ -1,52 +1,51 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..800;1,9..144,400..800&family=Inter:wght@300;400;500;600;700;800&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 220 15% 20%;
+    --foreground: 215 25% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 15% 20%;
+    --card-foreground: 215 25% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 15% 20%;
+    --popover-foreground: 215 25% 15%;
 
-    --primary: 0 85% 50%;
+    --primary: 209 75% 24%; /* #0F3E6B Navy */
     --primary-foreground: 0 0% 100%;
     
-    --primary-light: 0 85% 60%;
-    --primary-dark: 0 90% 40%;
+    --primary-light: 209 65% 35%;
+    --primary-dark: 210 76% 18%; /* #0B2D4F */
 
-    --secondary: 195 100% 45%;
+    --secondary: 208 71% 42%; /* #1F6FB5 Blue */
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 20% 96%;
-    --muted-foreground: 220 10% 50%;
+    --muted: 214 50% 97%; /* #F4F7FB */
+    --muted-foreground: 215 16% 35%; /* #4A5565 */
 
-    --accent: 195 100% 45%;
+    --accent: 0 66% 47%; /* #C62828 Red */
     --accent-foreground: 0 0% 100%;
     
     --success: 145 65% 45%;
     --success-foreground: 0 0% 100%;
 
-    --destructive: 0 85% 50%;
+    --destructive: 0 66% 47%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 215 20% 88%;
-    --input: 215 20% 88%;
-    --ring: 0 85% 50%;
+    --border: 216 20% 91%; /* #E6E9EE */
+    --input: 216 20% 91%;
+    --ring: 208 71% 42%;
 
     --radius: 0.75rem;
 
-    /* Gradients - Red and Blue theme from logo */
-    --gradient-primary: linear-gradient(135deg, hsl(0, 85%, 50%) 0%, hsl(0, 90%, 40%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(195, 100%, 45%) 0%, hsl(200, 95%, 50%) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(0, 85%, 50%) 0%, hsl(195, 100%, 45%) 50%, hsl(0, 90%, 40%) 100%);
+    /* Gradients - Brand theme from mockup */
+    --gradient-primary: linear-gradient(135deg, #0F3E6B 0%, #1F6FB5 100%);
+    --gradient-accent: linear-gradient(135deg, #C62828 0%, #E53935 100%);
+    --gradient-hero: linear-gradient(135deg, #082A4B 0%, #0F3E6B 50%, #164C80 100%);
     
     /* Shadows */
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
@@ -79,30 +78,30 @@
     --popover: 220 20% 12%;
     --popover-foreground: 0 0% 95%;
 
-    --primary: 0 85% 55%;
+    --primary: 209 75% 45%;
     --primary-foreground: 0 0% 100%;
     
-    --primary-light: 0 85% 65%;
-    --primary-dark: 0 90% 45%;
+    --primary-light: 208 71% 55%;
+    --primary-dark: 210 76% 25%;
 
-    --secondary: 195 100% 50%;
+    --secondary: 208 71% 52%;
     --secondary-foreground: 0 0% 100%;
 
     --muted: 220 15% 18%;
     --muted-foreground: 220 10% 65%;
 
-    --accent: 195 100% 50%;
+    --accent: 0 66% 55%;
     --accent-foreground: 0 0% 100%;
     
     --success: 145 65% 50%;
     --success-foreground: 0 0% 100%;
 
-    --destructive: 0 85% 55%;
+    --destructive: 0 66% 55%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 220 15% 22%;
     --input: 220 15% 22%;
-    --ring: 0 85% 55%;
+    --ring: 208 71% 52%;
     
     --gradient-primary: linear-gradient(135deg, hsl(0, 85%, 55%) 0%, hsl(0, 90%, 45%) 100%);
     --gradient-accent: linear-gradient(135deg, hsl(195, 100%, 50%) 0%, hsl(200, 95%, 55%) 100%);

@@ -26,7 +26,28 @@ export default {
       '2xl': '1536px',
     },
     extend: {
+      fontFamily: {
+        serif: ["Fraunces", "Georgia", "serif"],
+        sans: ["Inter", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
+        heading: ["Fraunces", "Georgia", "serif"],
+      },
       colors: {
+        church: {
+          navy: "#0F3E6B",
+          "navy-dark": "#082A4B",
+          "navy-light": "#1B4F82",
+          blue: "#1F6FB5",
+          "blue-light": "#3B82F6",
+          "blue-ice": "#DBE7F5",
+          "blue-subtle": "#F4F7FB",
+          red: "#C62828",
+          "red-hover": "#D32F2F",
+          "red-dark": "#9A1F1F",
+          footer: "#0B2D4F",
+          border: "#E6E9EE",
+          dark: "#1B2430",
+          muted: "#4A5565",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
