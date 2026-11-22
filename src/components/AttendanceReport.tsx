@@ -29,10 +29,6 @@ import {
   Calendar,
   Users,
   Download,
-  Activity,
-  CheckCircle2,
-  AlertCircle,
-  TrendingUp,
 } from "lucide-react";
 import {
   BarChart,
@@ -1023,30 +1019,6 @@ export default function AttendanceReport() {
               </p>
               <p className="mt-1 text-xs text-slate-400">Lowest: {summary.lowestAttendance}%</p>
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Engagement breakdown */}
-      <div className="rounded-lg border border-slate-200/80 bg-white p-4 shadow-sm sm:p-5">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2 text-sm font-semibold text-[#0F3E6B]">
-            <Activity className="h-4 w-4 text-[#1F6FB5]" />
-            Engagement breakdown
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">
-              <CheckCircle2 className="h-3.5 w-3.5" />
-              High (≥75%): {summary.regularCount} members
-            </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-medium text-amber-700">
-              <TrendingUp className="h-3.5 w-3.5" />
-              Moderate (50-74%): {summary.moderateCount} members
-            </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-rose-200 bg-rose-50 px-3 py-1 text-xs font-medium text-rose-700">
-              <AlertCircle className="h-3.5 w-3.5" />
-              Follow-up needed (&lt;50%): {summary.atRiskCount} members
-            </span>
           </div>
         </div>
       </div>
