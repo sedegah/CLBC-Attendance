@@ -1,15 +1,12 @@
 import { useState } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import {
   Menu,
   X,
   LogOut,
-  Home,
-  LayoutDashboard,
-  Shield,
+  Bell,
   Heart,
   ChevronRight,
 } from "lucide-react";
@@ -24,7 +21,7 @@ export const Navigation = ({ variant = "default", onGiveOnline }: NavigationProp
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, signOut } = useAuth();
+  const { signOut } = useAuth();
   const { toast } = useToast();
   const isHome = location.pathname === "/";
   const sectionHref = (hash: string) => (isHome ? hash : `/${hash}`);
@@ -55,63 +52,53 @@ export const Navigation = ({ variant = "default", onGiveOnline }: NavigationProp
   // Dashboard Header Variant
   if (variant === "dashboard") {
     return (
-      <header className="border-b border-[#E6E9EE] bg-white sticky top-0 z-50 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <div
-              className="flex items-center gap-3 cursor-pointer hover:opacity-90 transition-opacity"
-              onClick={() => navigate("/dashboard")}
+      <header className="sticky top-0 z-50 border-b border-[#E6E9EE] bg-white">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          {/* Logo */}
+          <button
+            type="button"
+            className="flex items-center gap-2.5 text-left transition-opacity hover:opacity-90"
+            onClick={() => navigate("/dashboard")}
+          >
+            <img
+              src={clbcLogo}
+              alt="C.L.B.C Logo"
+              className="h-9 w-9 flex-shrink-0 object-contain sm:h-10 sm:w-10"
+            />
+            <span className="flex flex-col leading-tight">
+              <span className="font-serif text-base font-bold text-[#0F3E6B] sm:text-lg">
+                C.L.B.C
+              </span>
+              <span className="text-[10px] font-medium tracking-wide text-slate-500 sm:text-[11px]">
+                Church Management
+              </span>
+            </span>
+          </button>
+
+          {/* Right Actions */}
+          <div className="flex items-center gap-1.5 sm:gap-2.5">
+            <button
+              type="button"
+              aria-label="Notifications"
+              onClick={() =>
+                toast({
+                  title: "Notifications",
+                  description: "You're all caught up. No new notifications.",
+                })
+              }
+              className="flex h-9 w-9 items-center justify-center rounded-full text-slate-500 transition-colors hover:bg-slate-100 hover:text-[#0F3E6B]"
             >
-              <div className="h-10 w-10 rounded-full border border-[#0F3E6B]/20 bg-white shadow-sm p-1 flex items-center justify-center overflow-hidden flex-shrink-0">
-                <img
-                  src={clbcLogo}
-                  alt="C.L.B.C Logo"
-                  className="h-full w-full object-contain"
-                />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-serif text-base sm:text-lg font-bold text-[#0F3E6B] leading-tight">
-                  C.L.B.C Church Management
-                </span>
-                <span className="text-[11px] text-slate-500 leading-tight">
-                  Attendance &amp; Administrative System
-                </span>
-              </div>
-            </div>
+              <Bell className="h-[18px] w-[18px]" />
+            </button>
 
-            {/* Right Actions */}
-            <div className="flex items-center gap-2 sm:gap-3">
-              {user && (
-                <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#0F3E6B]/5 border border-[#0F3E6B]/15">
-                  <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
-                  <span className="text-xs font-semibold text-[#0F3E6B] truncate max-w-[140px]">
-                    {(user as any)?.full_name || user.email?.split("@")[0]}
-                  </span>
-                </div>
-              )}
-
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => navigate("/")}
-                className="gap-1.5 text-xs font-semibold text-[#0F3E6B] hover:bg-[#0F3E6B]/10 rounded-xl"
-                title="Back to Public Church Website"
-              >
-                <Home className="h-4 w-4" />
-                <span className="hidden sm:inline">Website</span>
-              </Button>
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleSignOut}
-                className="gap-1.5 text-xs text-[#C62828] border-[#C62828]/30 hover:bg-[#C62828]/10 hover:text-[#C62828] rounded-xl"
-              >
-                <LogOut className="h-4 w-4" />
-                <span className="hidden sm:inline">Sign Out</span>
-              </Button>
-            </div>
+            <button
+              type="button"
+              onClick={handleSignOut}
+              className="inline-flex items-center gap-1.5 rounded-full bg-[#C62828] px-3.5 py-2 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-[#B71C1C] sm:px-4 sm:text-sm"
+            >
+              <LogOut className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <span>Sign out</span>
+            </button>
           </div>
         </div>
       </header>
