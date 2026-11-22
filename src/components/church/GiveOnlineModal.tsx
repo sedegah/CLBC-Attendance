@@ -179,7 +179,7 @@ export const GiveOnlineModal = ({ open, onOpenChange }: GiveOnlineModalProps) =>
                 </div>
                 <div className="flex justify-between pt-1">
                   <span className="text-slate-500">Branch</span>
-                  <span className="font-semibold text-slate-900">Achimota Branch, Accra</span>
+                  <span className="font-semibold text-slate-900">Ashongman Estate / Atomic Branch, Accra</span>
                 </div>
               </div>
             </TabsContent>

@@ -21,7 +21,7 @@ export const AnnouncementBar = () => {
         <div className="flex items-center gap-3 sm:gap-5 text-white/85 text-xs">
           <div className="hidden lg:flex items-center gap-1.5 hover:text-white transition-colors">
             <MapPin className="w-3.5 h-3.5 text-[#388CD4]" />
-            <span>Achimota Mile 7, Accra, Ghana</span>
+            <span>Ashongman Estate, Accra, Ghana</span>
           </div>
           <a 
             href="tel:+233241234567" 

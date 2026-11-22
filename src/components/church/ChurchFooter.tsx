@@ -41,8 +41,8 @@ export const ChurchFooter = () => {
             <div className="flex items-start gap-2">
               <MapPin className="w-4 h-4 text-[#388CD4] flex-shrink-0 mt-0.5" />
               <span>
-                Achimota - Mile 7 Campus<br />
-                Near Main Highway, Accra, Ghana
+                Ashongman Estate Campus<br />
+                Accra, Ghana
               </span>
             </div>
             <div className="pt-2 text-white/90">

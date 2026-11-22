@@ -174,7 +174,7 @@ export const PlanVisitModal = ({ open, onOpenChange }: PlanVisitModalProps) => {
 
               <div className="flex items-center justify-center gap-1.5 text-[11px] text-slate-500 pt-1">
                 <MapPin className="w-3 h-3 text-[#1F6FB5]" />
-                <span>Changed Life Baptist Church · Achimota Mile 7, Accra</span>
+                <span>Changed Life Baptist Church · Ashongman Estate, Accra</span>
               </div>
             </form>
           )}

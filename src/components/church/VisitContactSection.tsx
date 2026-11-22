@@ -34,7 +34,7 @@ export const VisitContactSection = ({ onPlanVisit, onPrayerRequest }: VisitConta
                   <div className="font-bold text-sm text-[#0F3E6B]">Church Location</div>
                   <div className="text-xs sm:text-sm text-slate-600 mt-0.5">
                     Changed Life Baptist Church Campus<br />
-                    Achimota - Mile 7, Near Main Highway, Accra, Ghana
+                    Ashongman Estate, Accra, Ghana
                   </div>
                 </div>
               </div>
