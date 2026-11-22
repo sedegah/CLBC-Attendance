@@ -27,6 +27,8 @@ export const Navigation = ({ variant = "default", onGiveOnline }: NavigationProp
   const location = useLocation();
   const { user, signOut } = useAuth();
   const { toast } = useToast();
+  const isHome = location.pathname === "/";
+  const sectionHref = (hash: string) => (isHome ? hash : `/${hash}`);
 
   const handleSignOut = async () => {
     await signOut();
@@ -142,42 +144,29 @@ export const Navigation = ({ variant = "default", onGiveOnline }: NavigationProp
 
           {/* Desktop Navigation Links matching mockup */}
           <div className="hidden lg:flex items-center gap-7 xl:gap-8 font-medium text-[15px] text-[#1B2430]">
-            <a
-              href="#about"
-              className="hover:text-[#C62828] transition-colors py-1"
+            {[
+              { label: "About", hash: "#about" },
+              { label: "Services", hash: "#services" },
+              { label: "Ministries", hash: "#ministries" },
+              { label: "Sermons", hash: "#watch" },
+              { label: "Events", hash: "#events" },
+            ].map((link) => (
+              <a
+                key={link.hash}
+                href={sectionHref(link.hash)}
+                className="hover:text-[#C62828] transition-colors py-1"
+              >
+                {link.label}
+              </a>
+            ))}
+            <Link
+              to="/visit"
+              className={`hover:text-[#C62828] transition-colors py-1 ${
+                location.pathname === "/visit" ? "text-[#C62828]" : ""
+              }`}
             >
-              About
-            </a>
-            <a
-              href="#services"
-              className="hover:text-[#C62828] transition-colors py-1"
-            >
-              Services
-            </a>
-            <a
-              href="#ministries"
-              className="hover:text-[#C62828] transition-colors py-1"
-            >
-              Ministries
-            </a>
-            <a
-              href="#watch"
-              className="hover:text-[#C62828] transition-colors py-1"
-            >
-              Sermons
-            </a>
-            <a
-              href="#events"
-              className="hover:text-[#C62828] transition-colors py-1"
-            >
-              Events
-            </a>
-            <a
-              href="#contact"
-              className="hover:text-[#C62828] transition-colors py-1"
-            >
-              Contact
-            </a>
+              Visit
+            </Link>
           </div>
 
           {/* Desktop Actions */}
@@ -223,23 +212,35 @@ export const Navigation = ({ variant = "default", onGiveOnline }: NavigationProp
         {isMenuOpen && (
           <div className="lg:hidden border-t border-[#E6E9EE] bg-white py-4 px-2 space-y-1 shadow-xl animate-in slide-in-from-top-2 duration-200">
             {[
-              { label: "About", href: "#about" },
-              { label: "Services & Times", href: "#services" },
-              { label: "Ministries", href: "#ministries" },
-              { label: "Sermons & Messages", href: "#watch" },
-              { label: "Upcoming Events", href: "#events" },
-              { label: "Contact & Location", href: "#contact" },
-            ].map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={() => setIsMenuOpen(false)}
-                className="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold text-[#1B2430] hover:bg-[#F4F7FB] hover:text-[#C62828] transition-colors"
-              >
-                <span>{link.label}</span>
-                <ChevronRight className="w-4 h-4 text-slate-400" />
-              </a>
-            ))}
+              { label: "About", href: sectionHref("#about") },
+              { label: "Services & Times", href: sectionHref("#services") },
+              { label: "Ministries", href: sectionHref("#ministries") },
+              { label: "Sermons & Messages", href: sectionHref("#watch") },
+              { label: "Upcoming Events", href: sectionHref("#events") },
+              { label: "Visit & Location", href: "/visit" },
+            ].map((link) =>
+              link.href === "/visit" ? (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold text-[#1B2430] hover:bg-[#F4F7FB] hover:text-[#C62828] transition-colors"
+                >
+                  <span>{link.label}</span>
+                  <ChevronRight className="w-4 h-4 text-slate-400" />
+                </Link>
+              ) : (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold text-[#1B2430] hover:bg-[#F4F7FB] hover:text-[#C62828] transition-colors"
+                >
+                  <span>{link.label}</span>
+                  <ChevronRight className="w-4 h-4 text-slate-400" />
+                </a>
+              ),
+            )}
 
             <div className="pt-3 border-t border-slate-100 px-3">
               <button

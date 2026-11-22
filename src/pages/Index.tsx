@@ -7,7 +7,6 @@ import { AboutSection } from "@/components/church/AboutSection";
 import { MinistriesSection } from "@/components/church/MinistriesSection";
 import { SermonsAndEventsSection } from "@/components/church/SermonsAndEventsSection";
 import { GivingSection } from "@/components/church/GivingSection";
-import { VisitContactSection } from "@/components/church/VisitContactSection";
 import { ChurchFooter } from "@/components/church/ChurchFooter";
 
 import { GiveOnlineModal } from "@/components/church/GiveOnlineModal";
@@ -67,12 +66,6 @@ const Index = () => {
         {/* Section 6: Partner With Us / Giving */}
         <GivingSection
           onGiveOnline={() => setGiveModalOpen(true)}
-        />
-
-        {/* Section 7: Visit & Contact Details */}
-        <VisitContactSection
-          onPlanVisit={() => setVisitModalOpen(true)}
-          onPrayerRequest={() => setPrayerModalOpen(true)}
         />
       </main>
 

@@ -1,10 +1,13 @@
-import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import clbcLogo from "@/assets/clbc-logo.png";
 import { Shield, Heart, MapPin, Phone, Mail } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
 export const ChurchFooter = () => {
   const { user } = useAuth();
+  const location = useLocation();
+  const isHome = location.pathname === "/";
+  const sectionHref = (hash: string) => (isHome ? hash : `/${hash}`);
 
   return (
     <footer className="bg-[#0B2D4F] text-[#C9D9EC] pt-14 sm:pt-16 pb-8 px-4 sm:px-8 lg:px-12 border-t border-[#164C80]">
@@ -81,27 +84,27 @@ export const ChurchFooter = () => {
             </div>
             <ul className="space-y-1.5">
               <li>
-                <a href="#about" className="hover:text-white transition-colors">
+                <a href={sectionHref("#about")} className="hover:text-white transition-colors">
                   About Our Church
                 </a>
               </li>
               <li>
-                <a href="#services" className="hover:text-white transition-colors">
+                <a href={sectionHref("#services")} className="hover:text-white transition-colors">
                   Service Times &amp; Directions
                 </a>
               </li>
               <li>
-                <a href="#ministries" className="hover:text-white transition-colors">
+                <a href={sectionHref("#ministries")} className="hover:text-white transition-colors">
                   Ministries &amp; Fellowships
                 </a>
               </li>
               <li>
-                <a href="#watch" className="hover:text-white transition-colors">
+                <a href={sectionHref("#watch")} className="hover:text-white transition-colors">
                   Sermons &amp; Messages
                 </a>
               </li>
               <li>
-                <a href="#events" className="hover:text-white transition-colors">
+                <a href={sectionHref("#events")} className="hover:text-white transition-colors">
                   Upcoming Events
                 </a>
               </li>
@@ -115,7 +118,7 @@ export const ChurchFooter = () => {
             &copy; Changed Life Baptist Church &middot; Since 1976 &middot; All Rights Reserved
           </div>
           <div className="flex items-center gap-4">
-            <a href="#about" className="hover:text-white transition-colors">
+            <a href={sectionHref("#about")} className="hover:text-white transition-colors">
               Statement of Faith
             </a>
           </div>
