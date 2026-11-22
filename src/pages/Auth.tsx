@@ -6,7 +6,6 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft, Lock, Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { WorshipArchSvg } from "@/components/church/WorshipArchSvg";
 import clbcLogo from "@/assets/clbc-logo.png";
 import { z } from "zod";
@@ -156,8 +155,6 @@ const Auth = () => {
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Back to church website</span>
           </Link>
-
-          <ThemeToggle />
         </div>
 
         {/* Center Form Container */}

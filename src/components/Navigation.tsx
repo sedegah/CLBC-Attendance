@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -92,8 +91,6 @@ export const Navigation = ({ variant = "default", onGiveOnline }: NavigationProp
                 </div>
               )}
 
-              <ThemeToggle />
-
               <Button
                 variant="ghost"
                 size="sm"
@@ -178,8 +175,6 @@ export const Navigation = ({ variant = "default", onGiveOnline }: NavigationProp
 
           {/* Desktop Actions */}
           <div className="hidden lg:flex items-center gap-3">
-            <ThemeToggle />
-
             {/* Give Online button matching mockup */}
             <button
               onClick={handleGiveClick}
@@ -198,8 +193,6 @@ export const Navigation = ({ variant = "default", onGiveOnline }: NavigationProp
             >
               Give
             </button>
-
-            <ThemeToggle />
 
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}

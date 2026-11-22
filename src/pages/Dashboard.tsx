@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,21 +20,15 @@ import {
     Calendar,
     Trash2,
     Download,
-    LayoutDashboard,
-    LogOut,
     Loader2,
     ClipboardCheck,
     AlertTriangle,
-    FileBadge2,
     BarChart3
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { fetchApi, API_BASE_URL } from "@/lib/apiClient";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { Navigation } from "@/components/Navigation";
-import clbcLogo from "@/assets/clbc-logo.png";
 import MembersManager from "@/components/MembersManager";
 import ManualAttendance from "@/components/ManualAttendance";
 import AbsenteeReport from "@/components/AbsenteeReport";
@@ -56,8 +49,7 @@ interface AttendanceRecord {
 }
 
 const Dashboard = () => {
-    const navigate = useNavigate();
-    const { user, signOut } = useAuth();
+    const { user } = useAuth();
     const { toast } = useToast();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -65,6 +57,7 @@ const Dashboard = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [isUploading, setIsUploading] = useState(false);
     const [attendanceDate, setAttendanceDate] = useState(format(new Date(), "yyyy-MM-dd"));
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
     // Determine user name for personalization — use full_name from our custom auth
     const rawName = (user as any)?.full_name || user?.email?.split('@')[0] || 'Church Administrator';
@@ -94,30 +87,49 @@ const Dashboard = () => {
         }
     };
 
-    const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (!file || !user) return;
-
-        // Validate file type
+    const isSupportedFile = (file: File) => {
         const validTypes = [
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             "application/vnd.ms-excel",
             "text/csv"
         ];
-        if (!validTypes.includes(file.type) && !file.name.endsWith(".xlsx") && !file.name.endsWith(".xls") && !file.name.endsWith(".csv")) {
+
+        return validTypes.includes(file.type) ||
+            file.name.endsWith(".xlsx") ||
+            file.name.endsWith(".xls") ||
+            file.name.endsWith(".csv");
+    };
+
+    const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+
+        if (!file) {
+            setSelectedFile(null);
+            return;
+        }
+
+        if (!isSupportedFile(file)) {
             toast({
                 title: "Invalid file",
                 description: "Please upload an Excel file (.xlsx, .xls) or CSV file.",
                 variant: "destructive",
             });
+            event.target.value = "";
+            setSelectedFile(null);
             return;
         }
+
+        setSelectedFile(file);
+    };
+
+    const handleProcessAttendance = async () => {
+        if (!selectedFile || !user) return;
 
         setIsUploading(true);
 
         try {
             // Read and parse the Excel file
-            const arrayBuffer = await file.arrayBuffer();
+            const arrayBuffer = await selectedFile.arrayBuffer();
             const workbook = XLSX.read(arrayBuffer, { type: "array" });
             const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
             const jsonData = XLSX.utils.sheet_to_json(firstSheet);
@@ -138,7 +150,7 @@ const Dashboard = () => {
 
             // Upload file & save attendance record via Worker API
             const formData = new FormData();
-            formData.append('file', file);
+            formData.append('file', selectedFile);
             formData.append('attendance_date', attendanceDate);
             formData.append('total_members', String(totalMembers));
             formData.append('present_count', String(presentCount));
@@ -158,6 +170,7 @@ const Dashboard = () => {
             fetchAttendanceRecords();
 
             // Reset file input
+            setSelectedFile(null);
             if (fileInputRef.current) {
                 fileInputRef.current.value = "";
             }
@@ -275,15 +288,6 @@ const Dashboard = () => {
         }
     };
 
-    const handleSignOut = async () => {
-        await signOut();
-        toast({
-            title: "Signed out",
-            description: "You have been signed out successfully.",
-        });
-        navigate("/");
-    };
-
     // Calculate stats from real data
     const totalRecords = attendanceRecords.length;
     const totalMembersTracked = attendanceRecords.reduce((sum, r) => sum + r.total_members, 0);
@@ -297,309 +301,322 @@ const Dashboard = () => {
             title: "Total Records",
             value: totalRecords.toString(),
             icon: FileText,
-            color: "text-primary",
-            bgColor: "bg-primary/10",
-            darkBgColor: "dark:bg-primary/20",
+            iconClass: "bg-blue-50 text-blue-600",
+            glowClass: "bg-blue-50/70",
         },
         {
             title: "Members Tracked",
             value: totalMembersTracked.toString(),
             icon: Users,
-            color: "text-secondary",
-            bgColor: "bg-secondary/10",
-            darkBgColor: "dark:bg-secondary/20",
+            iconClass: "bg-sky-50 text-sky-600",
+            glowClass: "bg-sky-50/70",
         },
         {
             title: "Total Present",
             value: totalPresent.toString(),
             icon: UserPlus,
-            color: "text-green-600 dark:text-green-400", // Using a dedicated green for success
-            bgColor: "bg-green-600/10 dark:bg-green-400/10",
-            darkBgColor: "dark:bg-green-400/20",
+            iconClass: "bg-emerald-50 text-emerald-600",
+            glowClass: "bg-emerald-50/70",
         },
         {
             title: "Avg. Attendance Rate",
             value: `${avgAttendanceRate}%`,
             icon: TrendingUp,
-            color: "text-amber-500 dark:text-amber-400", // Using a dedicated amber/accent
-            bgColor: "bg-amber-500/10 dark:bg-amber-400/10",
-            darkBgColor: "dark:bg-amber-400/20",
+            iconClass: "bg-amber-50 text-amber-500",
+            glowClass: "bg-amber-50/70",
         },
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-secondary/5">
-            {/* Header */}
+        <div className="min-h-screen bg-[#F8FAFC]">
             <Navigation variant="dashboard" />
 
-            <main className="container mx-auto px-4 lg:px-8 py-6 sm:py-10 space-y-6 sm:space-y-10">
+            <main
+                className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10"
+                style={{
+                    backgroundImage: "radial-gradient(circle, rgba(15, 62, 107, 0.06) 1px, transparent 1px)",
+                    backgroundSize: "24px 24px",
+                }}
+            >
+                <div className="space-y-6 sm:space-y-8">
+                    {/* Welcome banner */}
+                    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#0B2D4F] via-[#0F3E6B] to-[#1B4F82] px-6 py-8 text-white shadow-[0_20px_50px_rgba(15,62,107,0.25)] sm:rounded-3xl sm:px-10 sm:py-10">
+                        <div className="pointer-events-none absolute -right-12 -top-16 h-64 w-64 rounded-full bg-white/5 blur-2xl" />
+                        <div className="pointer-events-none absolute -bottom-20 left-1/3 h-56 w-56 rounded-full bg-[#388CD4]/10 blur-3xl" />
 
-                {/* // --- REDESIGNED WELCOME BANNER ---
-                // Enhanced with personalization, time context, and cleaner design.
-                */}
-                <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-primary to-primary/80 shadow-2xl shadow-primary/20 dark:shadow-primary/30 p-5 sm:p-8 md:p-10 text-primary-foreground">
-                    <div className="absolute inset-0 bg-pattern-light opacity-5 dark:opacity-10" />
-                    <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                        <div className="space-y-1">
-                            {/* Personalized Greeting */}
-                            <h1 className="text-2xl sm:text-3xl md:text-5xl font-extrabold tracking-tight">
-                                Welcome back, <span className="text-primary-foreground/90">{userName.split(' ')[0]}!</span>
-                            </h1>
+                        <div className="relative z-10 flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+                            <div>
+                                <h1 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+                                    Welcome back, {userName}!
+                                </h1>
+                                <p className="mt-2 max-w-2xl text-sm font-medium text-white/75 sm:text-base lg:text-lg">
+                                    Dashboard Overview for C.L.B.C Management System
+                                </p>
+                            </div>
 
-                            {/* Subtitle/Description */}
-                            <p className="text-primary-foreground/90 max-w-2xl text-base sm:text-lg md:text-xl font-medium">
-                                Dashboard Overview for C.L.B.C Management System
-                            </p>
-                        </div>
-
-                        {/* Date Context and Icon */}
-                        <div className="flex-shrink-0 text-left md:text-right">
-                            <p className="text-xs sm:text-sm font-light text-primary-foreground/80 uppercase tracking-widest mb-1">
-                                Today is
-                            </p>
-                            <div className="flex items-center gap-2">
-                                <Calendar className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground/80 hidden xs:block" />
-                                <span className="text-base sm:text-xl md:text-2xl font-semibold">{currentDate}</span>
+                            <div className="flex-shrink-0 md:text-right">
+                                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/55">
+                                    Today is
+                                </p>
+                                <div className="mt-1.5 flex items-center gap-2 md:justify-end">
+                                    <Calendar className="h-5 w-5 text-white/70" />
+                                    <span className="text-lg font-semibold sm:text-xl lg:text-2xl">
+                                        {currentDate}
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                {/* // --- END REDESIGNED WELCOME BANNER --- 
-                */}
 
-                {/* Tabs for different sections (No change) */}
-                <Tabs defaultValue="attendance" className="space-y-6">
-                    <TabsList className="bg-muted/50 dark:bg-muted/30 border border-border/40 rounded-lg p-1 sm:p-1.5 flex flex-wrap gap-1 h-auto">
-                        <TabsTrigger value="attendance" className="gap-1.5 sm:gap-2 data-[state=active]:bg-background data-[state=active]:shadow-md data-[state=active]:text-primary rounded-md transition-all text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2">
-                            <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                            <span className="font-semibold hidden xs:inline">Attendance</span>
-                            <span className="font-semibold xs:hidden">Upload</span>
-                        </TabsTrigger>
-                        <TabsTrigger value="manual" className="gap-1.5 sm:gap-2 data-[state=active]:bg-background data-[state=active]:shadow-md data-[state=active]:text-primary rounded-md transition-all text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2">
-                            <ClipboardCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                            <span className="font-semibold hidden xs:inline">Manual Entry</span>
-                            <span className="font-semibold xs:hidden">Manual</span>
-                        </TabsTrigger>
-                        <TabsTrigger value="followup" className="gap-1.5 sm:gap-2 data-[state=active]:bg-background data-[state=active]:shadow-md data-[state=active]:text-primary rounded-md transition-all text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2">
-                            <AlertTriangle className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                            <span className="font-semibold hidden sm:inline">Absentee Follow-Up</span>
-                            <span className="font-semibold sm:hidden">Follow-Up</span>
-                        </TabsTrigger>
-                        <TabsTrigger value="members" className="gap-1.5 sm:gap-2 data-[state=active]:bg-background data-[state=active]:shadow-md data-[state=active]:text-primary rounded-md transition-all text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2">
-                            <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                            <span className="font-semibold">Members</span>
-                        </TabsTrigger>
-                        <TabsTrigger value="reports" className="gap-1.5 sm:gap-2 data-[state=active]:bg-background data-[state=active]:shadow-md data-[state=active]:text-primary rounded-md transition-all text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2">
-                            <BarChart3 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                            <span className="font-semibold hidden sm:inline">Reports</span>
-                            <span className="font-semibold sm:hidden">Report</span>
-                        </TabsTrigger>
-                    </TabsList>
+                    <Tabs defaultValue="attendance" className="space-y-6">
+                        <TabsList className="mx-auto flex h-auto w-full flex-wrap items-center justify-center gap-1 rounded-2xl border border-slate-200/80 bg-slate-100/70 p-1.5 shadow-sm sm:gap-1.5">
+                            <TabsTrigger value="attendance" className="gap-1.5 rounded-xl border border-transparent px-2.5 py-2 text-xs font-semibold text-slate-600 transition-all data-[state=active]:border-slate-200 data-[state=active]:bg-white data-[state=active]:text-[#0F3E6B] data-[state=active]:shadow-sm sm:gap-2 sm:px-4 sm:text-sm">
+                                <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                                <span className="hidden xs:inline">Attendance</span>
+                                <span className="xs:hidden">Upload</span>
+                            </TabsTrigger>
+                            <TabsTrigger value="manual" className="gap-1.5 rounded-xl border border-transparent px-2.5 py-2 text-xs font-semibold text-slate-600 transition-all data-[state=active]:border-slate-200 data-[state=active]:bg-white data-[state=active]:text-[#0F3E6B] data-[state=active]:shadow-sm sm:gap-2 sm:px-4 sm:text-sm">
+                                <ClipboardCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                                <span className="hidden xs:inline">Manual Entry</span>
+                                <span className="xs:hidden">Manual</span>
+                            </TabsTrigger>
+                            <TabsTrigger value="followup" className="gap-1.5 rounded-xl border border-transparent px-2.5 py-2 text-xs font-semibold text-slate-600 transition-all data-[state=active]:border-slate-200 data-[state=active]:bg-white data-[state=active]:text-[#0F3E6B] data-[state=active]:shadow-sm sm:gap-2 sm:px-4 sm:text-sm">
+                                <AlertTriangle className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                                <span className="hidden sm:inline">Absentee Follow-Up</span>
+                                <span className="sm:hidden">Follow-Up</span>
+                            </TabsTrigger>
+                            <TabsTrigger value="members" className="gap-1.5 rounded-xl border border-transparent px-2.5 py-2 text-xs font-semibold text-slate-600 transition-all data-[state=active]:border-slate-200 data-[state=active]:bg-white data-[state=active]:text-[#0F3E6B] data-[state=active]:shadow-sm sm:gap-2 sm:px-4 sm:text-sm">
+                                <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                                <span>Members</span>
+                            </TabsTrigger>
+                            <TabsTrigger value="reports" className="gap-1.5 rounded-xl border border-transparent px-2.5 py-2 text-xs font-semibold text-slate-600 transition-all data-[state=active]:border-slate-200 data-[state=active]:bg-white data-[state=active]:text-[#0F3E6B] data-[state=active]:shadow-sm sm:gap-2 sm:px-4 sm:text-sm">
+                                <BarChart3 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                                <span className="hidden sm:inline">Reports</span>
+                                <span className="sm:hidden">Report</span>
+                            </TabsTrigger>
+                        </TabsList>
 
-                    <TabsContent value="attendance" className="space-y-6 sm:space-y-8 mt-0">
-                        {/* Stats Grid (No change) */}
-                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
-                            {memberStats.map((stat, index) => (
-                                <Card key={index} className="group border-border/40 hover:border-primary/50 transition-all duration-300 shadow-sm hover:shadow-lg hover:shadow-primary/5 overflow-hidden">
-                                    <CardContent className="p-3 sm:p-4 md:p-6 relative">
-                                        {/* Decorative element (uses new color properties) */}
-                                        <div className={`absolute top-0 right-0 w-16 h-16 sm:w-24 sm:h-24 ${stat.bgColor} ${stat.darkBgColor} rounded-full -translate-y-1/2 translate-x-1/2 opacity-50 group-hover:opacity-80 transition-opacity duration-500`} />
-                                        <div className="relative z-10 space-y-2 sm:space-y-4">
-                                            <div className={`h-8 w-8 sm:h-10 md:h-12 sm:w-10 md:w-12 rounded-lg sm:rounded-xl ${stat.bgColor} flex items-center justify-center shadow-md`}>
-                                                <stat.icon className={`h-4 w-4 sm:h-5 md:h-6 sm:w-5 md:w-6 ${stat.color}`} />
-                                            </div>
-                                            <div>
-                                                <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-foreground tracking-tight">{stat.value}</p>
-                                                <p className="text-xs sm:text-sm font-medium text-muted-foreground mt-0.5 truncate">{stat.title}</p>
-                                            </div>
+                        <TabsContent value="attendance" className="mt-0 space-y-6 sm:space-y-8">
+                            {/* Stats grid */}
+                            <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4 lg:gap-6">
+                                {memberStats.map((stat) => (
+                                    <div
+                                        key={stat.title}
+                                        className="group relative overflow-hidden rounded-2xl border border-slate-200/70 bg-white p-4 shadow-[0_2px_12px_rgba(15,62,107,0.04)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_30px_rgba(15,62,107,0.08)] sm:p-5 lg:p-6"
+                                    >
+                                        <div className={`pointer-events-none absolute -right-7 -top-7 h-24 w-24 rounded-full ${stat.glowClass} transition-transform duration-500 group-hover:scale-110`} />
+
+                                        <div className={`relative flex h-11 w-11 items-center justify-center rounded-xl ${stat.iconClass} sm:h-12 sm:w-12`}>
+                                            <stat.icon className="h-5 w-5 sm:h-6 sm:w-6" />
                                         </div>
-                                    </CardContent>
-                                </Card>
-                            ))}
-                        </div>
 
-                        {/* Main Content Grid */}
-                        <div className="grid lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
-                            {/* Upload Section */}
-                            <Card className="lg:col-span-1 border-border/40 border-dashed border-2 hover:border-primary/50 transition-colors duration-300 shadow-lg bg-background/80 backdrop-blur-sm">
-                                <CardHeader className="pb-3 sm:pb-4">
-                                    <div className="flex items-center gap-2 sm:gap-3">
-                                        <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-lg sm:rounded-xl bg-primary/10 flex items-center justify-center shadow-sm">
-                                            <Upload className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+                                        <div className="relative mt-4 sm:mt-5">
+                                            <p className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
+                                                {stat.value}
+                                            </p>
+                                            <p className="mt-1 text-xs font-medium text-slate-500 sm:text-sm">
+                                                {stat.title}
+                                            </p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Upload + history */}
+                            <div className="grid gap-4 sm:gap-6 lg:grid-cols-3">
+                                <div className="rounded-2xl border border-slate-200/70 bg-white p-5 shadow-[0_2px_12px_rgba(15,62,107,0.04)] sm:p-6">
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-blue-50 text-[#1F6FB5]">
+                                            <Upload className="h-5 w-5" />
                                         </div>
                                         <div>
-                                            <CardTitle className="text-base sm:text-xl font-bold">Upload Attendance</CardTitle>
-                                            <CardDescription className="text-xs sm:text-sm">Process Excel or CSV files</CardDescription>
+                                            <h2 className="text-lg font-bold text-slate-900">Upload Attendance</h2>
+                                            <p className="text-xs text-slate-500 sm:text-sm">Process Excel or CSV files</p>
                                         </div>
                                     </div>
-                                </CardHeader>
-                                <CardContent className="space-y-3 sm:space-y-5">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="attendanceDate" className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Select Date</Label>
-                                        <div className="relative">
-                                            <Input
-                                                id="attendanceDate"
-                                                type="date"
-                                                value={attendanceDate}
-                                                onChange={(e) => setAttendanceDate(e.target.value)}
-                                                className="bg-muted/50 dark:bg-muted/30 border-border/40 text-sm sm:text-base py-5 sm:py-6 pr-10"
-                                            />
-                                            <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+
+                                    <div className="mt-6 space-y-4">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="attendanceDate" className="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">
+                                                Select Date
+                                            </Label>
+                                            <div className="relative">
+                                                <Input
+                                                    id="attendanceDate"
+                                                    type="date"
+                                                    value={attendanceDate}
+                                                    onChange={(e) => setAttendanceDate(e.target.value)}
+                                                    className="h-11 rounded-lg border-slate-200 bg-slate-50/70 pr-10 text-sm focus-visible:ring-[#1F6FB5]"
+                                                />
+                                                <Calendar className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="file" className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Attendance File</Label>
-                                        <div className="relative">
+
+                                        <div className="space-y-2">
+                                            <Label htmlFor="file" className="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">
+                                                Attendance File
+                                            </Label>
                                             <Input
                                                 ref={fileInputRef}
                                                 id="file"
                                                 type="file"
                                                 accept=".xlsx,.xls,.csv"
-                                                onChange={handleFileUpload}
+                                                onChange={handleFileSelect}
                                                 disabled={isUploading}
-                                                className="cursor-pointer bg-muted/50 dark:bg-muted/30 border-border/40 text-xs sm:text-sm file:bg-primary file:text-primary-foreground file:border-0 file:rounded-full file:px-3 sm:file:px-4 file:py-1 sm:file:py-1.5 file:mr-2 sm:file:mr-3 file:cursor-pointer file:font-medium file:text-xs sm:file:text-sm hover:file:bg-primary/90 transition-colors"
+                                                className="h-11 cursor-pointer rounded-lg border-slate-200 bg-slate-50/70 text-xs file:mr-3 file:rounded-md file:border-0 file:bg-[#0F3E6B] file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white hover:file:bg-[#164C80] sm:text-sm"
                                             />
                                         </div>
+
+                                        {isUploading && (
+                                            <div className="flex items-center gap-2 rounded-lg border border-blue-100 bg-blue-50 px-3 py-2 text-xs font-medium text-[#1F6FB5]">
+                                                <Loader2 className="h-4 w-4 animate-spin" />
+                                                <span>Processing file... Please wait.</span>
+                                            </div>
+                                        )}
+
+                                        <Button
+                                            onClick={handleProcessAttendance}
+                                            disabled={!selectedFile || isUploading}
+                                            className="w-full rounded-lg bg-[#C62828] py-2.5 text-sm font-semibold text-white hover:bg-[#B71C1C] disabled:cursor-not-allowed disabled:opacity-60"
+                                        >
+                                            {isUploading ? (
+                                                <span className="flex items-center gap-2">
+                                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                                    Processing...
+                                                </span>
+                                            ) : (
+                                                "Process attendance"
+                                            )}
+                                        </Button>
                                     </div>
-                                    {isUploading && (
-                                        <div className="flex items-center gap-2 p-2 sm:p-3 rounded-lg bg-primary/10 text-primary text-xs sm:text-sm font-medium border border-primary/20">
-                                            <Loader2 className="h-4 w-4 animate-spin" />
-                                            <span>Processing file... Please wait.</span>
-                                        </div>
-                                    )}
-                                    <p className="text-xs text-muted-foreground leading-relaxed pt-2 border-t border-border/40">
-                                        **File Format Tip:** Ensure your file includes a column titled "Status," "Present," or "Attendance" for correct processing.
-                                    </p>
-                                </CardContent>
-                            </Card>
+                                </div>
 
-                            {/* Attendance Records Table (No change) */}
-                            <Card className="lg:col-span-2 border-border/40 shadow-lg">
-                                <CardHeader className="pb-4">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-3">
-                                            <div className="h-10 w-10 rounded-xl bg-secondary/10 flex items-center justify-center shadow-sm">
-                                                <Calendar className="h-5 w-5 text-secondary" />
-                                            </div>
-                                            <div>
-                                                <CardTitle className="text-xl font-bold">Attendance History</CardTitle>
-                                                <CardDescription className="text-sm">{attendanceRecords.length} recent records</CardDescription>
-                                            </div>
+                                <div className="rounded-2xl border border-slate-200/70 bg-white shadow-[0_2px_12px_rgba(15,62,107,0.04)] lg:col-span-2">
+                                    <div className="flex items-center gap-3 border-b border-slate-100 p-5 sm:p-6">
+                                        <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-blue-50 text-[#1F6FB5]">
+                                            <Calendar className="h-5 w-5" />
+                                        </div>
+                                        <div>
+                                            <h2 className="text-lg font-bold text-slate-900">Attendance History</h2>
+                                            <p className="text-xs text-slate-500 sm:text-sm">
+                                                {attendanceRecords.length} recent records
+                                            </p>
                                         </div>
                                     </div>
-                                </CardHeader>
-                                <CardContent>
-                                    {isLoading ? (
-                                        <div className="flex items-center justify-center py-16">
-                                            <Loader2 className="h-10 w-10 animate-spin text-primary" />
-                                        </div>
-                                    ) : attendanceRecords.length === 0 ? (
-                                        <div className="text-center py-16 px-4">
-                                            <div className="h-16 w-16 rounded-2xl bg-muted/50 flex items-center justify-center mx-auto mb-4 border border-border/40">
-                                                <FileText className="h-8 w-8 text-muted-foreground/50" />
+
+                                    <div className="p-5 sm:p-6">
+                                        {isLoading ? (
+                                            <div className="flex items-center justify-center py-16">
+                                                <Loader2 className="h-10 w-10 animate-spin text-[#1F6FB5]" />
                                             </div>
-                                            <h3 className="text-xl font-semibold text-foreground mb-1">No Attendance Records</h3>
-                                            <p className="text-sm text-muted-foreground">Upload your first attendance file using the section on the left to start tracking history.</p>
-                                        </div>
-                                    ) : (
-                                        <div className="overflow-x-auto -mx-6 px-6">
-                                            <Table>
-                                                <TableHeader>
-                                                    <TableRow className="border-border/40 bg-muted/50 dark:bg-muted/30 hover:bg-muted/50 dark:hover:bg-muted/30">
-                                                        <TableHead className="text-sm font-bold text-foreground">Date</TableHead>
-                                                        <TableHead className="text-sm font-bold text-foreground hidden md:table-cell">File Name</TableHead>
-                                                        <TableHead className="text-sm font-bold text-foreground text-center">Present</TableHead>
-                                                        <TableHead className="text-sm font-bold text-foreground text-center">Absent</TableHead>
-                                                        <TableHead className="text-sm font-bold text-foreground text-center">Rate</TableHead>
-                                                        <TableHead className="text-sm font-bold text-foreground text-right">Actions</TableHead>
-                                                    </TableRow>
-                                                </TableHeader>
-                                                <TableBody>
-                                                    {attendanceRecords.slice(0, 8).map((record) => (
-                                                        <TableRow key={record.id} className="border-border/40 hover:bg-muted/30 transition-colors duration-200">
-                                                            <TableCell className="py-3.5">
-                                                                <div className="font-semibold text-base text-foreground">
-                                                                    {format(new Date(record.attendance_date), "MMM dd, yyyy")}
-                                                                </div>
-                                                                <div className="text-xs text-muted-foreground">
-                                                                    {format(new Date(record.created_at), "HH:mm")}
-                                                                </div>
-                                                            </TableCell>
-                                                            <TableCell className="hidden md:table-cell">
-                                                                <span className="text-sm text-muted-foreground truncate max-w-[150px] block font-mono">
-                                                                    {record.file_name || "Manual Attendance"}
-                                                                </span>
-                                                            </TableCell>
-                                                            <TableCell className="text-center">
-                                                                <span className="inline-flex items-center justify-center h-8 min-w-[3rem] px-3 rounded-full bg-green-600/10 text-green-600 dark:text-green-400 text-sm font-bold">
-                                                                    {record.present_count}
-                                                                </span>
-                                                            </TableCell>
-                                                            <TableCell className="text-center">
-                                                                <span className="inline-flex items-center justify-center h-8 min-w-[3rem] px-3 rounded-full bg-destructive/10 text-destructive text-sm font-bold">
-                                                                    {record.absent_count}
-                                                                </span>
-                                                            </TableCell>
-                                                            <TableCell className="text-center">
-                                                                <span className={`text-sm font-bold ${record.total_members > 0 && (record.present_count / record.total_members) * 100 > 75 ? 'text-primary' : 'text-amber-500'}`}>
-                                                                    {record.total_members > 0
-                                                                        ? Math.round((record.present_count / record.total_members) * 100)
-                                                                        : 0}%
-                                                                </span>
-                                                            </TableCell>
-                                                            <TableCell className="text-right">
-                                                                <div className="flex items-center justify-end gap-1">
-                                                                    <Button
-                                                                        variant="ghost"
-                                                                        size="icon"
-                                                                        className="h-8 w-8 hover:bg-secondary/10 text-secondary"
-                                                                        onClick={() => handleDownload(record)}
-                                                                        title="Download file"
-                                                                    >
-                                                                        <Download className="h-4 w-4" />
-                                                                    </Button>
-                                                                    <Button
-                                                                        variant="ghost"
-                                                                        size="icon"
-                                                                        className="h-8 w-8 hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
-                                                                        onClick={() => handleDelete(record)}
-                                                                        title="Delete record"
-                                                                    >
-                                                                        <Trash2 className="h-4 w-4" />
-                                                                    </Button>
-                                                                </div>
-                                                            </TableCell>
-                                                        </TableRow>
-                                                    ))}
-                                                </TableBody>
-                                            </Table>
-                                        </div>
-                                    )}
-                                </CardContent>
-                            </Card>
-                        </div>
-                    </TabsContent>
+                                        ) : attendanceRecords.length === 0 ? (
+                                            <div className="px-4 py-16 text-center">
+                                                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100">
+                                                    <FileText className="h-8 w-8 text-slate-400" />
+                                                </div>
+                                                <h3 className="text-lg font-semibold text-slate-900">No Attendance Records</h3>
+                                                <p className="mt-1 text-sm text-slate-500">
+                                                    Upload your first attendance file using the section on the left to start tracking history.
+                                                </p>
+                                            </div>
+                                        ) : (
+                                            <div className="-mx-5 overflow-x-auto sm:-mx-6">
+                                                <div className="min-w-[640px] px-5 sm:px-6">
+                                                    <Table>
+                                                        <TableHeader>
+                                                            <TableRow className="border-slate-200/70 bg-slate-50/80 hover:bg-slate-50/80">
+                                                                <TableHead className="text-[11px] font-bold uppercase tracking-wide text-slate-500">Date</TableHead>
+                                                                <TableHead className="hidden text-[11px] font-bold uppercase tracking-wide text-slate-500 md:table-cell">File Name</TableHead>
+                                                                <TableHead className="text-center text-[11px] font-bold uppercase tracking-wide text-slate-500">Present</TableHead>
+                                                                <TableHead className="text-center text-[11px] font-bold uppercase tracking-wide text-slate-500">Absent</TableHead>
+                                                                <TableHead className="text-center text-[11px] font-bold uppercase tracking-wide text-slate-500">Rate</TableHead>
+                                                                <TableHead className="text-right text-[11px] font-bold uppercase tracking-wide text-slate-500">Actions</TableHead>
+                                                            </TableRow>
+                                                        </TableHeader>
+                                                        <TableBody>
+                                                            {attendanceRecords.slice(0, 8).map((record) => (
+                                                                <TableRow key={record.id} className="border-slate-100 hover:bg-slate-50/60">
+                                                                    <TableCell className="py-4">
+                                                                        <div className="text-sm font-semibold text-slate-900">
+                                                                            {format(new Date(record.attendance_date), "MMM dd, yyyy")}
+                                                                        </div>
+                                                                        <div className="text-xs text-slate-400">
+                                                                            {format(new Date(record.created_at), "HH:mm")}
+                                                                        </div>
+                                                                    </TableCell>
+                                                                    <TableCell className="hidden md:table-cell">
+                                                                        <span className="block max-w-[180px] truncate text-sm text-slate-500">
+                                                                            {record.file_name || "Manual Attendance"}
+                                                                        </span>
+                                                                    </TableCell>
+                                                                    <TableCell className="text-center">
+                                                                        <span className="inline-flex h-7 min-w-[2.5rem] items-center justify-center rounded-full bg-emerald-50 px-2.5 text-sm font-bold text-emerald-600">
+                                                                            {record.present_count}
+                                                                        </span>
+                                                                    </TableCell>
+                                                                    <TableCell className="text-center">
+                                                                        <span className="inline-flex h-7 min-w-[2.5rem] items-center justify-center rounded-full bg-rose-50 px-2.5 text-sm font-bold text-rose-600">
+                                                                            {record.absent_count}
+                                                                        </span>
+                                                                    </TableCell>
+                                                                    <TableCell className="text-center">
+                                                                        <span className={`text-sm font-bold ${record.total_members > 0 && (record.present_count / record.total_members) * 100 > 75 ? 'text-emerald-600' : 'text-amber-500'}`}>
+                                                                            {record.total_members > 0
+                                                                                ? Math.round((record.present_count / record.total_members) * 100)
+                                                                                : 0}%
+                                                                        </span>
+                                                                    </TableCell>
+                                                                    <TableCell className="text-right">
+                                                                        <div className="flex items-center justify-end gap-1">
+                                                                            <Button
+                                                                                variant="ghost"
+                                                                                size="icon"
+                                                                                className="h-8 w-8 rounded-lg text-[#1F6FB5] hover:bg-blue-50 hover:text-[#0F3E6B]"
+                                                                                onClick={() => handleDownload(record)}
+                                                                                title="Download file"
+                                                                            >
+                                                                                <Download className="h-4 w-4" />
+                                                                            </Button>
+                                                                            <Button
+                                                                                variant="ghost"
+                                                                                size="icon"
+                                                                                className="h-8 w-8 rounded-lg text-slate-400 hover:bg-rose-50 hover:text-rose-600"
+                                                                                onClick={() => handleDelete(record)}
+                                                                                title="Delete record"
+                                                                            >
+                                                                                <Trash2 className="h-4 w-4" />
+                                                                            </Button>
+                                                                        </div>
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                            ))}
+                                                        </TableBody>
+                                                    </Table>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </TabsContent>
 
-                    <TabsContent value="manual" className="mt-0">
-                        {/* Manual Attendance Component */}
-                        <ManualAttendance onAttendanceSaved={fetchAttendanceRecords} />
-                    </TabsContent>
+                        <TabsContent value="manual" className="mt-0">
+                            <ManualAttendance onAttendanceSaved={fetchAttendanceRecords} />
+                        </TabsContent>
 
-                    <TabsContent value="followup" className="mt-0">
-                        {/* Absentee Report Component */}
-                        <AbsenteeReport />
-                    </TabsContent>
+                        <TabsContent value="followup" className="mt-0">
+                            <AbsenteeReport />
+                        </TabsContent>
 
-                    <TabsContent value="members" className="mt-0">
-                        {/* Members Manager Component */}
-                        <MembersManager />
-                    </TabsContent>
+                        <TabsContent value="members" className="mt-0">
+                            <MembersManager />
+                        </TabsContent>
 
-                    <TabsContent value="reports" className="mt-0">
-                        {/* Attendance Report Component */}
-                        <AttendanceReport />
-                    </TabsContent>
-                </Tabs>
+                        <TabsContent value="reports" className="mt-0">
+                            <AttendanceReport />
+                        </TabsContent>
+                    </Tabs>
+                </div>
             </main>
         </div>
     );
