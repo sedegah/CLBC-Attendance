@@ -117,7 +117,16 @@ const Dashboard = () => {
     };
 
     const handleProcessAttendance = async () => {
-        if (!selectedFile || !user) return;
+        if (!selectedFile) {
+            toast({
+                title: "No file selected",
+                description: "Please choose an Excel or CSV file first.",
+                variant: "destructive",
+            });
+            return;
+        }
+
+        if (!user) return;
 
         setIsUploading(true);
 
@@ -314,7 +323,7 @@ const Dashboard = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-[#F1F5F9]">
+        <div className="min-h-screen bg-[#F4F7FB]">
             <Navigation variant="dashboard" />
 
             <main className="mx-auto max-w-6xl px-4 py-7 sm:px-6 sm:py-9 lg:px-8">
@@ -354,7 +363,7 @@ const Dashboard = () => {
 
                     <TabsContent value="attendance" className="mt-6 space-y-5">
                         {/* Stats */}
-                        <div className="overflow-hidden rounded-xl border border-slate-200/80 bg-slate-200/80 shadow-sm">
+                        <div className="overflow-hidden rounded-lg border border-slate-200/80 bg-slate-200/80 shadow-sm">
                             <div className="grid grid-cols-2 gap-px lg:grid-cols-4">
                                 {memberStats.map((stat) => (
                                     <div key={stat.label} className="bg-white p-5 sm:p-6">
@@ -383,7 +392,7 @@ const Dashboard = () => {
 
                         <div className="grid gap-5 lg:grid-cols-5">
                             {/* Upload attendance */}
-                            <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6 lg:col-span-2">
+                            <div className="rounded-lg border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6 lg:col-span-2">
                                 <h2 className="font-serif text-xl font-bold text-[#0F3E6B]">
                                     Upload attendance
                                 </h2>
@@ -452,7 +461,7 @@ const Dashboard = () => {
 
                                     <Button
                                         onClick={handleProcessAttendance}
-                                        disabled={!selectedFile || isUploading}
+                                        disabled={isUploading}
                                         className="w-full rounded-lg bg-[#C62828] py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#B71C1C] disabled:cursor-not-allowed disabled:opacity-60"
                                     >
                                         {isUploading ? (
@@ -468,7 +477,7 @@ const Dashboard = () => {
                             </div>
 
                             {/* Attendance history */}
-                            <div className="rounded-xl border border-slate-200/80 bg-white shadow-sm lg:col-span-3">
+                            <div className="rounded-lg border border-slate-200/80 bg-white shadow-sm lg:col-span-3">
                                 <div className="p-5 pb-0 sm:p-6 sm:pb-0">
                                     <h2 className="font-serif text-xl font-bold text-[#0F3E6B]">
                                         Attendance history
