@@ -149,7 +149,6 @@ export const Navigation = ({ variant = "default", onGiveOnline }: NavigationProp
               { label: "Services", hash: "#services" },
               { label: "Ministries", hash: "#ministries" },
               { label: "Sermons", hash: "#watch" },
-              { label: "Events", hash: "#events" },
             ].map((link) => (
               <a
                 key={link.hash}
@@ -159,6 +158,14 @@ export const Navigation = ({ variant = "default", onGiveOnline }: NavigationProp
                 {link.label}
               </a>
             ))}
+            <Link
+              to="/events"
+              className={`hover:text-[#C62828] transition-colors py-1 ${
+                location.pathname === "/events" ? "text-[#C62828]" : ""
+              }`}
+            >
+              Events
+            </Link>
             <Link
               to="/visit"
               className={`hover:text-[#C62828] transition-colors py-1 ${
@@ -216,15 +223,17 @@ export const Navigation = ({ variant = "default", onGiveOnline }: NavigationProp
               { label: "Services & Times", href: sectionHref("#services") },
               { label: "Ministries", href: sectionHref("#ministries") },
               { label: "Sermons & Messages", href: sectionHref("#watch") },
-              { label: "Upcoming Events", href: sectionHref("#events") },
+              { label: "Upcoming Events", href: "/events" },
               { label: "Visit & Location", href: "/visit" },
             ].map((link) =>
-              link.href === "/visit" ? (
+              link.href.startsWith("/") && !link.href.startsWith("/#") ? (
                 <Link
                   key={link.href}
                   to={link.href}
                   onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold text-[#1B2430] hover:bg-[#F4F7FB] hover:text-[#C62828] transition-colors"
+                  className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold hover:bg-[#F4F7FB] hover:text-[#C62828] transition-colors ${
+                    location.pathname === link.href ? "text-[#C62828]" : "text-[#1B2430]"
+                  }`}
                 >
                   <span>{link.label}</span>
                   <ChevronRight className="w-4 h-4 text-slate-400" />

@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import clbcLogo from "@/assets/clbc-logo.png";
 import { Shield, Heart, MapPin, Phone, Mail } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
@@ -104,9 +104,9 @@ export const ChurchFooter = () => {
                 </a>
               </li>
               <li>
-                <a href={sectionHref("#events")} className="hover:text-white transition-colors">
+                <Link to="/events" className="hover:text-white transition-colors">
                   Upcoming Events
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

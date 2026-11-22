@@ -14,7 +14,6 @@ import { PlanVisitModal } from "@/components/church/PlanVisitModal";
 import { PrayerRequestModal } from "@/components/church/PrayerRequestModal";
 import { SermonPlayerModal } from "@/components/church/SermonPlayerModal";
 import { AboutModal } from "@/components/church/AboutModal";
-import { AllEventsModal } from "@/components/church/AllEventsModal";
 
 const Index = () => {
   const [giveModalOpen, setGiveModalOpen] = useState(false);
@@ -22,7 +21,6 @@ const Index = () => {
   const [prayerModalOpen, setPrayerModalOpen] = useState(false);
   const [sermonModalOpen, setSermonModalOpen] = useState(false);
   const [aboutModalOpen, setAboutModalOpen] = useState(false);
-  const [eventsModalOpen, setEventsModalOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-white text-[#1B2430] flex flex-col font-sans selection:bg-[#0F3E6B] selection:text-white">
@@ -60,7 +58,6 @@ const Index = () => {
         {/* Section 5: Watch Latest Message & Upcoming Events */}
         <SermonsAndEventsSection
           onWatchSermon={() => setSermonModalOpen(true)}
-          onViewAllEvents={() => setEventsModalOpen(true)}
         />
 
         {/* Section 6: Partner With Us / Giving */}
@@ -96,11 +93,6 @@ const Index = () => {
       <AboutModal
         open={aboutModalOpen}
         onOpenChange={setAboutModalOpen}
-      />
-
-      <AllEventsModal
-        open={eventsModalOpen}
-        onOpenChange={setEventsModalOpen}
       />
     </div>
   );

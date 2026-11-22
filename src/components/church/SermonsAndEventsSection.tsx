@@ -1,13 +1,13 @@
-import { Play, Calendar, Clock, MapPin, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import { upcomingEvents as allEvents } from "@/data/events";
 
 interface SermonsAndEventsSectionProps {
   onWatchSermon: () => void;
-  onViewAllEvents: () => void;
 }
 
 export const SermonsAndEventsSection = ({
   onWatchSermon,
-  onViewAllEvents,
 }: SermonsAndEventsSectionProps) => {
   const latestMessage = {
     title: "Walking in Grace and Supernatural Power",
@@ -16,29 +16,7 @@ export const SermonsAndEventsSection = ({
     scripture: "Colossians 2:6-7",
   };
 
-  const upcomingEvents = [
-    {
-      date: "DEC 04",
-      color: "#1F6FB5",
-      title: "Night of Worship & Prophetic Prayer",
-      time: "7:00 PM",
-      location: "Main Sanctuary",
-    },
-    {
-      date: "DEC 11",
-      color: "#C62828",
-      title: "Community Christmas Outreach",
-      time: "10:00 AM",
-      location: "Church Grounds",
-    },
-    {
-      date: "DEC 18",
-      color: "#1F6FB5",
-      title: "Crossroads Youth & Young Adults Fellowship",
-      time: "5:30 PM",
-      location: "Youth Chapel",
-    },
-  ];
+  const upcomingEvents = allEvents.slice(0, 3);
 
   return (
     <section id="watch" className="bg-[#F4F7FB] py-16 sm:py-20 px-4 sm:px-8 lg:px-12 border-b border-[#E6E9EE]">
@@ -126,7 +104,7 @@ export const SermonsAndEventsSection = ({
                     {event.title}
                   </div>
                   <div className="text-xs sm:text-sm text-[#4A5565] flex items-center gap-2 mt-0.5">
-                    <span>{event.time}</span>
+                    <span>{event.startTime}</span>
                     <span>·</span>
                     <span className="truncate">{event.location}</span>
                   </div>
@@ -137,13 +115,13 @@ export const SermonsAndEventsSection = ({
 
           {/* View all events link */}
           <div className="pt-2">
-            <button
-              onClick={onViewAllEvents}
-              className="inline-flex items-center gap-1.5 font-semibold text-sm sm:text-base text-[#1F6FB5] hover:text-[#0F3E6B] border-b-2 border-[#1F6FB5] pb-0.5 transition-colors cursor-pointer group"
+            <Link
+              to="/events"
+              className="inline-flex items-center gap-1.5 font-semibold text-sm sm:text-base text-[#1F6FB5] hover:text-[#0F3E6B] border-b-2 border-[#1F6FB5] pb-0.5 transition-colors group"
             >
               <span>View all events</span>
               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-            </button>
+            </Link>
           </div>
         </div>
       </div>
