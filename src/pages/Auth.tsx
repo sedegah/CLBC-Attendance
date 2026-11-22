@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Eye, EyeOff, Shield, Lock, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Lock, Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { WorshipArchSvg } from "@/components/church/WorshipArchSvg";
 import clbcLogo from "@/assets/clbc-logo.png";
 import { z } from "zod";
 
@@ -38,15 +38,13 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
-      // Validate inputs
       emailSchema.parse(email);
       passwordSchema.parse(password);
-      
+
       if (isSignUp) {
         nameSchema.parse(fullName);
-        
         const { error } = await signUp(email, password, fullName);
-        
+
         if (error) {
           if (error.message.includes("already registered")) {
             toast({
@@ -70,7 +68,7 @@ const Auth = () => {
         }
       } else {
         const { error } = await signIn(email, password);
-        
+
         if (error) {
           toast({
             title: "Sign in failed",
@@ -80,7 +78,7 @@ const Auth = () => {
         } else {
           toast({
             title: "Welcome back!",
-            description: "You have successfully signed in.",
+            description: "Signed in successfully.",
           });
           navigate("/dashboard");
         }
@@ -99,147 +97,199 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F7FB] flex flex-col justify-between p-4 sm:p-6 relative">
-      {/* Top bar controls */}
-      <div className="w-full max-w-6xl mx-auto flex items-center justify-between z-10">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#0F3E6B] hover:text-[#C62828] bg-white px-3.5 py-2 rounded-xl border border-slate-200/80 shadow-sm transition-colors"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          <span>Back to Church Website</span>
-        </Link>
+    <div className="min-h-screen w-full flex flex-col lg:flex-row bg-[#F8FAFC]">
+      {/* ================= LEFT SIDE: DEEP NAVY BRAND PANEL ================= */}
+      <div className="w-full lg:w-[46%] xl:w-[44%] bg-[#0F3E6B] text-white p-6 sm:p-10 lg:p-12 flex flex-col justify-between relative overflow-hidden flex-shrink-0">
+        {/* Subtle background glow */}
+        <div className="absolute top-1/4 -left-16 w-80 h-80 rounded-full bg-[#1F6FB5]/20 blur-3xl pointer-events-none" />
+        <div className="absolute bottom-10 right-0 w-64 h-64 rounded-full bg-[#082A4B]/40 blur-2xl pointer-events-none" />
 
-        <ThemeToggle />
+        {/* Top Brand Lockup */}
+        <div className="relative z-10 flex items-center gap-3.5">
+          <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-white p-1 shadow-md flex items-center justify-center flex-shrink-0">
+            <img
+              src={clbcLogo}
+              alt="Changed Life Baptist Church"
+              className="w-full h-full object-contain"
+            />
+          </div>
+          <div className="font-serif font-bold text-lg sm:text-xl leading-[1.1] text-white">
+            Changed Life<br />
+            <span>Baptist Church</span>
+          </div>
+        </div>
+
+        {/* Center Artwork & Titles */}
+        <div className="my-10 sm:my-14 lg:my-auto text-center relative z-10 flex flex-col items-center">
+          {/* Worship Arch Artwork */}
+          <div className="mb-6 sm:mb-8 transform hover:scale-[1.02] transition-transform duration-300">
+            <WorshipArchSvg
+              navy="#0F3E6B"
+              blue="#1F6FB5"
+              className="w-[200px] xs:w-[230px] sm:w-[260px] md:w-[280px] h-auto drop-shadow-2xl mx-auto"
+            />
+          </div>
+
+          <h2 className="font-serif text-2xl sm:text-3xl lg:text-[34px] font-bold text-white tracking-tight leading-snug max-w-sm">
+            Management and attendance portal
+          </h2>
+
+          <p className="font-serif text-sm sm:text-base text-white/80 mt-2 font-normal">
+            A Changed Life For Christ
+          </p>
+        </div>
+
+        {/* Bottom Tagline */}
+        <div className="relative z-10 text-xs text-white/60 font-medium">
+          Serving Christ since 1976
+        </div>
       </div>
 
-      {/* Main Auth Card */}
-      <div className="w-full max-w-md mx-auto my-auto py-6">
-        <Card className="border border-[#E6E9EE] shadow-xl rounded-2xl overflow-hidden bg-white">
-          {/* Card Top Banner */}
-          <div className="bg-[#0F3E6B] text-white p-6 sm:p-7 text-center relative overflow-hidden">
-            <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-white/10 blur-xl pointer-events-none" />
-            
-            <div className="mx-auto w-16 h-16 rounded-full bg-white p-1.5 shadow-md flex items-center justify-center mb-3">
-              <img
-                src={clbcLogo}
-                alt="CLBC Logo"
-                className="w-12 h-12 object-contain"
+      {/* ================= RIGHT SIDE: AUTHENTICATION FORM ================= */}
+      <div className="flex-1 bg-[#F8FAFC] flex flex-col justify-between p-6 sm:p-10 lg:p-12 relative">
+        {/* Top Navigation Bar */}
+        <div className="flex items-center justify-between w-full max-w-lg mx-auto lg:max-w-none">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#0F3E6B] bg-white hover:bg-slate-50 border border-slate-200/90 shadow-xs px-4 py-2 rounded-full transition-all"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Back to church website</span>
+          </Link>
+
+          <ThemeToggle />
+        </div>
+
+        {/* Center Form Container */}
+        <div className="w-full max-w-md mx-auto my-auto py-8 sm:py-12">
+          {/* Heading and Subtitle */}
+          <div className="space-y-2 mb-8">
+            <h1 className="font-serif text-3xl sm:text-4xl font-bold text-[#0F3E6B] tracking-tight">
+              {isSignUp ? "Create account" : "Sign in"}
+            </h1>
+            <p className="text-sm sm:text-base text-[#4A5565] leading-relaxed">
+              {isSignUp
+                ? "Register your administrative account to manage church records."
+                : "Use your portal account to record attendance and look after members."}
+            </p>
+          </div>
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {isSignUp && (
+              <div className="space-y-1.5">
+                <Label htmlFor="auth-fullname" className="text-xs sm:text-sm font-semibold text-slate-800">
+                  Full name
+                </Label>
+                <Input
+                  id="auth-fullname"
+                  type="text"
+                  placeholder="e.g. Samuel Mensah"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  required
+                  maxLength={100}
+                  className="h-12 bg-white rounded-xl border-slate-200 text-sm focus-visible:ring-[#0F3E6B]"
+                />
+              </div>
+            )}
+
+            <div className="space-y-1.5">
+              <Label htmlFor="auth-email" className="text-xs sm:text-sm font-semibold text-slate-800">
+                Email address
+              </Label>
+              <Input
+                id="auth-email"
+                type="email"
+                placeholder="name@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                maxLength={255}
+                className="h-12 bg-white rounded-xl border-slate-200 text-sm focus-visible:ring-[#0F3E6B]"
               />
             </div>
 
-            <CardTitle className="font-serif text-xl sm:text-2xl font-bold text-white tracking-normal">
-              Changed Life Baptist Church
-            </CardTitle>
-            <CardDescription className="text-[#BCD6F2] text-xs sm:text-sm mt-1">
-              {isSignUp ? "Create Staff Account" : "Management & Attendance Portal"}
-            </CardDescription>
-          </div>
-
-          <CardContent className="p-6 sm:p-7">
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {isSignUp && (
-                <div className="space-y-1.5">
-                  <Label htmlFor="fullName" className="text-xs font-semibold text-slate-700">
-                    Full Name
-                  </Label>
-                  <Input
-                    id="fullName"
-                    type="text"
-                    placeholder="e.g. Pastor Samuel Mensah"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    required
-                    maxLength={100}
-                    className="h-10 text-sm"
-                  />
-                </div>
-              )}
-              
-              <div className="space-y-1.5">
-                <Label htmlFor="email" className="text-xs font-semibold text-slate-700">
-                  Email Address
-                </Label>
+            <div className="space-y-1.5">
+              <Label htmlFor="auth-password" className="text-xs sm:text-sm font-semibold text-slate-800">
+                Password
+              </Label>
+              <div className="relative">
                 <Input
-                  id="email"
-                  type="email"
-                  placeholder="name@changedlifebaptist.org"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  id="auth-password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   required
-                  maxLength={255}
-                  className="h-10 text-sm"
+                  minLength={6}
+                  maxLength={100}
+                  className="h-12 bg-white rounded-xl border-slate-200 text-sm pr-16 focus-visible:ring-[#0F3E6B]"
                 />
-              </div>
-
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="password" className="text-xs font-semibold text-slate-700">
-                    Password
-                  </Label>
-                </div>
-                <div className="relative">
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    minLength={6}
-                    maxLength={100}
-                    className="h-10 text-sm pr-10"
-                  />
-                  <button
-                    type="button"
-                    className="absolute right-0 top-0 h-full px-3 text-slate-400 hover:text-slate-600 flex items-center justify-center"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </button>
-                </div>
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full bg-[#0F3E6B] hover:bg-[#164C80] active:scale-[0.99] text-white font-semibold py-2.5 rounded-xl shadow-md h-11 text-sm mt-2"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  "Please wait..."
-                ) : isSignUp ? (
-                  "Create Account"
-                ) : (
-                  <span className="flex items-center gap-2">
-                    <Lock className="w-4 h-4" />
-                    Sign In to Portal
-                  </span>
-                )}
-              </Button>
-
-              <div className="text-center pt-2">
                 <button
                   type="button"
-                  onClick={() => setIsSignUp(!isSignUp)}
-                  className="text-xs font-semibold text-[#1F6FB5] hover:text-[#0F3E6B] hover:underline"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-semibold text-[#1F6FB5] hover:text-[#0F3E6B] transition-colors px-1"
                 >
-                  {isSignUp
-                    ? "Already have an account? Sign in here"
-                    : "Need administrative access? Register account"}
+                  {showPassword ? "Hide" : "Show"}
                 </button>
               </div>
-            </form>
-          </CardContent>
-        </Card>
-      </div>
+            </div>
 
-      {/* Footer copyright */}
-      <div className="text-center text-xs text-slate-400 py-2">
-        Changed Life Baptist Church &middot; Serving Christ Since 1976
+            {/* Submit Button */}
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-[#C62828] hover:bg-[#B71C1C] active:scale-[0.99] text-white font-semibold text-sm sm:text-base py-3.5 h-12 rounded-full shadow-md shadow-[#C62828]/25 hover:shadow-lg transition-all mt-2 gap-2"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Please wait...</span>
+                </>
+              ) : isSignUp ? (
+                <span>Register account</span>
+              ) : (
+                <>
+                  <Lock className="w-4 h-4" />
+                  <span>Sign in to portal</span>
+                </>
+              )}
+            </Button>
+
+            {/* Toggle Sign in / Sign up link */}
+            <div className="text-center pt-2 text-xs sm:text-sm text-slate-600">
+              {isSignUp ? (
+                <span>
+                  Already have an account?{" "}
+                  <button
+                    type="button"
+                    onClick={() => setIsSignUp(false)}
+                    className="font-semibold text-[#1F6FB5] hover:text-[#0F3E6B] underline ml-1"
+                  >
+                    Sign in here
+                  </button>
+                </span>
+              ) : (
+                <span>
+                  Need administrative access?{" "}
+                  <button
+                    type="button"
+                    onClick={() => setIsSignUp(true)}
+                    className="font-semibold text-[#1F6FB5] hover:text-[#0F3E6B] underline ml-1"
+                  >
+                    Register account
+                  </button>
+                </span>
+              )}
+            </div>
+          </form>
+        </div>
+
+        {/* Bottom Disclaimer */}
+        <div className="text-center text-[11px] sm:text-xs text-slate-400 py-2">
+          Changed Life Baptist Church &middot; Management and attendance portal
+        </div>
       </div>
     </div>
   );

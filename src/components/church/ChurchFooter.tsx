@@ -72,10 +72,6 @@ export const ChurchFooter = () => {
                 info@changedlifebaptist.org
               </a>
             </div>
-            <div className="pt-2 text-xs text-[#8BA9CE]">
-              Church Office Hours:<br />
-              Tuesday – Friday: 9:00 AM – 5:00 PM
-            </div>
           </div>
 
           {/* Column 4: Explore & Portal */}
