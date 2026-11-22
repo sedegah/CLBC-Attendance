@@ -1,5 +1,4 @@
-import { useState, useEffect, useRef } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,17 +28,11 @@ import {
   Printer,
   Calendar,
   Users,
-  UserCheck,
-  TrendingUp,
-  BarChart3,
-  PieChart as PieChartIcon,
-  LineChart as LineChartIcon,
-  Award,
-  AlertCircle,
-  CheckCircle2,
   Download,
-  CalendarDays,
-  Activity
+  Activity,
+  CheckCircle2,
+  AlertCircle,
+  TrendingUp,
 } from "lucide-react";
 import {
   BarChart,
@@ -77,7 +70,6 @@ interface MemberAttendance {
 
 export default function AttendanceReport() {
   const { toast } = useToast();
-  const printRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isExportingPdf, setIsExportingPdf] = useState(false);
   const [dateRange, setDateRange] = useState<"all" | "month" | "custom">("month");
@@ -868,71 +860,76 @@ export default function AttendanceReport() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-16">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <Loader2 className="h-8 w-8 animate-spin text-[#1F6FB5]" />
       </div>
     );
   }
 
-  return (
-    <Card className="border-border/50 bg-card/60 backdrop-blur-sm shadow-sm overflow-hidden rounded-2xl">
-      <CardHeader className="pb-5 border-b border-border/40">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <CardTitle className="text-xl sm:text-2xl font-bold flex items-center gap-2.5 tracking-tight text-foreground">
-              <BarChart3 className="h-6 w-6 text-primary" />
-              Attendance Reports & Analytics
-            </CardTitle>
-            <CardDescription className="mt-1 text-sm text-muted-foreground">
-              Official ministry statistics, session trends, and member attendance records
-            </CardDescription>
-          </div>
-          <div className="flex items-center gap-2.5 flex-wrap">
-            <Button
-              variant="outline"
-              onClick={handlePrint}
-              className="gap-2 border-border/80 bg-background/50 hover:bg-muted/80 shadow-sm"
-            >
-              <Printer className="h-4 w-4" />
-              Print
-            </Button>
-            <Button
-              onClick={exportProfessionalPdf}
-              disabled={isExportingPdf}
-              className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-medium shadow-sm transition-all"
-            >
-              {isExportingPdf ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Download className="h-4 w-4" />
-              )}
-              Download Official PDF
-            </Button>
-          </div>
-        </div>
-      </CardHeader>
+  const rateBadgeClass = (rate: number) =>
+    rate >= 75
+      ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+      : rate >= 50
+      ? "bg-amber-50 text-amber-700 border border-amber-200"
+      : "bg-rose-50 text-rose-700 border border-rose-200";
 
-      <CardContent className="space-y-6 pt-6">
-        {/* Modern Filter Toolbar */}
-        <div className="flex flex-col sm:flex-row gap-4 p-4 bg-muted/20 dark:bg-muted/10 rounded-2xl border border-border/50 items-end">
-          <div className="space-y-1.5 flex-1 sm:flex-none">
-            <Label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Filter Mode</Label>
+  return (
+    <div className="space-y-5">
+      {/* Header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="font-serif text-2xl font-bold tracking-tight text-[#0F3E6B]">
+            Attendance reports
+          </h2>
+          <p className="mt-1 text-sm text-slate-500">
+            Official ministry statistics, session trends, and member records
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center gap-2.5">
+          <Button
+            variant="outline"
+            onClick={handlePrint}
+            className="h-10 gap-2 rounded-lg border-slate-200 bg-white text-sm font-semibold text-[#0F3E6B] shadow-sm hover:bg-slate-50"
+          >
+            <Printer className="h-4 w-4" />
+            Print
+          </Button>
+          <Button
+            onClick={exportProfessionalPdf}
+            disabled={isExportingPdf}
+            className="h-10 gap-2 rounded-lg bg-[#C62828] text-sm font-semibold text-white shadow-sm hover:bg-[#B71C1C] disabled:opacity-60"
+          >
+            {isExportingPdf ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Download className="h-4 w-4" />
+            )}
+            Download official PDF
+          </Button>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div className="rounded-lg border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-end">
+          <div className="w-full sm:w-48">
+            <Label className="text-xs font-semibold text-[#0F3E6B]">Filter mode</Label>
             <Select value={dateRange} onValueChange={(v) => setDateRange(v as any)}>
-              <SelectTrigger className="w-full sm:w-40 bg-background/80 border-border/70 rounded-xl">
+              <SelectTrigger className="mt-1.5 h-10 w-full rounded-lg border-slate-200 bg-white text-sm">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="month">By Month</SelectItem>
-                <SelectItem value="custom">Custom Range</SelectItem>
-                <SelectItem value="all">All Time</SelectItem>
+                <SelectItem value="month">By month</SelectItem>
+                <SelectItem value="custom">Custom range</SelectItem>
+                <SelectItem value="all">All time</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           {dateRange === "month" && (
-            <div className="space-y-1.5 flex-1 sm:flex-none">
-              <Label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Select Month</Label>
+            <div className="w-full sm:w-52">
+              <Label className="text-xs font-semibold text-[#0F3E6B]">Select month</Label>
               <Select value={selectedMonth} onValueChange={setSelectedMonth}>
-                <SelectTrigger className="w-full sm:w-48 bg-background/80 border-border/70 rounded-xl">
+                <SelectTrigger className="mt-1.5 h-10 w-full rounded-lg border-slate-200 bg-white text-sm">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -948,465 +945,494 @@ export default function AttendanceReport() {
 
           {dateRange === "custom" && (
             <>
-              <div className="space-y-1.5 flex-1 sm:flex-none">
-                <Label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Start Date</Label>
+              <div className="w-full sm:w-44">
+                <Label className="text-xs font-semibold text-[#0F3E6B]">Start date</Label>
                 <Input
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
-                  className="w-full sm:w-44 bg-background/80 border-border/70 rounded-xl"
+                  className="mt-1.5 h-10 w-full rounded-lg border-slate-200 bg-white text-sm focus-visible:ring-[#1F6FB5]"
                 />
               </div>
-              <div className="space-y-1.5 flex-1 sm:flex-none">
-                <Label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">End Date</Label>
+              <div className="w-full sm:w-44">
+                <Label className="text-xs font-semibold text-[#0F3E6B]">End date</Label>
                 <Input
                   type="date"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
-                  className="w-full sm:w-44 bg-background/80 border-border/70 rounded-xl"
+                  className="mt-1.5 h-10 w-full rounded-lg border-slate-200 bg-white text-sm focus-visible:ring-[#1F6FB5]"
                 />
               </div>
             </>
           )}
 
-          <div className="text-xs text-muted-foreground pb-2.5 ml-auto hidden md:block">
-            Showing: <span className="font-semibold text-foreground">{getDateRangeLabel()}</span>
+          <div className="text-xs text-slate-500 lg:ml-auto lg:pb-2.5">
+            Showing <span className="font-semibold text-[#0F3E6B]">{getDateRangeLabel()}</span>
           </div>
         </div>
+      </div>
 
-        {/* Dashboard Content */}
-        <div ref={printRef} className="space-y-8">
-          {/* 4-Card Dashboard KPI Section */}
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-base font-semibold flex items-center gap-2 text-foreground">
-                <TrendingUp className="h-4.5 w-4.5 text-primary" />
-                Key Metrics Summary
-              </h3>
-              <span className="text-xs text-muted-foreground font-medium bg-muted/40 px-2.5 py-1 rounded-full border border-border/40">
-                {summary.totalSessions} {summary.totalSessions === 1 ? "Session" : "Sessions"} Recorded
-              </span>
+      {/* Key metrics */}
+      <div>
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <h3 className="font-serif text-lg font-bold text-[#0F3E6B]">Key metrics</h3>
+          <span className="rounded-full border border-blue-100 bg-blue-50 px-2.5 py-1 text-xs font-medium text-[#1F6FB5]">
+            {summary.totalSessions} {summary.totalSessions === 1 ? "session" : "sessions"} recorded
+          </span>
+        </div>
+
+        <div className="overflow-hidden rounded-lg border border-slate-200/80 bg-slate-200/80 shadow-sm">
+          <div className="grid grid-cols-2 gap-px lg:grid-cols-4">
+            <div className="bg-white p-5 sm:p-6">
+              <p className="text-xs font-medium text-slate-500 sm:text-sm">Total sessions</p>
+              <p className="mt-2 text-3xl font-bold tracking-tight text-[#0F3E6B] sm:text-4xl">
+                {summary.totalSessions}
+              </p>
+              <p className="mt-1 text-xs text-slate-400">Services held in period</p>
             </div>
 
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {/* 1. Total Sessions */}
-              <div className="bg-card/70 dark:bg-card/40 border border-border/60 hover:border-primary/40 transition-all rounded-2xl p-5 shadow-sm">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Total Sessions</span>
-                  <div className="h-9 w-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
-                    <CalendarDays className="h-4.5 w-4.5" />
-                  </div>
-                </div>
-                <div>
-                  <p className="text-3xl font-extrabold tracking-tight text-foreground">{summary.totalSessions}</p>
-                  <p className="text-xs text-muted-foreground mt-1">Services held in period</p>
-                </div>
-              </div>
-
-              {/* 2. Members Tracked */}
-              <div className="bg-card/70 dark:bg-card/40 border border-border/60 hover:border-primary/40 transition-all rounded-2xl p-5 shadow-sm">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Members Tracked</span>
-                  <div className="h-9 w-9 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center">
-                    <Users className="h-4.5 w-4.5" />
-                  </div>
-                </div>
-                <div>
-                  <p className="text-3xl font-extrabold tracking-tight text-foreground">{summary.totalMembers}</p>
-                  <p className="text-xs text-muted-foreground mt-1">Active church members</p>
-                </div>
-              </div>
-
-              {/* 3. Avg Attendance */}
-              <div className="bg-card/70 dark:bg-card/40 border border-border/60 hover:border-emerald-500/40 transition-all rounded-2xl p-5 shadow-sm">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Avg Attendance</span>
-                  <div className="h-9 w-9 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
-                    <UserCheck className="h-4.5 w-4.5" />
-                  </div>
-                </div>
-                <div>
-                  <p className="text-3xl font-extrabold tracking-tight text-emerald-600 dark:text-emerald-400">
-                    {summary.avgAttendance}%
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {summary.totalPresentTally} total attendance mark{summary.totalPresentTally === 1 ? "" : "s"}
-                  </p>
-                </div>
-              </div>
-
-              {/* 4. Peak Attendance */}
-              <div className="bg-card/70 dark:bg-card/40 border border-border/60 hover:border-primary/40 transition-all rounded-2xl p-5 shadow-sm">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Peak Attendance</span>
-                  <div className="h-9 w-9 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center">
-                    <Award className="h-4.5 w-4.5" />
-                  </div>
-                </div>
-                <div>
-                  <p className="text-3xl font-extrabold tracking-tight text-indigo-600 dark:text-indigo-400">
-                    {summary.highestAttendance}%
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Lowest: {summary.lowestAttendance}%
-                  </p>
-                </div>
-              </div>
+            <div className="bg-white p-5 sm:p-6">
+              <p className="text-xs font-medium text-slate-500 sm:text-sm">Members tracked</p>
+              <p className="mt-2 text-3xl font-bold tracking-tight text-[#0F3E6B] sm:text-4xl">
+                {summary.totalMembers}
+              </p>
+              <p className="mt-1 text-xs text-slate-400">Active church members</p>
             </div>
 
-            {/* Sleek Engagement Status Bar */}
-            <div className="mt-4 p-4 bg-muted/20 dark:bg-muted/10 rounded-2xl border border-border/50 flex flex-wrap items-center justify-between gap-3 text-xs">
-              <div className="flex items-center gap-2">
-                <Activity className="h-4 w-4 text-primary" />
-                <span className="font-semibold text-foreground">Engagement Breakdown:</span>
+            <div className="bg-white p-5 sm:p-6">
+              <p className="text-xs font-medium text-slate-500 sm:text-sm">Average attendance</p>
+              <p className="mt-2 text-3xl font-bold tracking-tight text-emerald-600 sm:text-4xl">
+                {summary.avgAttendance}%
+              </p>
+              <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-slate-200/80">
+                <div
+                  className="h-full rounded-full bg-emerald-500"
+                  style={{ width: `${summary.avgAttendance}%` }}
+                />
               </div>
-              <div className="flex items-center gap-3 flex-wrap">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 font-medium">
-                  <CheckCircle2 className="h-3.5 w-3.5" />
-                  High (≥75%): {summary.regularCount} members
-                </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 font-medium">
-                  <TrendingUp className="h-3.5 w-3.5" />
-                  Moderate (50-74%): {summary.moderateCount} members
-                </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20 font-medium">
-                  <AlertCircle className="h-3.5 w-3.5" />
-                  Follow-up Needed (&lt;50%): {summary.atRiskCount} members
-                </span>
-              </div>
+              <p className="mt-2 text-xs text-slate-400">
+                {summary.totalPresentTally} total attendance mark
+                {summary.totalPresentTally === 1 ? "" : "s"}
+              </p>
+            </div>
+
+            <div className="bg-white p-5 sm:p-6">
+              <p className="text-xs font-medium text-slate-500 sm:text-sm">Peak attendance</p>
+              <p className="mt-2 text-3xl font-bold tracking-tight text-[#1F6FB5] sm:text-4xl">
+                {summary.highestAttendance}%
+              </p>
+              <p className="mt-1 text-xs text-slate-400">Lowest: {summary.lowestAttendance}%</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Engagement breakdown */}
+      <div className="rounded-lg border border-slate-200/80 bg-white p-4 shadow-sm sm:p-5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2 text-sm font-semibold text-[#0F3E6B]">
+            <Activity className="h-4 w-4 text-[#1F6FB5]" />
+            Engagement breakdown
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">
+              <CheckCircle2 className="h-3.5 w-3.5" />
+              High (≥75%): {summary.regularCount} members
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-medium text-amber-700">
+              <TrendingUp className="h-3.5 w-3.5" />
+              Moderate (50-74%): {summary.moderateCount} members
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-rose-200 bg-rose-50 px-3 py-1 text-xs font-medium text-rose-700">
+              <AlertCircle className="h-3.5 w-3.5" />
+              Follow-up needed (&lt;50%): {summary.atRiskCount} members
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Charts */}
+      {attendanceRecords.length > 0 && (
+        <div className="space-y-5">
+          <div className="rounded-lg border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6">
+            <h3 className="font-serif text-lg font-bold text-[#0F3E6B]">
+              Attendance rate timeline
+            </h3>
+            <div className="mt-4 h-64 sm:h-72">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart
+                  data={attendanceRecords.map((r) => ({
+                    date: format(parseISO(r.attendance_date), "MMM dd"),
+                    fullDate: format(parseISO(r.attendance_date), "MMM dd, yyyy"),
+                    rate:
+                      r.total_members > 0
+                        ? Math.round((r.present_count / r.total_members) * 100)
+                        : 0,
+                  }))}
+                  margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
+                >
+                  <defs>
+                    <linearGradient id="reportRateFill" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#1F6FB5" stopOpacity={0.22} />
+                      <stop offset="95%" stopColor="#1F6FB5" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" vertical={false} />
+                  <XAxis
+                    dataKey="date"
+                    tick={{ fontSize: 11, fill: "#64748B" }}
+                    tickLine={false}
+                    axisLine={{ stroke: "#E2E8F0" }}
+                  />
+                  <YAxis
+                    tick={{ fontSize: 11, fill: "#64748B" }}
+                    tickLine={false}
+                    axisLine={false}
+                    domain={[0, 100]}
+                    tickFormatter={(v) => `${v}%`}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "#FFFFFF",
+                      border: "1px solid #E2E8F0",
+                      borderRadius: 8,
+                      boxShadow: "0 8px 24px rgba(15, 62, 107, 0.12)",
+                    }}
+                    labelStyle={{ color: "#0F3E6B", fontWeight: 600 }}
+                    labelFormatter={(label, payload) => payload[0]?.payload?.fullDate || label}
+                    formatter={(value: number) => [`${value}%`, "Attendance rate"]}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="rate"
+                    stroke="#1F6FB5"
+                    strokeWidth={2.5}
+                    fillOpacity={1}
+                    fill="url(#reportRateFill)"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
             </div>
           </div>
 
-          {/* Interactive Charts Section */}
-          {attendanceRecords.length > 0 && (
-            <div className="space-y-6">
-              {/* Attendance Trend Chart */}
-              <div className="bg-card/70 dark:bg-card/40 rounded-2xl p-6 border border-border/60 shadow-sm">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-base font-semibold flex items-center gap-2">
-                    <LineChartIcon className="h-4.5 w-4.5 text-primary" />
-                    Attendance Rate Timeline
-                  </h3>
-                </div>
-                <div className="h-64 sm:h-72">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart
-                      data={attendanceRecords.map((r) => ({
-                        date: format(parseISO(r.attendance_date), "MMM dd"),
-                        fullDate: format(parseISO(r.attendance_date), "MMM dd, yyyy"),
-                        rate: r.total_members > 0 ? Math.round((r.present_count / r.total_members) * 100) : 0,
-                        present: r.present_count,
-                        absent: r.absent_count,
-                      }))}
-                      margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
+          <div className="grid gap-5 lg:grid-cols-2">
+            <div className="rounded-lg border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6">
+              <h3 className="font-serif text-lg font-bold text-[#0F3E6B]">
+                Present vs absent
+              </h3>
+              <div className="mt-4 h-60 sm:h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={attendanceRecords.map((r) => ({
+                      date: format(parseISO(r.attendance_date), "MMM dd"),
+                      present: r.present_count,
+                      absent: r.absent_count,
+                    }))}
+                    margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" vertical={false} />
+                    <XAxis
+                      dataKey="date"
+                      tick={{ fontSize: 10, fill: "#64748B" }}
+                      tickLine={false}
+                      axisLine={{ stroke: "#E2E8F0" }}
+                    />
+                    <YAxis
+                      tick={{ fontSize: 11, fill: "#64748B" }}
+                      tickLine={false}
+                      axisLine={false}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "#FFFFFF",
+                        border: "1px solid #E2E8F0",
+                        borderRadius: 8,
+                        boxShadow: "0 8px 24px rgba(15, 62, 107, 0.12)",
+                      }}
+                      labelStyle={{ color: "#0F3E6B", fontWeight: 600 }}
+                    />
+                    <Legend wrapperStyle={{ fontSize: "12px", color: "#475569" }} />
+                    <Bar
+                      dataKey="present"
+                      name="Present"
+                      fill="#16A34A"
+                      radius={[4, 4, 0, 0]}
+                    />
+                    <Bar
+                      dataKey="absent"
+                      name="Absent"
+                      fill="#C62828"
+                      radius={[4, 4, 0, 0]}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            <div className="rounded-lg border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6">
+              <h3 className="font-serif text-lg font-bold text-[#0F3E6B]">
+                Overall distribution
+              </h3>
+              <div className="mt-4 h-60 sm:h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={[
+                        {
+                          name: "Present",
+                          value: summary.totalPresentTally,
+                        },
+                        {
+                          name: "Absent",
+                          value: summary.totalAbsentTally,
+                        },
+                      ]}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={55}
+                      outerRadius={85}
+                      paddingAngle={5}
+                      dataKey="value"
+                      label={({ name, percent }) =>
+                        `${name}: ${(percent * 100).toFixed(0)}%`
+                      }
+                      labelLine={{ stroke: "#CBD5E1", strokeWidth: 1 }}
                     >
-                      <defs>
-                        <linearGradient id="colorRate" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
-                          <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" className="stroke-border/40" />
-                      <XAxis
-                        dataKey="date"
-                        tick={{ fontSize: 11 }}
-                        className="text-muted-foreground"
-                        tickLine={false}
-                      />
-                      <YAxis
-                        tick={{ fontSize: 11 }}
-                        className="text-muted-foreground"
-                        tickLine={false}
-                        domain={[0, 100]}
-                        tickFormatter={(v) => `${v}%`}
-                      />
-                      <Tooltip
-                        contentStyle={{
-                          backgroundColor: "hsl(var(--background))",
-                          border: "1px solid hsl(var(--border))",
-                          borderRadius: "12px",
-                          boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
-                        }}
-                        labelFormatter={(label, payload) => payload[0]?.payload?.fullDate || label}
-                        formatter={(value: number) => [`${value}%`, "Attendance Rate"]}
-                      />
-                      <Area
-                        type="monotone"
-                        dataKey="rate"
-                        stroke="hsl(var(--primary))"
-                        strokeWidth={2.5}
-                        fillOpacity={1}
-                        fill="url(#colorRate)"
-                      />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-
-              {/* Present vs Absent Bar Chart & Distribution */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-card/70 dark:bg-card/40 rounded-2xl p-6 border border-border/60 shadow-sm">
-                  <h3 className="text-base font-semibold mb-4 flex items-center gap-2">
-                    <BarChart3 className="h-4.5 w-4.5 text-primary" />
-                    Present vs Absent by Session
-                  </h3>
-                  <div className="h-60 sm:h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart
-                        data={attendanceRecords.map((r) => ({
-                          date: format(parseISO(r.attendance_date), "MMM dd"),
-                          present: r.present_count,
-                          absent: r.absent_count,
-                        }))}
-                        margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
-                      >
-                        <CartesianGrid strokeDasharray="3 3" className="stroke-border/40" />
-                        <XAxis
-                          dataKey="date"
-                          tick={{ fontSize: 10 }}
-                          className="text-muted-foreground"
-                          tickLine={false}
-                        />
-                        <YAxis
-                          tick={{ fontSize: 11 }}
-                          className="text-muted-foreground"
-                          tickLine={false}
-                        />
-                        <Tooltip
-                          contentStyle={{
-                            backgroundColor: "hsl(var(--background))",
-                            border: "1px solid hsl(var(--border))",
-                            borderRadius: "12px",
-                            boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
-                          }}
-                        />
-                        <Legend wrapperStyle={{ fontSize: "12px" }} />
-                        <Bar dataKey="present" name="Present" fill="hsl(142, 76%, 36%)" radius={[6, 6, 0, 0]} />
-                        <Bar dataKey="absent" name="Absent" fill="hsl(0, 84%, 60%)" radius={[6, 6, 0, 0]} />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-
-                <div className="bg-card/70 dark:bg-card/40 rounded-2xl p-6 border border-border/60 shadow-sm">
-                  <h3 className="text-base font-semibold mb-4 flex items-center gap-2">
-                    <PieChartIcon className="h-4.5 w-4.5 text-primary" />
-                    Overall Attendance Distribution
-                  </h3>
-                  <div className="h-60 sm:h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={[
-                            {
-                              name: "Present",
-                              value: summary.totalPresentTally,
-                              color: "hsl(142, 76%, 36%)",
-                            },
-                            {
-                              name: "Absent",
-                              value: summary.totalAbsentTally,
-                              color: "hsl(0, 84%, 60%)",
-                            },
-                          ]}
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={55}
-                          outerRadius={85}
-                          paddingAngle={5}
-                          dataKey="value"
-                          label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                          labelLine={{ stroke: "hsl(var(--muted-foreground))", strokeWidth: 1 }}
-                        >
-                          <Cell fill="hsl(142, 76%, 36%)" />
-                          <Cell fill="hsl(0, 84%, 60%)" />
-                        </Pie>
-                        <Tooltip
-                          contentStyle={{
-                            backgroundColor: "hsl(var(--background))",
-                            border: "1px solid hsl(var(--border))",
-                            borderRadius: "12px",
-                            boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
-                          }}
-                          formatter={(value: number, name: string) => [value, name]}
-                        />
-                        <Legend wrapperStyle={{ fontSize: "12px" }} />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
+                      <Cell fill="#16A34A" />
+                      <Cell fill="#C62828" />
+                    </Pie>
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "#FFFFFF",
+                        border: "1px solid #E2E8F0",
+                        borderRadius: 8,
+                        boxShadow: "0 8px 24px rgba(15, 62, 107, 0.12)",
+                      }}
+                      formatter={(value: number, name: string) => [value, name]}
+                    />
+                    <Legend wrapperStyle={{ fontSize: "12px", color: "#475569" }} />
+                  </PieChart>
+                </ResponsiveContainer>
               </div>
             </div>
-          )}
-
-          {/* Service Sessions Breakdown */}
-          <div>
-            <div className="flex items-center justify-between mb-3.5">
-              <h3 className="text-base font-semibold flex items-center gap-2 text-foreground">
-                <CalendarDays className="h-4.5 w-4.5 text-primary" />
-                Service Sessions Breakdown
-              </h3>
-            </div>
-
-            {attendanceRecords.length === 0 ? (
-              <div className="text-center py-10 border border-dashed rounded-2xl border-border/60">
-                <Calendar className="h-8 w-8 text-muted-foreground mx-auto mb-2 opacity-50" />
-                <p className="text-sm font-medium text-muted-foreground">No attendance records found for this period.</p>
-              </div>
-            ) : (
-              <div className="overflow-x-auto rounded-2xl border border-border/60 bg-card/60 shadow-sm">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="bg-muted/30 hover:bg-muted/30 border-b border-border/60">
-                      <TableHead className="w-12 text-center font-semibold">#</TableHead>
-                      <TableHead className="font-semibold">Session Date</TableHead>
-                      <TableHead className="text-center font-semibold">Total Tracked</TableHead>
-                      <TableHead className="text-center font-semibold">Present</TableHead>
-                      <TableHead className="text-center font-semibold">Absent</TableHead>
-                      <TableHead className="text-center font-semibold">Attendance Rate</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {attendanceRecords.map((record, idx) => {
-                      const rate =
-                        record.total_members > 0
-                          ? Math.round((record.present_count / record.total_members) * 100)
-                          : 0;
-                      return (
-                        <TableRow key={record.id} className="hover:bg-muted/20 border-b border-border/40">
-                          <TableCell className="text-center text-muted-foreground font-mono text-xs">{idx + 1}</TableCell>
-                          <TableCell className="font-medium text-foreground">
-                            {format(parseISO(record.attendance_date), "EEE, MMM dd, yyyy")}
-                          </TableCell>
-                          <TableCell className="text-center font-medium">{record.total_members}</TableCell>
-                          <TableCell className="text-center text-emerald-600 dark:text-emerald-400 font-semibold">
-                            {record.present_count}
-                          </TableCell>
-                          <TableCell className="text-center text-rose-600 dark:text-rose-400 font-semibold">
-                            {record.absent_count}
-                          </TableCell>
-                          <TableCell className="text-center">
-                            <span
-                              className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
-                                rate >= 75
-                                  ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20"
-                                  : rate >= 50
-                                  ? "bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20"
-                                  : "bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20"
-                              }`}
-                            >
-                              {rate}%
-                            </span>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </div>
-            )}
-          </div>
-
-          {/* Member Attendance Details */}
-          <div>
-            <div className="flex items-center justify-between mb-3.5">
-              <h3 className="text-base font-semibold flex items-center gap-2 text-foreground">
-                <Users className="h-4.5 w-4.5 text-primary" />
-                Member Attendance Breakdown
-              </h3>
-            </div>
-
-            {memberAttendance.length > 0 ? (
-              <div className="overflow-x-auto rounded-2xl border border-border/60 bg-card/60 shadow-sm">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="bg-muted/30 hover:bg-muted/30 border-b border-border/60">
-                      <TableHead className="w-12 text-center font-semibold">#</TableHead>
-                      <TableHead className="font-semibold">Member Name</TableHead>
-                      <TableHead className="hidden sm:table-cell font-semibold">Phone</TableHead>
-                      <TableHead className="text-center font-semibold">Sessions</TableHead>
-                      <TableHead className="text-center font-semibold">Present</TableHead>
-                      <TableHead className="text-center font-semibold">Absent</TableHead>
-                      <TableHead className="text-center font-semibold">Rate</TableHead>
-                      <TableHead className="text-center font-semibold">Status</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {memberAttendance.map((member, index) => (
-                      <TableRow key={member.member_id} className="hover:bg-muted/20 border-b border-border/40">
-                        <TableCell className="text-center text-muted-foreground font-mono text-xs">{index + 1}</TableCell>
-                        <TableCell className="font-medium text-foreground">{member.member_name}</TableCell>
-                        <TableCell className="hidden sm:table-cell text-muted-foreground">
-                          {member.phone || "—"}
-                        </TableCell>
-                        <TableCell className="text-center font-medium">{member.total_sessions}</TableCell>
-                        <TableCell className="text-center text-emerald-600 dark:text-emerald-400 font-semibold">
-                          {member.present_count}
-                        </TableCell>
-                        <TableCell className="text-center text-rose-600 dark:text-rose-400 font-semibold">
-                          {member.absent_count}
-                        </TableCell>
-                        <TableCell className="text-center font-bold text-foreground">
-                          {member.attendance_rate}%
-                        </TableCell>
-                        <TableCell className="text-center">
-                          <span
-                            className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-semibold ${
-                              member.attendance_rate >= 75
-                                ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20"
-                                : member.attendance_rate >= 50
-                                ? "bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20"
-                                : "bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20"
-                            }`}
-                          >
-                            {member.attendance_rate >= 75
-                              ? "High (≥75%)"
-                              : member.attendance_rate >= 50
-                              ? "Moderate (50-74%)"
-                              : "Needs Follow-up"}
-                          </span>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            ) : allMembers.length > 0 ? (
-              <div className="overflow-x-auto rounded-2xl border border-border/60 bg-card/60 shadow-sm">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="bg-muted/30 hover:bg-muted/30 border-b border-border/60">
-                      <TableHead className="w-12 text-center font-semibold">#</TableHead>
-                      <TableHead className="font-semibold">Member Name</TableHead>
-                      <TableHead className="font-semibold">Phone</TableHead>
-                      <TableHead className="text-center font-semibold">Database Status</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {allMembers.map((member, index) => (
-                      <TableRow key={member.id} className="hover:bg-muted/20 border-b border-border/40">
-                        <TableCell className="text-center text-muted-foreground font-mono text-xs">{index + 1}</TableCell>
-                        <TableCell className="font-medium text-foreground">{member.full_name}</TableCell>
-                        <TableCell className="text-muted-foreground">{member.phone || "—"}</TableCell>
-                        <TableCell className="text-center">
-                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-500/20">
-                            Active Member
-                          </span>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            ) : (
-              <div className="text-center py-10 border border-dashed rounded-2xl border-border/60">
-                <Users className="h-8 w-8 text-muted-foreground mx-auto mb-2 opacity-50" />
-                <p className="text-sm font-medium text-muted-foreground">No member records found.</p>
-              </div>
-            )}
           </div>
         </div>
-      </CardContent>
-    </Card>
+      )}
+
+      {/* Session breakdown */}
+      <div>
+        <div className="mb-3 flex items-center justify-between">
+          <h3 className="font-serif text-lg font-bold text-[#0F3E6B]">
+            Session breakdown
+          </h3>
+        </div>
+
+        {attendanceRecords.length === 0 ? (
+          <div className="rounded-lg border border-dashed border-slate-300 bg-white px-4 py-12 text-center">
+            <Calendar className="mx-auto mb-3 h-8 w-8 text-slate-300" />
+            <p className="text-sm text-slate-500">
+              No attendance records found for this period.
+            </p>
+          </div>
+        ) : (
+          <div className="overflow-hidden rounded-lg border border-slate-200/80 bg-white shadow-sm">
+            <div className="overflow-x-auto">
+              <Table className="min-w-[640px]">
+                <TableHeader>
+                  <TableRow className="border-slate-200/70 bg-slate-50/80 hover:bg-slate-50/80">
+                    <TableHead className="pl-5 text-xs font-medium text-slate-500 sm:pl-6">
+                      Session date
+                    </TableHead>
+                    <TableHead className="text-center text-xs font-medium text-slate-500">
+                      Total tracked
+                    </TableHead>
+                    <TableHead className="text-center text-xs font-medium text-slate-500">
+                      Present
+                    </TableHead>
+                    <TableHead className="text-center text-xs font-medium text-slate-500">
+                      Absent
+                    </TableHead>
+                    <TableHead className="pr-5 text-center text-xs font-medium text-slate-500 sm:pr-6">
+                      Attendance rate
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {attendanceRecords.map((record) => {
+                    const rate =
+                      record.total_members > 0
+                        ? Math.round((record.present_count / record.total_members) * 100)
+                        : 0;
+
+                    return (
+                      <TableRow
+                        key={record.id}
+                        className="border-slate-100 hover:bg-slate-50/60"
+                      >
+                        <TableCell className="py-4 pl-5 font-medium text-[#0F3E6B] sm:pl-6">
+                          {format(parseISO(record.attendance_date), "EEE, MMM dd, yyyy")}
+                        </TableCell>
+                        <TableCell className="text-center text-sm text-slate-600">
+                          {record.total_members}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <span className="inline-flex h-6 min-w-[1.5rem] items-center justify-center rounded-full bg-emerald-100 px-1.5 text-xs font-bold text-emerald-700">
+                            {record.present_count}
+                          </span>
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <span className="inline-flex h-6 min-w-[1.5rem] items-center justify-center rounded-full bg-rose-100 px-1.5 text-xs font-bold text-rose-600">
+                            {record.absent_count}
+                          </span>
+                        </TableCell>
+                        <TableCell className="pr-5 text-center sm:pr-6">
+                          <span
+                            className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ${rateBadgeClass(
+                              rate
+                            )}`}
+                          >
+                            {rate}%
+                          </span>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Member breakdown */}
+      <div>
+        <div className="mb-3 flex items-center justify-between">
+          <h3 className="font-serif text-lg font-bold text-[#0F3E6B]">
+            Member breakdown
+          </h3>
+        </div>
+
+        {memberAttendance.length > 0 ? (
+          <div className="overflow-hidden rounded-lg border border-slate-200/80 bg-white shadow-sm">
+            <div className="overflow-x-auto">
+              <Table className="min-w-[720px]">
+                <TableHeader>
+                  <TableRow className="border-slate-200/70 bg-slate-50/80 hover:bg-slate-50/80">
+                    <TableHead className="pl-5 text-xs font-medium text-slate-500 sm:pl-6">
+                      Member
+                    </TableHead>
+                    <TableHead className="hidden text-xs font-medium text-slate-500 sm:table-cell">
+                      Phone
+                    </TableHead>
+                    <TableHead className="text-center text-xs font-medium text-slate-500">
+                      Sessions
+                    </TableHead>
+                    <TableHead className="text-center text-xs font-medium text-slate-500">
+                      Present
+                    </TableHead>
+                    <TableHead className="text-center text-xs font-medium text-slate-500">
+                      Absent
+                    </TableHead>
+                    <TableHead className="text-center text-xs font-medium text-slate-500">
+                      Rate
+                    </TableHead>
+                    <TableHead className="pr-5 text-center text-xs font-medium text-slate-500 sm:pr-6">
+                      Status
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {memberAttendance.map((member) => (
+                    <TableRow
+                      key={member.member_id}
+                      className="border-slate-100 hover:bg-slate-50/60"
+                    >
+                      <TableCell className="py-4 pl-5 font-medium text-[#0F3E6B] sm:pl-6">
+                        {member.member_name}
+                      </TableCell>
+                      <TableCell className="hidden text-sm text-slate-500 sm:table-cell">
+                        {member.phone || "—"}
+                      </TableCell>
+                      <TableCell className="text-center text-sm text-slate-600">
+                        {member.total_sessions}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <span className="inline-flex h-6 min-w-[1.5rem] items-center justify-center rounded-full bg-emerald-100 px-1.5 text-xs font-bold text-emerald-700">
+                          {member.present_count}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <span className="inline-flex h-6 min-w-[1.5rem] items-center justify-center rounded-full bg-rose-100 px-1.5 text-xs font-bold text-rose-600">
+                          {member.absent_count}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-center text-sm font-semibold text-[#0F3E6B]">
+                        {member.attendance_rate}%
+                      </TableCell>
+                      <TableCell className="pr-5 text-center sm:pr-6">
+                        <span
+                          className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ${rateBadgeClass(
+                            member.attendance_rate
+                          )}`}
+                        >
+                          {member.attendance_rate >= 75
+                            ? "High"
+                            : member.attendance_rate >= 50
+                            ? "Moderate"
+                            : "Follow-up"}
+                        </span>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+        ) : allMembers.length > 0 ? (
+          <div className="overflow-hidden rounded-lg border border-slate-200/80 bg-white shadow-sm">
+            <div className="overflow-x-auto">
+              <Table className="min-w-[520px]">
+                <TableHeader>
+                  <TableRow className="border-slate-200/70 bg-slate-50/80 hover:bg-slate-50/80">
+                    <TableHead className="pl-5 text-xs font-medium text-slate-500 sm:pl-6">
+                      Member
+                    </TableHead>
+                    <TableHead className="text-xs font-medium text-slate-500">Phone</TableHead>
+                    <TableHead className="pr-5 text-center text-xs font-medium text-slate-500 sm:pr-6">
+                      Status
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {allMembers.map((member) => (
+                    <TableRow
+                      key={member.id}
+                      className="border-slate-100 hover:bg-slate-50/60"
+                    >
+                      <TableCell className="py-4 pl-5 font-medium text-[#0F3E6B] sm:pl-6">
+                        {member.full_name}
+                      </TableCell>
+                      <TableCell className="text-sm text-slate-500">
+                        {member.phone || "—"}
+                      </TableCell>
+                      <TableCell className="pr-5 text-center sm:pr-6">
+                        <span className="inline-flex items-center rounded-full border border-blue-100 bg-blue-50 px-2.5 py-1 text-xs font-medium text-[#1F6FB5]">
+                          Active member
+                        </span>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+        ) : (
+          <div className="rounded-lg border border-dashed border-slate-300 bg-white px-4 py-12 text-center">
+            <Users className="mx-auto mb-3 h-8 w-8 text-slate-300" />
+            <p className="text-sm text-slate-500">No member records found.</p>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
