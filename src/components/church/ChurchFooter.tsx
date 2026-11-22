@@ -109,15 +109,6 @@ export const ChurchFooter = () => {
                   Upcoming Events
                 </a>
               </li>
-              <li className="pt-2">
-                <Link
-                  to={user ? "/dashboard" : "/auth"}
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#388CD4] hover:text-white transition-colors bg-white/5 px-2.5 py-1.5 rounded-lg border border-white/10"
-                >
-                  <Shield className="w-3.5 h-3.5" />
-                  <span>{user ? "Admin Dashboard" : "Staff Portal Login"}</span>
-                </Link>
-              </li>
             </ul>
           </div>
         </div>
@@ -128,10 +119,6 @@ export const ChurchFooter = () => {
             &copy; Changed Life Baptist Church &middot; Since 1976 &middot; All Rights Reserved
           </div>
           <div className="flex items-center gap-4">
-            <Link to={user ? "/dashboard" : "/auth"} className="hover:text-white transition-colors">
-              Management System
-            </Link>
-            <span>&middot;</span>
             <a href="#about" className="hover:text-white transition-colors">
               Statement of Faith
             </a>

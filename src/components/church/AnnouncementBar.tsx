@@ -1,9 +1,6 @@
-import { Clock, MapPin, Phone, Shield } from "lucide-react";
-import { Link } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
+import { Clock, MapPin, Phone } from "lucide-react";
 
 export const AnnouncementBar = () => {
-  const { user } = useAuth();
 
   return (
     <aside aria-label="Church announcements and quick contact info" className="bg-[#0F3E6B] text-white text-xs sm:text-[13px] py-2 px-4 sm:px-8 lg:px-12 border-b border-[#164C80]">
@@ -20,7 +17,7 @@ export const AnnouncementBar = () => {
           </span>
         </div>
 
-        {/* Location & Quick Contact & Portal */}
+        {/* Location & Quick Contact */}
         <div className="flex items-center gap-3 sm:gap-5 text-white/85 text-xs">
           <div className="hidden lg:flex items-center gap-1.5 hover:text-white transition-colors">
             <MapPin className="w-3.5 h-3.5 text-[#388CD4]" />
@@ -33,15 +30,6 @@ export const AnnouncementBar = () => {
             <Phone className="w-3.5 h-3.5 text-[#388CD4]" />
             <span>+233 (0) 24 123 4567</span>
           </a>
-          <span className="text-white/30">|</span>
-          <Link
-            to={user ? "/dashboard" : "/auth"}
-            className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-white/80 hover:text-white hover:bg-white/10 transition-colors font-medium"
-            title="Management System & Attendance Portal"
-          >
-            <Shield className="w-3 h-3 text-[#388CD4]" />
-            <span>{user ? "Dashboard" : "Portal"}</span>
-          </Link>
         </div>
       </div>
     </aside>

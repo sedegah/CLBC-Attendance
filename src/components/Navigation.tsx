@@ -184,26 +184,6 @@ export const Navigation = ({ variant = "default", onGiveOnline }: NavigationProp
           <div className="hidden lg:flex items-center gap-3">
             <ThemeToggle />
 
-            {/* Portal / Dashboard link */}
-            {user ? (
-              <Link
-                to="/dashboard"
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-[#0F3E6B]/10 text-[#0F3E6B] hover:bg-[#0F3E6B]/20 transition-colors"
-              >
-                <LayoutDashboard className="w-3.5 h-3.5" />
-                <span>Dashboard</span>
-              </Link>
-            ) : (
-              <Link
-                to="/auth"
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-[#0F3E6B] hover:bg-slate-100 transition-colors"
-                title="Management System Staff Portal"
-              >
-                <Shield className="w-3.5 h-3.5 text-[#1F6FB5]" />
-                <span>Portal</span>
-              </Link>
-            )}
-
             {/* Give Online button matching mockup */}
             <button
               onClick={handleGiveClick}
@@ -261,7 +241,7 @@ export const Navigation = ({ variant = "default", onGiveOnline }: NavigationProp
               </a>
             ))}
 
-            <div className="pt-3 border-t border-slate-100 px-3 space-y-2">
+            <div className="pt-3 border-t border-slate-100 px-3">
               <button
                 onClick={handleGiveClick}
                 className="w-full flex items-center justify-center gap-2 bg-[#C62828] hover:bg-[#B71C1C] text-white font-semibold py-3 rounded-xl shadow-md text-sm"
@@ -269,15 +249,6 @@ export const Navigation = ({ variant = "default", onGiveOnline }: NavigationProp
                 <Heart className="w-4 h-4 fill-white" />
                 <span>Give Online</span>
               </button>
-
-              <Link
-                to={user ? "/dashboard" : "/auth"}
-                onClick={() => setIsMenuOpen(false)}
-                className="w-full flex items-center justify-center gap-2 bg-[#0F3E6B] hover:bg-[#164C80] text-white font-semibold py-2.5 rounded-xl shadow-sm text-xs"
-              >
-                <Shield className="w-3.5 h-3.5" />
-                <span>{user ? "Go to Admin Dashboard" : "Staff Portal Login"}</span>
-              </Link>
             </div>
           </div>
         )}
