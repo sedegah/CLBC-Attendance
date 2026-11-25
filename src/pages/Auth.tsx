@@ -96,22 +96,20 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col lg:flex-row bg-[#F8FAFC]">
+    <div className="min-h-screen lg:h-screen w-full flex flex-col lg:flex-row bg-[#F8FAFC] overflow-x-hidden">
       {/* ================= LEFT SIDE: DEEP NAVY BRAND PANEL ================= */}
-      <div className="w-full lg:w-[46%] xl:w-[44%] bg-[#0F3E6B] text-white p-6 sm:p-10 lg:p-12 flex flex-col justify-between relative overflow-hidden flex-shrink-0">
+      <div className="w-full lg:w-[46%] xl:w-[44%] lg:h-full bg-[#0F3E6B] text-white p-6 sm:p-10 lg:p-12 flex flex-col justify-between relative overflow-hidden flex-shrink-0">
         {/* Subtle background glow */}
         <div className="absolute top-1/4 -left-16 w-80 h-80 rounded-full bg-[#1F6FB5]/20 blur-3xl pointer-events-none" />
         <div className="absolute bottom-10 right-0 w-64 h-64 rounded-full bg-[#082A4B]/40 blur-2xl pointer-events-none" />
 
         {/* Top Brand Lockup */}
         <div className="relative z-10 flex items-center gap-3.5">
-          <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-white p-1 shadow-md flex items-center justify-center flex-shrink-0">
-            <img
-              src={clbcLogo}
-              alt="Changed Life Baptist Church"
-              className="w-full h-full object-contain"
-            />
-          </div>
+          <img
+            src={clbcLogo}
+            alt="Changed Life Baptist Church"
+            className="w-11 h-11 sm:w-12 sm:h-12 object-contain flex-shrink-0"
+          />
           <div className="font-serif font-bold text-lg sm:text-xl leading-[1.1] text-white">
             Changed Life<br />
             <span>Baptist Church</span>
@@ -145,7 +143,7 @@ const Auth = () => {
       </div>
 
       {/* ================= RIGHT SIDE: AUTHENTICATION FORM ================= */}
-      <div className="flex-1 bg-[#F8FAFC] flex flex-col justify-between p-6 sm:p-10 lg:p-12 relative">
+      <div className="flex-1 lg:h-full bg-[#F8FAFC] flex flex-col justify-between p-6 sm:p-10 lg:p-12 relative overflow-y-auto">
         {/* Top Navigation Bar */}
         <div className="flex items-center justify-between w-full max-w-lg mx-auto lg:max-w-none">
           <Link
